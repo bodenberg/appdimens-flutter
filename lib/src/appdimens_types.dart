@@ -21,7 +21,6 @@
  * limitations under the License.
  */
 
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -44,11 +43,14 @@ enum DeviceType {
       return _getWebDeviceType(context);
     }
     
-    if (Platform.isAndroid || Platform.isIOS) {
+    if (defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS) {
       return _getMobileDeviceType(context);
     }
     
-    if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
+    if (defaultTargetPlatform == TargetPlatform.windows ||
+        defaultTargetPlatform == TargetPlatform.macOS ||
+        defaultTargetPlatform == TargetPlatform.linux) {
       return DeviceType.desktop;
     }
     

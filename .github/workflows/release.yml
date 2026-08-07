@@ -1,0 +1,53 @@
+name: Publish package
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact pubspec version to publish
+        required: true
+        type: string
+
+concurrency:
+  group: pub-release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Validate and publish to pub.dev
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: pub.dev
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Resolve dependencies
+        run: flutter pub get
+      - name: Verify tag matches pubspec
+        shell: bash
+        run: |
+          package_version="$(sed -n 's/^version: *//p' pubspec.yaml)"
+          if [ "${{ github.event_name }}" = "push" ]; then
+            requested_version="${GITHUB_REF_NAME#v}"
+          else
+            requested_version="${{ inputs.version }}"
+          fi
+          test "${requested_version}" = "${package_version}"
+      - name: Verify source
+        run: |
+          dart format --output=none --set-exit-if-changed lib test benchmark
+          flutter analyze --fatal-infos
+          flutter test
+          flutter pub publish --dry-run
+      - name: Publish
+        run: flutter pub publish --force

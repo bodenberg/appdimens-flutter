@@ -36,6 +36,7 @@ export 'src/appdimens_extensions.dart';
 export 'src/appdimens_provider.dart';
 export 'src/appdimens_physical_units.dart';
 export 'src/appdimens_utils.dart';
+export 'src/appdimens_scale.dart';
 
 // Models
 export 'src/models/base_orientation.dart';
@@ -45,6 +46,6 @@ export 'src/models/cache_stats.dart';
 export 'src/utils/orientation_resolver.dart';
 
 // Version information
-const String appDimensVersion = '1.1.0';
+const String appDimensVersion = '3.1.6';
 const String appDimensDescription =
     'Smart and Responsive Dimensioning for Flutter';

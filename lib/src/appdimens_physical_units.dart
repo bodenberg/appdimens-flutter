@@ -107,8 +107,7 @@ class AppDimensPhysicalUnits {
   /// @return O valor em sp.
   static double toSpFromMm(double mm, BuildContext context) {
     final dpValue = toDpFromMm(mm, context);
-    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
-    return dpValue * textScaleFactor;
+    return MediaQuery.textScalerOf(context).scale(dpValue);
   }
 
   // MARK: - Conversion Methods (CM)
