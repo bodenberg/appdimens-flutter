@@ -124,7 +124,7 @@ da mesma release, impossibilitando versões internas incompatíveis.
 O repositório inclui um benchmark reproduzível:
 
 ```sh
-dart run benchmark/engine_benchmark.dart
+flutter test benchmark/engine_benchmark_test.dart
 ```
 
 Meça no hardware e no modo release da aplicação: microbenchmarks em debug não

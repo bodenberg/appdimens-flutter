@@ -8,10 +8,10 @@ class AppDimensExample extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
-        home: const StrategyGallery(),
-      );
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
+    home: const StrategyGallery(),
+  );
 }
 
 class StrategyGallery extends StatelessWidget {
@@ -28,15 +28,15 @@ class StrategyGallery extends StatelessWidget {
           final columns = constraints.maxWidth >= 1100
               ? 4
               : constraints.maxWidth >= 700
-                  ? 3
-                  : constraints.maxWidth >= 460
-                      ? 2
-                      : 1;
+              ? 3
+              : constraints.maxWidth >= 460
+              ? 2
+              : 1;
           return GridView.builder(
             padding: const EdgeInsets.all(16),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: columns,
-              mainAxisExtent: 150,
+              mainAxisExtent: 240,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
             ),
@@ -56,13 +56,19 @@ class StrategyGallery extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(strategy.name,
-                          style: Theme.of(context).textTheme.titleMedium),
+                      Text(
+                        strategy.name,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
                       const Spacer(),
-                      Text('${result.toStringAsFixed(2)} logical px',
-                          style: Theme.of(context).textTheme.headlineSmall),
-                      Text('${viewport.width.toInt()} × '
-                          '${viewport.height.toInt()} viewport'),
+                      Text(
+                        '${result.toStringAsFixed(2)} logical px',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                      Text(
+                        '${viewport.width.toInt()} × '
+                        '${viewport.height.toInt()} viewport',
+                      ),
                     ],
                   ),
                 ),

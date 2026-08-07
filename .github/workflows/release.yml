@@ -26,10 +26,10 @@ jobs:
     timeout-minutes: 20
     environment: pub.dev
     steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v7.0.1
+      - uses: subosito/flutter-action@v2.23.0
         with:
-          channel: stable
+          flutter-version: 3.44.9
           cache: true
       - name: Resolve dependencies
         run: flutter pub get
@@ -48,6 +48,7 @@ jobs:
           dart format --output=none --set-exit-if-changed lib test benchmark
           flutter analyze --fatal-infos
           flutter test
+          flutter test benchmark/engine_benchmark_test.dart
           flutter pub publish --dry-run
       - name: Publish
         run: flutter pub publish --force

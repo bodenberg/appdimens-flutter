@@ -9,6 +9,9 @@
 * Adiciona entrypoints modulares `appdimens_core` e `appdimens_units`.
 * Remove dependência direta de `dart:io` da detecção de plataforma.
 * Expande testes e documentação de migração, desempenho e plataformas.
+* Atualiza o SDK mínimo, `flutter_lints` e as GitHub Actions para versões atuais.
+* Remove código legado não exportado, corrige o benchmark Flutter e valida builds
+  web/Linux, documentação e publicação.
 
 ## 2.0.0
 

@@ -5,14 +5,20 @@ void main() {
   const phone = AppDimensViewport(width: 360, height: 800);
   const tablet = AppDimensViewport(width: 800, height: 1280);
 
-  test('dynamic uses proportional scaling and fixed uses logarithmic scaling', () {
-    final dynamic = AppDimensDynamic(16).calculateViewport(phone);
-    final fixed = AppDimensFixed(16).calculateViewport(phone);
-    expect(dynamic, 16);
-    expect(fixed, 16);
-    expect(AppDimensDynamic(16).calculateViewport(tablet), greaterThan(dynamic));
-    expect(AppDimensFixed(16).calculateViewport(tablet), greaterThan(fixed));
-  });
+  test(
+    'dynamic uses proportional scaling and fixed uses logarithmic scaling',
+    () {
+      final dynamic = AppDimensDynamic(16).calculateViewport(phone);
+      final fixed = AppDimensFixed(16).calculateViewport(phone);
+      expect(dynamic, 16);
+      expect(fixed, 16);
+      expect(
+        AppDimensDynamic(16).calculateViewport(tablet),
+        greaterThan(dynamic),
+      );
+      expect(AppDimensFixed(16).calculateViewport(tablet), greaterThan(fixed));
+    },
+  );
 
   test('override precedence is deterministic', () {
     final value = AppDimensDynamic(10)

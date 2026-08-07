@@ -10,8 +10,11 @@ import 'utils/orientation_resolver.dart';
 /// Overrides are resolved in this order: intersection, UI mode, device,
 /// explicit dp qualifier, device-size qualifier, screen qualifier, algorithm.
 abstract class AppDimensBuilder<T extends AppDimensBuilder<T>> {
-  AppDimensBuilder(this.initialValue, this.strategy,
-      {this.ignoreMultiWindowAdjustment = false});
+  AppDimensBuilder(
+    this.initialValue,
+    this.strategy, {
+    this.ignoreMultiWindowAdjustment = false,
+  });
 
   final double initialValue;
   final AppDimensStrategy strategy;
@@ -62,15 +65,26 @@ abstract class AppDimensBuilder<T extends AppDimensBuilder<T>> {
     return clearCache();
   }
 
-  T screenWithIntersection(UiModeType mode, DpQualifier qualifier,
-      int minimumWidth, double value) {
-    _intersections.add(_IntersectionOverride(mode, minimumWidth, value));
+  T screenWithIntersection(
+    UiModeType mode,
+    DpQualifier qualifier,
+    int minimumWidth,
+    double value,
+  ) {
+    _intersections.add(
+      _IntersectionOverride(mode, minimumWidth.toDouble(), value),
+    );
     _intersections.sort((a, b) => b.minimumWidth.compareTo(a.minimumWidth));
     return clearCache();
   }
 
   T intersection(UiModeType mode, DpQualifier qualifier, double value) =>
-      screenWithIntersection(mode, qualifier, _qualifierWidth(qualifier), value);
+      screenWithIntersection(
+        mode,
+        qualifier,
+        _qualifierWidth(qualifier),
+        value,
+      );
 
   T baseOrientation(BaseOrientation orientation) {
     _baseOrientation = orientation;
@@ -119,14 +133,18 @@ abstract class AppDimensBuilder<T extends AppDimensBuilder<T>> {
 
   double calculateWithoutCache(BuildContext context) {
     final media = MediaQuery.of(context);
-    return calculateViewport(AppDimensViewport.fromMediaQuery(media),
-        deviceType: DeviceType.current(context),
-        uiModeType: UiModeType.current(context));
+    return calculateViewport(
+      AppDimensViewport.fromMediaQuery(media),
+      deviceType: DeviceType.current(context),
+      uiModeType: UiModeType.current(context),
+    );
   }
 
-  double calculateViewport(AppDimensViewport viewport,
-      {DeviceType deviceType = DeviceType.unknown,
-      UiModeType uiModeType = UiModeType.normal}) {
+  double calculateViewport(
+    AppDimensViewport viewport, {
+    DeviceType deviceType = DeviceType.unknown,
+    UiModeType uiModeType = UiModeType.normal,
+  }) {
     final shortest = viewport.shortestSide;
     for (final rule in _intersections) {
       if (rule.mode == uiModeType && shortest >= rule.minimumWidth) {
@@ -157,9 +175,12 @@ abstract class AppDimensBuilder<T extends AppDimensBuilder<T>> {
     final axis = effective == ScreenType.lowest
         ? (viewport.width <= viewport.height ? Axis.horizontal : Axis.vertical)
         : (viewport.width >= viewport.height ? Axis.horizontal : Axis.vertical);
-    return AppDimensScale(initialValue,
-            strategy: strategy, axis: axis, designSize: const Size(360, 800))
-        .calculateViewport(viewport);
+    return AppDimensScale(
+      initialValue,
+      strategy: strategy,
+      axis: axis,
+      designSize: const Size(360, 800),
+    ).calculateViewport(viewport);
   }
 
   double toDp(BuildContext context) => calculate(context);
@@ -199,16 +220,16 @@ abstract class AppDimensBuilder<T extends AppDimensBuilder<T>> {
   }
 
   static int _qualifierWidth(DpQualifier qualifier) => switch (qualifier) {
-        DpQualifier.smallestWidth160 => 160,
-        DpQualifier.smallestWidth240 => 240,
-        DpQualifier.smallestWidth320 => 320,
-        DpQualifier.smallestWidth360 => 360,
-        DpQualifier.smallestWidth480 => 480,
-        DpQualifier.smallestWidth600 => 600,
-        DpQualifier.smallestWidth720 => 720,
-        DpQualifier.smallestWidth840 => 840,
-        DpQualifier.smallestWidth960 => 960,
-      };
+    DpQualifier.smallestWidth160 => 160,
+    DpQualifier.smallestWidth240 => 240,
+    DpQualifier.smallestWidth320 => 320,
+    DpQualifier.smallestWidth360 => 360,
+    DpQualifier.smallestWidth480 => 480,
+    DpQualifier.smallestWidth600 => 600,
+    DpQualifier.smallestWidth720 => 720,
+    DpQualifier.smallestWidth840 => 840,
+    DpQualifier.smallestWidth960 => 960,
+  };
 }
 
 class _SizedOverride {

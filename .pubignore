@@ -1,0 +1,9 @@
+.dart_tool/
+.github/
+build/
+coverage/
+doc/
+example/.dart_tool/
+example/build/
+example/pubspec.lock
+pubspec.lock

@@ -24,15 +24,14 @@ class AppDimensConfig {
     bool? ignoreMultiWindowAdjustment,
     DeviceType? forcedDeviceType,
     UiModeType? forcedUiModeType,
-  }) =>
-      AppDimensConfig(
-        aspectRatioEnabled: aspectRatioEnabled ?? this.aspectRatioEnabled,
-        cacheEnabled: cacheEnabled ?? this.cacheEnabled,
-        ignoreMultiWindowAdjustment: ignoreMultiWindowAdjustment ??
-            this.ignoreMultiWindowAdjustment,
-        forcedDeviceType: forcedDeviceType ?? this.forcedDeviceType,
-        forcedUiModeType: forcedUiModeType ?? this.forcedUiModeType,
-      );
+  }) => AppDimensConfig(
+    aspectRatioEnabled: aspectRatioEnabled ?? this.aspectRatioEnabled,
+    cacheEnabled: cacheEnabled ?? this.cacheEnabled,
+    ignoreMultiWindowAdjustment:
+        ignoreMultiWindowAdjustment ?? this.ignoreMultiWindowAdjustment,
+    forcedDeviceType: forcedDeviceType ?? this.forcedDeviceType,
+    forcedUiModeType: forcedUiModeType ?? this.forcedUiModeType,
+  );
 
   @override
   bool operator ==(Object other) =>
@@ -44,8 +43,13 @@ class AppDimensConfig {
       other.forcedUiModeType == forcedUiModeType;
 
   @override
-  int get hashCode => Object.hash(aspectRatioEnabled, cacheEnabled,
-      ignoreMultiWindowAdjustment, forcedDeviceType, forcedUiModeType);
+  int get hashCode => Object.hash(
+    aspectRatioEnabled,
+    cacheEnabled,
+    ignoreMultiWindowAdjustment,
+    forcedDeviceType,
+    forcedUiModeType,
+  );
 }
 
 class AppDimensProvider extends InheritedWidget {
@@ -88,14 +92,15 @@ class AppDimensApp extends StatelessWidget {
       AppDimensProvider(config: config, child: child);
 }
 
-typedef AppDimensWidgetBuilder = Widget Function(
-    BuildContext context, AppDimensConfig config);
+typedef AppDimensWidgetBuilder =
+    Widget Function(BuildContext context, AppDimensConfig config);
 
 class AppDimensConsumer extends StatelessWidget {
   const AppDimensConsumer({required this.builder, super.key});
   final AppDimensWidgetBuilder builder;
   @override
-  Widget build(BuildContext context) => builder(context, context.appDimensConfig);
+  Widget build(BuildContext context) =>
+      builder(context, context.appDimensConfig);
 }
 
 class AppDimensHook extends AppDimensConsumer {

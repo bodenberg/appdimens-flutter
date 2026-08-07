@@ -32,10 +32,10 @@ class AppDimensViewport {
     required this.height,
     this.devicePixelRatio = 1,
     this.textScaleFactor = 1,
-  })  : assert(width >= 0),
-        assert(height >= 0),
-        assert(devicePixelRatio > 0),
-        assert(textScaleFactor > 0);
+  }) : assert(width >= 0),
+       assert(height >= 0),
+       assert(devicePixelRatio > 0),
+       assert(textScaleFactor > 0);
 
   factory AppDimensViewport.fromMediaQuery(MediaQueryData data) =>
       AppDimensViewport(
@@ -70,10 +70,8 @@ class AppDimensScale {
     this.maxValue,
     this.minWidth = 320,
     this.maxWidth = 1440,
-  })  : assert(value.isFinite),
-        assert(designSize.width > 0 && designSize.height > 0),
-        assert(exponent > 0),
-        assert(minWidth < maxWidth);
+  }) : assert(exponent > 0),
+       assert(minWidth < maxWidth);
 
   final double value;
   final AppDimensStrategy strategy;
@@ -86,15 +84,13 @@ class AppDimensScale {
   final double maxWidth;
 
   AppDimensScale forElement(ElementType element) => copyWith(
-        strategy: switch (element) {
-          ElementType.container => AppDimensStrategy.percentage,
-          ElementType.text => AppDimensStrategy.fluid,
-          ElementType.spacing || ElementType.radius =>
-            AppDimensStrategy.balanced,
-          ElementType.icon || ElementType.button =>
-            AppDimensStrategy.logarithmic,
-        },
-      );
+    strategy: switch (element) {
+      ElementType.container => AppDimensStrategy.percentage,
+      ElementType.text => AppDimensStrategy.fluid,
+      ElementType.spacing || ElementType.radius => AppDimensStrategy.balanced,
+      ElementType.icon || ElementType.button => AppDimensStrategy.logarithmic,
+    },
+  );
 
   AppDimensScale copyWith({
     AppDimensStrategy? strategy,
@@ -105,25 +101,25 @@ class AppDimensScale {
     double? maxValue,
     double? minWidth,
     double? maxWidth,
-  }) =>
-      AppDimensScale(
-        value,
-        strategy: strategy ?? this.strategy,
-        designSize: designSize ?? this.designSize,
-        axis: axis ?? this.axis,
-        exponent: exponent ?? this.exponent,
-        minValue: minValue ?? this.minValue,
-        maxValue: maxValue ?? this.maxValue,
-        minWidth: minWidth ?? this.minWidth,
-        maxWidth: maxWidth ?? this.maxWidth,
-      );
+  }) => AppDimensScale(
+    value,
+    strategy: strategy ?? this.strategy,
+    designSize: designSize ?? this.designSize,
+    axis: axis ?? this.axis,
+    exponent: exponent ?? this.exponent,
+    minValue: minValue ?? this.minValue,
+    maxValue: maxValue ?? this.maxValue,
+    minWidth: minWidth ?? this.minWidth,
+    maxWidth: maxWidth ?? this.maxWidth,
+  );
 
-  double calculate(BuildContext context) =>
-      calculateViewport(AppDimensViewport.fromMediaQuery(MediaQuery.of(context)));
+  double calculate(BuildContext context) => calculateViewport(
+    AppDimensViewport.fromMediaQuery(MediaQuery.of(context)),
+  );
 
   double calculateFor(Size size) => calculateViewport(
-        AppDimensViewport(width: size.width, height: size.height),
-      );
+    AppDimensViewport(width: size.width, height: size.height),
+  );
 
   double calculateViewport(AppDimensViewport viewport) {
     if (viewport.isEmpty ||
@@ -133,8 +129,8 @@ class AppDimensScale {
     }
     final wr = viewport.width / designSize.width;
     final hr = viewport.height / designSize.height;
-    final shortestRatio = viewport.shortestSide /
-        math.min(designSize.width, designSize.height);
+    final shortestRatio =
+        viewport.shortestSide / math.min(designSize.width, designSize.height);
     final raw = switch (strategy) {
       AppDimensStrategy.balanced => value * math.sqrt(wr * hr),
       AppDimensStrategy.percentage =>
@@ -145,12 +141,10 @@ class AppDimensScale {
         value * (axis == Axis.horizontal ? wr : hr),
       AppDimensStrategy.logarithmic =>
         value * (1 + math.log(math.max(shortestRatio, .01))),
-      AppDimensStrategy.power =>
-        value * math.pow(shortestRatio, exponent),
+      AppDimensStrategy.power => value * math.pow(shortestRatio, exponent),
       AppDimensStrategy.fluid => _fluid(viewport.width),
       AppDimensStrategy.interpolated => value * (wr + hr) / 2,
-      AppDimensStrategy.diagonal =>
-        value * viewport.diagonal / _designDiagonal,
+      AppDimensStrategy.diagonal => value * viewport.diagonal / _designDiagonal,
       AppDimensStrategy.perimeter =>
         value * viewport.perimeter / _designPerimeter,
       AppDimensStrategy.fit => value * math.min(wr, hr),
@@ -165,9 +159,8 @@ class AppDimensScale {
   }
 
   double get _designDiagonal => math.sqrt(
-        designSize.width * designSize.width +
-            designSize.height * designSize.height,
-      );
+    designSize.width * designSize.width + designSize.height * designSize.height,
+  );
   double get _designPerimeter => 2 * (designSize.width + designSize.height);
 
   double _fluid(double width) {

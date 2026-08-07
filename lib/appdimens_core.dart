@@ -1,5 +1,5 @@
 /// Lightweight entry point for the core responsive engine and shared types.
-library appdimens_core;
+library;
 
 export 'src/appdimens.dart';
 export 'src/appdimens_scale.dart';

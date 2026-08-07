@@ -14,7 +14,7 @@ void main() {
         maxValue: strategy == AppDimensStrategy.fluid ? 40 : null,
       );
       final result = scale.calculateFor(reference);
-      expect(result, isFinite, reason: strategy.name);
+      expect(result.isFinite, isTrue, reason: strategy.name);
       if (strategy != AppDimensStrategy.percentage &&
           strategy != AppDimensStrategy.fluid &&
           strategy != AppDimensStrategy.autosize) {
