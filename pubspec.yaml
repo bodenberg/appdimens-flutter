@@ -1,5 +1,5 @@
 name: appdimens
-description: AppDimens 3 responsive sizing for every Flutter platform with 13 scaling strategies, fluid dimensions, physical units, and qualifiers.
+description: Flutter port of AppDimens Dynamic 3.1.6 with matching scaled APIs, qualifiers, inverters, 14 strategies, resize, and physical units.
 version: 3.1.6
 homepage: https://github.com/bodenberg/appdimens-flutter
 

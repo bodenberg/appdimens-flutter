@@ -1,168 +1,146 @@
-# AppDimens for Flutter
+# AppDimens Dynamic for Flutter
 
-Dimensionamento responsivo, previsível e multiplataforma para **Android, iOS,
-web, Windows, macOS e Linux**. O porte 3.1.6 oferece 13 estratégias imutáveis,
-uma API compatível com o legado `fixed`/`dynamic` e um caminho rápido que pode
-ser calculado sem `BuildContext`.
+Porte Flutter **3.1.6** com o mesmo modelo mental e a mesma matemática do
+[AppDimens Dynamic Android](https://github.com/bodenberg/appdimens-dynamic) e do
+[AppDimens Apple](https://github.com/bodenberg/appdimens-ios). Android `dp`, Apple points e
+Flutter logical pixels ocupam o mesmo papel no layout.
 
-> Flutter usa pixels lógicos em todas as plataformas. O AppDimens trabalha
-> nesse espaço e só converte para pixels físicos quando isso é solicitado.
+Referências auditadas: Android `e5d904fb12dd214cc9e22e20937216fa686c8e4e` e Apple
+`9f1ab1030e69d4a41f5caecde1e8231f2299b9a0`.
 
-## Instalação
+## Instalação e módulos
 
 ```yaml
 dependencies:
   appdimens: ^3.1.6
 ```
 
-```dart
-import 'package:appdimens/appdimens.dart';
-```
+| AppDimens Dynamic | Flutter entrypoint |
+|---|---|
+| principal (`scaled`, common/core/plain) | `package:appdimens/appdimens_core.dart` |
+| strategies | `package:appdimens/appdimens_strategies.dart` |
+| auto | `package:appdimens/appdimens_auto.dart` |
+| resize | `package:appdimens/appdimens_resize.dart` |
+| units | `package:appdimens/appdimens_units.dart` |
+| BOM/aggregate | `package:appdimens/appdimens.dart` |
 
-## Início rápido
+O pub resolve uma única versão do pacote; por isso o aggregate é o equivalente seguro ao BOM.
 
-```dart
-final gap = AppDimens.balanced(16).calculate(context);
-final title = AppDimens.fluid(18, maxValue: 28).calculate(context);
-final heroWidth = AppDimens.percentage(80).calculate(context); // 80% da largura
-
-// Atalhos equivalentes
-final icon = 24.0.logarithmic().calculate(context);
-final card = 320.balanced().calculate(context);
-```
-
-Para `CustomPainter`, delegates ou loops que já conhecem a viewport, evite a
-consulta ao widget tree:
+## Quick start — Scaled
 
 ```dart
-final size = AppDimens.balanced(16).calculateFor(const Size(1440, 900));
+final c = context.dimensConfiguration;
+
+final padding = 16.sdp(c);
+final width = 100.wdp(c);
+final height = 48.hdp(c);
+final text = 16.ssp(c);
+final textIgnoringSystemScale = 16.sem(c);
 ```
 
-Para o caminho mais rápido e totalmente determinístico, construa o snapshot
-uma vez e reutilize-o:
+| API | Base |
+|---|---|
+| `sdp` / `ssp` / `sem` | menor dimensão da janela |
+| `wdp` / `wsp` / `wem` | largura atual |
+| `hdp` / `hsp` / `hem` | altura atual |
+| sufixo `a` | correção opcional de aspect ratio |
+| sufixo `i` | preserva o token em multi-window |
+| sufixo `ia` | combina ambos |
+
+## Configuração Flutter
 
 ```dart
-const viewport = AppDimensViewport(width: 1440, height: 900);
-const scale = AppDimensScale(16, strategy: AppDimensStrategy.balanced);
-final size = scale.calculateViewport(viewport);
+AppDimensProvider(
+  config: const AppDimensConfig(uiMode: UiModeType.television),
+  child: MyApp(),
+)
 ```
 
-## As 13 estratégias
-
-| Estratégia | Uso recomendado | Comportamento |
-|---|---|---|
-| `none` | valores invariáveis | mantém o valor original |
-| `defaultScaling` | layouts baseados na largura | escala linear por um eixo |
-| `balanced` ⭐ | UI geral multiplataforma | média geométrica dos eixos |
-| `percentage` | containers e áreas | percentual da largura/altura |
-| `logarithmic` | ícones/botões em telas grandes | crescimento desacelerado |
-| `power` | ajuste fino | curva exponencial configurável |
-| `fluid` | tipografia e espaçamento | interpolação limitada por breakpoints |
-| `interpolated` | crescimento uniforme | média aritmética dos eixos |
-| `diagonal` | mídia e jogos | proporção da diagonal |
-| `perimeter` | painéis e superfícies | proporção do perímetro |
-| `fit` | conteúdo totalmente visível | menor escala entre os eixos |
-| `fill` | conteúdo cobrindo a área | maior escala entre os eixos |
-| `autosize` | componentes adaptativos | patamares por menor dimensão |
-
-Todas aceitam uma `designSize` quando aplicável. `power` aceita `exponent`;
-`percentage` aceita `Axis`; e `fluid` recebe valores e larguras mínima/máxima.
-
-## API inteligente
+`context.dimensConfiguration` lê uma única janela Flutter via `MediaQuery`. Para testes,
+renderizadores ou isolates, construa o snapshot diretamente:
 
 ```dart
-final button = AppDimens.smart(48)
-    .forElement(ElementType.button)
-    .calculate(context);
+const c = DimensConfiguration(
+  screenWidth: 390,
+  screenHeight: 844,
+  displayScale: 3,
+  fontScale: 1.2,
+);
 ```
 
-As dicas semânticas selecionam uma estratégia estável: texto usa `fluid`,
-containers usam `percentage`, espaçamento usa `balanced` e controles usam
-`logarithmic`. A seleção é explícita e inspecionável, sem heurística de runtime.
-
-## Compatibilidade com o porte anterior
-
-As APIs abaixo continuam disponíveis:
+## Builders equivalentes
 
 ```dart
-final fixed = AppDimens.fixed(16).calculate(context);
-final dynamic = AppDimens.dynamic(16).calculate(context);
-final oldExtensions = 16.fx.calculate(context) + 16.dy.calculate(context);
+final value = 16.scaledDp
+    .screen(20, qualifier: DpQualifier.smallWidth, minimum: 600)
+    .mode(24, UiModeType.television)
+    .rotate(18)
+    .aspectRatio()
+    .ignoreMultiWindows()
+    .resolve(c);
 ```
 
-Qualificadores de dispositivo, UI mode, orientação-base, unidades `dp`, `px`,
-`sp`, `mm`, `cm` e polegadas também permanecem exportados pelo pacote completo.
+`ScaledDp` e `AutoDp` são imutáveis. `AutoDp` usa a mesma prioridade da referência:
+modo > qualifier > orientação; depois maior threshold e ordem de declaração.
 
-Overrides são determinísticos. A precedência é: interseção UI+largura, UI mode,
-dispositivo, qualificador `sw`, dispositivo+largura, resolução de tela e, por
-último, o algoritmo. Em qualificadores numéricos, vence o maior breakpoint que
-a viewport satisfaz.
-
-## Modularidade e equivalente ao BOM
-
-Dart/pub resolve uma única versão por pacote e não possui BOM como Maven ou
-Gradle. Portanto, o próprio `pubspec.lock` da aplicação cumpre a função de
-alinhar versões. Para reduzir superfície de imports sem fragmentar versões:
+## Estratégias
 
 ```dart
-import 'package:appdimens/appdimens_core.dart';  // engine, tipos e orientação
-import 'package:appdimens/appdimens_units.dart'; // conversões opcionais
+final power = 16.dynamic(
+  DimensStrategy.power,
+  c,
+  options: const StrategyOptions(power: .75),
+);
+final direct = 16.powerDp(c);
 ```
 
-O barrel `appdimens.dart` continua sendo a opção “BOM”: exporta todos os módulos
-da mesma release, impossibilitando versões internas incompatíveis.
+| Estratégia | Fórmula |
+|---|---|
+| scaled/auto | `v × d/300` |
+| density | `v × d/300 × displayScale` |
+| diagonal | `v × hypot(w,h)/hypot(300,533)` |
+| perimeter | `v × (w+h)/833` |
+| fit/fill | `v × min/max(w/300,h/533)` |
+| interpolated | `v × [1+(d/300−1)t]` |
+| power | `v × (d/300)^p` |
+| logarithmic | amortecimento `0.4 × ln(d/300)` |
+| percent | `d × percent × v / 10,000` |
+| fluid | interpolação limitada de viewport e escala |
+| plain/physical | identidade |
 
-## Desempenho
+`DimensFactors` pré-calcula fatores imutáveis para hot loops:
 
-* `AppDimensScale` e `AppDimensViewport` são imutáveis e pequenos;
-* `calculateFor(Size)` não consulta inherited widgets;
-* o caminho direto de cálculo não aloca mapas, strings nem closures;
-* cada cálculo faz apenas as operações exigidas por sua estratégia;
-* `MediaQuery.sizeOf` assina somente mudanças de tamanho, reduzindo rebuilds;
-* use `const AppDimensScale(...)` e reutilize builders em hot paths.
+```dart
+final factors = DimensFactors(c);
+final frameValue = factors.resolve(16, DimensStrategy.diagonal);
+```
 
-O repositório inclui um benchmark reproduzível:
+## Qualifiers e inverters
+
+`DpQualifier.smallWidth`, `.width` e `.height` correspondem diretamente à principal.
+Também estão presentes os oito mapeamentos: `phToLw`, `pwToLh`, `lhToPw`, `lwToPh`,
+`swToLh`, `swToLw`, `swToPh` e `swToPw`. Como `default` é palavra reservada em Dart,
+o caso neutro chama-se `Inverter.standard`.
+
+## Resize e unidades
+
+```dart
+final candidates = DimensResize.steps(minimum: 12, maximum: 32, step: 2);
+final best = DimensResize.largestFitting(candidates, (v) => measure(v));
+final mm = DimensUnits.points(10, from: PhysicalUnit.millimeter, configuration: c);
+```
+
+Conversões físicas seguem `72 points = 1 inch`. Informe `pixelsPerInch` para pixels
+fisicamente calibrados; `displayScale` não é PPI.
+
+## Validação
 
 ```sh
-flutter test benchmark/engine_benchmark_test.dart
-```
-
-Meça no hardware e no modo release da aplicação: microbenchmarks em debug não
-representam AOT, GPU, layout ou custo de rasterização reais.
-
-## Multiplataforma, orientação e janelas
-
-O cálculo depende da viewport atual, e não de modelos fixos de aparelhos. Isso
-faz resize no desktop/web, split-screen, Stage Manager e rotação atualizarem o
-resultado naturalmente. `fit` e `fill` usam ambos os eixos; `percentage` permite
-escolher o eixo. A API legada oferece `BaseOrientation` para designs com uma
-orientação-base específica.
-
-## Acessibilidade
-
-AppDimens dimensiona o valor do layout. Para texto, mantenha o
-`MediaQuery.textScaler` do Flutter ativo; não neutralize a preferência do
-usuário. Use `fluid` para limitar a escala do design, não a escala acessível da
-fonte.
-
-## Qualidade e contribuição
-
-O GitHub Actions executa três pipelines complementares:
-
-* `CI`: formatação, análise, testes VM/web, cobertura, exemplo web e dry-run;
-* `Workstation platforms`: testes e builds reais em Linux, Windows e macOS;
-* `Publish package`: valida versão/tag e publica no pub.dev com OIDC.
-
-Atualizações de Actions e dependências pub são monitoradas pelo Dependabot.
-
-Antes de enviar mudanças:
-
-```sh
-dart format --set-exit-if-changed lib test example/lib
-flutter analyze
+dart format --output=none --set-exit-if-changed lib test benchmark
+flutter analyze --fatal-infos
 flutter test
-flutter test --platform chrome
+flutter test benchmark/engine_benchmark_test.dart
 flutter pub publish --dry-run
 ```
 
-O pacote usa Apache-2.0. Issues e contribuições são bem-vindas no repositório.
+Suporta Android, iOS, web, Windows, macOS e Linux sem código nativo por plataforma.

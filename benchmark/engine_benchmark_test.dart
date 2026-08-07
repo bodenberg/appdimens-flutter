@@ -1,21 +1,21 @@
 // ignore_for_file: avoid_print
-
 import 'package:appdimens/appdimens.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('balanced strategy hot path benchmark', () {
-    const iterations = 1000000;
-    const viewport = AppDimensViewport(width: 1440, height: 900);
-    final scale = AppDimensScale(16, strategy: AppDimensStrategy.balanced);
+  test('DimensFactors hot path', () {
+    const c = DimensConfiguration(screenWidth: 1440, screenHeight: 900);
+    final factors = DimensFactors(c);
     var checksum = 0.0;
+    const iterations = 1000000;
     final watch = Stopwatch()..start();
     for (var i = 0; i < iterations; i++) {
-      checksum += scale.calculateViewport(viewport);
+      checksum += factors.resolve(16, DimensStrategy.diagonal);
     }
     watch.stop();
-    final nanoseconds = watch.elapsedMicroseconds * 1000 / iterations;
-    print('balanced: ${nanoseconds.toStringAsFixed(2)} ns/op');
+    print(
+      'DimensFactors: ${watch.elapsedMicroseconds * 1000 / iterations} ns/op',
+    );
     expect(checksum, greaterThan(0));
   });
 }

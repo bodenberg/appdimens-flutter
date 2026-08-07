@@ -2,9 +2,9 @@ import 'package:appdimens_example/main.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('renders the real strategy gallery', (tester) async {
+  testWidgets('renders the Dynamic strategy gallery', (tester) async {
     await tester.pumpWidget(const AppDimensExample());
-    expect(find.text('AppDimens — 13 strategies'), findsOneWidget);
-    expect(find.text('balanced'), findsOneWidget);
+    expect(find.text('AppDimens Dynamic Flutter 3.1.6'), findsOneWidget);
+    expect(find.text('scaled'), findsOneWidget);
   });
 }
