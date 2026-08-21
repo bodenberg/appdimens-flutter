@@ -5,6 +5,8 @@
 ///
 /// Percent strategy engine — `base × axis/300` plus the literal percentage
 /// family (`spaceW`, `spaceH`, …).
+library;
+
 import 'package:appdimens/appdimens.dart';
 
 /// EN: Percent strategy kernels. The dp/sp curves follow the same linear law

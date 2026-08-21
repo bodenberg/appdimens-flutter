@@ -5,6 +5,8 @@
 ///
 /// Scaled strategy — `sp` families (ssp · hsp · wsp and no-font-scale
 /// sem · hem · wem).
+library;
+
 import '../common/dp_qualifier.dart';
 import '../common/inverter.dart';
 import '../common/orientation.dart';

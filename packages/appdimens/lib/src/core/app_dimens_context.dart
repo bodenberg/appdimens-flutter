@@ -4,6 +4,8 @@
 /// Library: AppDimens
 ///
 /// Platform-neutral window handle — every non-widget API takes one of these.
+library;
+
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
@@ -23,9 +25,6 @@ import 'screen_configuration.dart';
 /// recebem um destes; a porta Dart espelha o contrato Kotlin para que todo
 /// cálculo seja testável sem uma árvore de widgets.
 abstract interface class AppDimensContext implements AppDimensContextLike {
-  /// Immutable window-configuration snapshot.
-  ScreenConfiguration get configuration;
-
   /// Logical density (`devicePixelRatio`), guarded to finite > 0.
   double get density;
 
@@ -37,12 +36,6 @@ abstract interface class AppDimensContext implements AppDimensContextLike {
 
   /// True when the window is known to be inside a multi-window mode.
   bool get isInMultiWindowMode;
-
-  /// Detected / forced UI-mode type.
-  UiModeType get uiModeType;
-
-  /// Coherent [DimenMetrics] snapshot derived from this window handle.
-  DimenMetrics get dimenMetrics;
 }
 
 /// EN: Context built from a [FlutterView] (no widget tree required). Works on

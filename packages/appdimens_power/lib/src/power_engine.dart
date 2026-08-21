@@ -8,6 +8,8 @@
 /// EN: Formula: `base × (d/300)^0.75` — perceptual sub-linear growth.
 ///
 /// PT: Fórmula: `base × (d/300)^0.75` — perceptual sub-linear growth.
+library;
+
 import 'dart:math' as math;
 
 import 'package:appdimens/appdimens.dart';

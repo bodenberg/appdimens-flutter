@@ -5,6 +5,8 @@
 ///
 /// Percent strategy — `num` extension surface (`psdp · phdp · pwdp` and the
 /// sp stems `pssp · phsp · pwsp` / `psem · phem · pwem`).
+library;
+
 import 'package:appdimens/appdimens.dart';
 
 import 'percent_engine.dart';

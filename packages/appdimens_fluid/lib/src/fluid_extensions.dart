@@ -13,6 +13,8 @@
 /// PT: Família `fsdp` em [num] — gramática de sufixos idêntica a toda a
 /// família AppDimens: *(nenhum)* / **a** (proporção) / **i** (ignora multi-janela)
 /// / **ia**; inversores **Ph/Lh/Pw/Lw**; gêmeos `…Px` retornam pixels físicos.
+library;
+
 import 'package:appdimens/appdimens.dart';
 
 import 'fluid_engine.dart';

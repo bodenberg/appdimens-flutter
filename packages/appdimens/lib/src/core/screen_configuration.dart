@@ -12,6 +12,8 @@
 /// PT: Um snapshot de valores da janela atual — o análogo Flutter do
 /// `ScreenConfiguration` em Kotlin. Todos os campos afetam o resultado, de
 /// forma que a igualdade pode ser usada como chave exata de partição de cache.
+library;
+
 class ScreenConfiguration {
   static const int orientationUndefined = 0;
   static const int orientationPortrait = 1;
@@ -91,6 +93,6 @@ class ScreenConfiguration {
 
   @override
   String toString() =>
-      'ScreenConfiguration(${screenWidthDp}×${screenHeightDp}, sw=$smallestScreenWidthDp, '
+      'ScreenConfiguration($screenWidthDp×$screenHeightDp, sw=$smallestScreenWidthDp, '
       'dpi=$densityDpi, fs=$fontScale, or=$orientation, ui=$uiMode)';
 }

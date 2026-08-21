@@ -5,6 +5,8 @@
 ///
 /// `AppDimensProvider` / `AppDimensApp` — publish the window snapshot into
 /// the global fast-lane scope on every configuration change.
+library;
+
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:ui' show FlutterView;
