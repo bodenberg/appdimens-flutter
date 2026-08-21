@@ -1,0 +1,39 @@
+name: appdimens_bom
+description: AppDimens BOM meta-package — one dependency that pins every AppDimens Flutter strategy module at a coherent version.
+version: 3.2.0
+homepage: https://github.com/bodenberg/appdimens
+repository: https://github.com/bodenberg/appdimens-flutter
+environment:
+  sdk: ^3.6.0
+  flutter: ">=3.27.0"
+resolution: workspace
+dependencies:
+  appdimens:
+    path: ../appdimens
+  appdimens_auto:
+    path: ../appdimens_auto
+  appdimens_density:
+    path: ../appdimens_density
+  appdimens_diagonal:
+    path: ../appdimens_diagonal
+  appdimens_fill:
+    path: ../appdimens_fill
+  appdimens_fit:
+    path: ../appdimens_fit
+  appdimens_fluid:
+    path: ../appdimens_fluid
+  appdimens_interpolated:
+    path: ../appdimens_interpolated
+  appdimens_logarithmic:
+    path: ../appdimens_logarithmic
+  appdimens_percent:
+    path: ../appdimens_percent
+  appdimens_perimeter:
+    path: ../appdimens_perimeter
+  appdimens_power:
+    path: ../appdimens_power
+  appdimens_resize:
+    path: ../appdimens_resize
+  appdimens_units:
+    path: ../appdimens_units
+publish_to: none

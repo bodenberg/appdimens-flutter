@@ -1,46 +1,25 @@
-name: appdimens
-description: AppDimens 2.0 - Smart and Responsive Dimensioning for Flutter with 13 Scaling Strategies - Mathematically responsive scaling with intelligent auto-inference for any screen size or aspect ratio.
-version: 2.0.0
-homepage: https://github.com/bodenberg/appdimens
+name: appdimens_workspace
+description: AppDimens Flutter workspace — modular, multiplatform responsive dimensioning (port of AppDimens Dynamic / KMP).
+publish_to: none
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
-  flutter: ">=3.10.0"
+  sdk: ^3.6.0
 
-dependencies:
-  flutter:
-    sdk: flutter
-  meta: ^1.8.0
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^3.0.0
-
-topics:
-  - responsive
-  - ui
-  - dimensions
-  - scaling
-  - flutter
-  - cross-platform
-  - mobile
-  - tablet
-  - tv
-  - games
-
-platforms:
-  android:
-  ios:
-  web:
-  windows:
-  macos:
-  linux:
-
-funding:
-  - https://github.com/sponsors/bodenberg
-
-repository: https://github.com/bodenberg/appdimens
-issue_tracker: https://github.com/bodenberg/appdimens/issues
-
-documentation: https://appdimens-project.web.app/
+workspace:
+  - packages/appdimens
+  - packages/appdimens_auto
+  - packages/appdimens_bom
+  - packages/appdimens_density
+  - packages/appdimens_diagonal
+  - packages/appdimens_fill
+  - packages/appdimens_fit
+  - packages/appdimens_fluid
+  - packages/appdimens_interpolated
+  - packages/appdimens_logarithmic
+  - packages/appdimens_percent
+  - packages/appdimens_perimeter
+  - packages/appdimens_power
+  - packages/appdimens_resize
+  - packages/appdimens_units
+  - apps/sample
+  - apps/benchlab

@@ -1,0 +1,23 @@
+name: appdimens_units
+description: AppDimens units strategy module — part of the modular AppDimens Flutter family (port of appdimens-dynamic / KMP).
+version: 3.2.0
+homepage: https://github.com/bodenberg/appdimens
+repository: https://github.com/bodenberg/appdimens-flutter
+environment:
+  sdk: ^3.6.0
+  flutter: ">=3.27.0"
+resolution: workspace
+dependencies:
+  appdimens:
+    path: ../appdimens
+  flutter:
+    sdk: flutter
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+topics:
+  - responsive
+  - ui
+  - scaling
+publish_to: none
