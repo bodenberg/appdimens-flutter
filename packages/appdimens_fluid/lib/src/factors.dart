@@ -11,4 +11,3 @@ abstract final class FluidRange {
   static const double minWidth = 320;
   static const double maxWidth = 768;
 }
-

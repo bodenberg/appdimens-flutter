@@ -90,12 +90,10 @@ abstract final class DimenPhysicalUnits {
 
   // ── Pure converters (no screen involvement) ─────────────────────────────
 
-  static double mmToCm(num mm) =>
-      mm.toDouble() / PhysicalUnitConstants.mmPerCm;
+  static double mmToCm(num mm) => mm.toDouble() / PhysicalUnitConstants.mmPerCm;
   static double mmToInch(num mm) =>
       mm.toDouble() / PhysicalUnitConstants.mmPerInch;
-  static double cmToMm(num cm) =>
-      cm.toDouble() * PhysicalUnitConstants.mmPerCm;
+  static double cmToMm(num cm) => cm.toDouble() * PhysicalUnitConstants.mmPerCm;
   static double cmToInch(num cm) =>
       cm.toDouble() / PhysicalUnitConstants.cmPerInch;
   static double inchToMm(num inch) =>
@@ -103,8 +101,8 @@ abstract final class DimenPhysicalUnits {
   static double inchToCm(num inch) =>
       inch.toDouble() * PhysicalUnitConstants.cmPerInch;
 
-  static double _diameterToDp(double v, UnitType unitType,
-      AppDimensContextLike scope) {
+  static double _diameterToDp(
+      double v, UnitType unitType, AppDimensContextLike scope) {
     switch (unitType) {
       case UnitType.inch:
         return toDpFromInch(v, scope: scope);

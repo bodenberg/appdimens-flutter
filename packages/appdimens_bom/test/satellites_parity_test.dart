@@ -21,8 +21,7 @@ void main() {
     test('all strategy stems match reference vectors', () {
       AppDimensScope.withMetrics(DimenMetrics.from(_phoneCfg), () {
         void expectVector(String key, double actual) =>
-            expect(actual, closeTo(kReferenceVectors[key]!, 1e-6),
-                reason: key);
+            expect(actual, closeTo(kReferenceVectors[key]!, 1e-6), reason: key);
         expectVector('percent_psdp', 16.psdp);
         expectVector('percent_phdp', 16.phdp);
         expectVector('power_pwsdp', 16.pwsdp);
@@ -47,7 +46,8 @@ void main() {
         expect(25.spaceH, closeTo(kReferenceVectors['spaceH25']!, 1e-9));
         expect(10.spaceSw, closeTo(kReferenceVectors['spaceSw10']!, 1e-9));
         expect(DimenPercent.spaceSw(-5), closeTo(-0.05 * 392, 1e-9),
-            reason: 'negative percents follow the literal formula (KMP parity)');
+            reason:
+                'negative percents follow the literal formula (KMP parity)');
         expect(DimenPercent.spaceSw(double.nan), 0.0,
             reason: 'non-finite guard returns zero');
       });
@@ -68,7 +68,6 @@ void main() {
       });
     });
   });
-
 
   group('units', () {
     test('25.4 mm equals 16 dp at the 160 dpi reference', () {

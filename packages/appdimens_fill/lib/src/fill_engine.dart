@@ -24,8 +24,8 @@ abstract final class DimenFill {
   ) {
     final rMin = metrics.minDimensionDp / DesignScaleConstants.baseWidthDp;
     final rMax = metrics.maxDimensionDp / DesignScaleConstants.baseHeightDp;
-    return StrategyResolution.applyAr(
-        base * math.max(rMin, rMax), metrics, applyAspectRatio, customSensitivityK);
+    return StrategyResolution.applyAr(base * math.max(rMin, rMax), metrics,
+        applyAspectRatio, customSensitivityK);
   }
 
   /// Starts the conditional [StrategyChain] for this strategy.

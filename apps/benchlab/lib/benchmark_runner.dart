@@ -16,7 +16,18 @@ abstract final class BenchConstants {
   static const int measureCount = 50000;
   static const int sampleCount = 9;
   static const List<double> mixedValues = [
-    1, 4, 8, 10, 12, 16, 20, 24, 32, 48, 64, 100,
+    1,
+    4,
+    8,
+    10,
+    12,
+    16,
+    20,
+    24,
+    32,
+    48,
+    64,
+    100,
   ];
 }
 
@@ -242,11 +253,12 @@ class BenchLabController {
       dp1Legacy: const LegacySdpsModel(1).resolve(swDp),
       dp10Legacy: const LegacySdpsModel(10).resolve(swDp),
       dp100Legacy: const LegacySdpsModel(100).resolve(swDp),
-      dp1Naive: const NaiveModel(1).resolve(widthDp < heightDp ? widthDp : heightDp),
+      dp1Naive:
+          const NaiveModel(1).resolve(widthDp < heightDp ? widthDp : heightDp),
       dp10Naive:
           const NaiveModel(10).resolve(widthDp < heightDp ? widthDp : heightDp),
-      dp100Naive:
-          const NaiveModel(100).resolve(widthDp < heightDp ? widthDp : heightDp),
+      dp100Naive: const NaiveModel(100)
+          .resolve(widthDp < heightDp ? widthDp : heightDp),
     );
 
     return (LegacyTestResult(passes), resolution);

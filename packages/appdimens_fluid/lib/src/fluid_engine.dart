@@ -11,6 +11,7 @@
 import 'package:appdimens/appdimens.dart';
 
 import 'factors.dart';
+
 /// Fluid strategy kernels (family port parity).
 abstract final class DimenFluid {
   /// Core fluid kernel used by every extension in this package.

@@ -13,6 +13,7 @@ import 'dart:math' as math;
 import 'package:appdimens/appdimens.dart';
 
 import 'factors.dart';
+
 /// Auto strategy kernels (family port parity).
 abstract final class DimenAuto {
   /// Core auto kernel used by every extension in this package.
@@ -30,7 +31,8 @@ abstract final class DimenAuto {
     } else {
       scale = AutoTransition.pointDp * DimenCache.invBaseRatio +
           AutoTransition.slope *
-              math.log(1 + (d - AutoTransition.pointDp) * DimenCache.invBaseRatio);
+              math.log(
+                  1 + (d - AutoTransition.pointDp) * DimenCache.invBaseRatio);
     }
     return StrategyResolution.applyAr(
         base * scale, metrics, applyAspectRatio, customSensitivityK);

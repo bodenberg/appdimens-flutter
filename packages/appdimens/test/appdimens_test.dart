@@ -35,13 +35,16 @@ void main() {
   group('parity — explicit-context kernels', () {
     test('matches independently computed reference vectors', () {
       expect(16.sdpOf(_phone), closeTo(kReferenceVectors['sdp_phone']!, 1e-9));
-      expect(16.sdpaOf(_phone), closeTo(kReferenceVectors['sdpa_phone']!, 1e-9));
+      expect(
+          16.sdpaOf(_phone), closeTo(kReferenceVectors['sdpa_phone']!, 1e-9));
       expect(16.hdpOf(_phone), closeTo(kReferenceVectors['hdp_phone']!, 1e-9));
       expect(16.wdpOf(_phone), closeTo(kReferenceVectors['wdp_phone']!, 1e-9));
       expect(
           16.sdpPxOf(_phone), closeTo(kReferenceVectors['sdpPx_phone']!, 1e-6));
-      expect(16.sdpOf(_base), closeTo(kReferenceVectors['sdp_baseline_exact']!, 1e-6));
-      expect(16.hdpOf(_base), closeTo(kReferenceVectors['hdp_baseline']!, 1e-9));
+      expect(16.sdpOf(_base),
+          closeTo(kReferenceVectors['sdp_baseline_exact']!, 1e-6));
+      expect(
+          16.hdpOf(_base), closeTo(kReferenceVectors['hdp_baseline']!, 1e-9));
     });
 
     test('baseline preservation: sw=300 keeps values exact', () {
@@ -106,8 +109,7 @@ void main() {
         expect(r, closeTo(50 * 392 * DimenCache.invBaseRatio, 1e-9));
         // Plain variant returns the chosen token unscaled.
         expect(50.sdpRotatePlain(70), 50.0);
-        expect(
-            50.sdpRotatePlain(70, orientation: OrientationRequest.portrait),
+        expect(50.sdpRotatePlain(70, orientation: OrientationRequest.portrait),
             70.0);
       });
     });
@@ -120,8 +122,10 @@ void main() {
         // qualifier: sw=392 ≥ 360
         expect(30.sdpQualifierPlain(60, DpQualifier.smallWidth, 360), 60.0);
         expect(30.sdpQualifierPlain(60, DpQualifier.smallWidth, 999), 30.0);
-        expect(30.sdpScreenPlain(60, UiModeType.television,
-            DpQualifier.smallWidth, 360), 60.0);
+        expect(
+            30.sdpScreenPlain(
+                60, UiModeType.television, DpQualifier.smallWidth, 360),
+            60.0);
       });
     });
   });
@@ -136,8 +140,7 @@ void main() {
           .screenOrientation(OrientationRequest.landscape, 120);
 
       // Phone portrait, sw 392 ≥ 600? No. TV? No. Landscape? No → base.
-      expect(
-          chain.resolve(_phone),
+      expect(chain.resolve(_phone),
           closeTo(100 * 392 * DimenCache.invBaseRatio, 1e-9));
 
       // TV with sw ≥ 600 wins priority 1.
@@ -153,7 +156,8 @@ void main() {
         uiModeType: UiModeType.television,
       );
       AppDimensScope.publishUiModeType(UiModeType.television);
-      expect(chain.resolve(tv), closeTo(500 * 540 * DimenCache.invBaseRatio, 1e-6),
+      expect(
+          chain.resolve(tv), closeTo(500 * 540 * DimenCache.invBaseRatio, 1e-6),
           reason: 'sw 540 < 600 so P1 misses; P2 (ui-mode) wins with 500');
     });
   });

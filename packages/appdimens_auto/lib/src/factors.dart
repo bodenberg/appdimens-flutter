@@ -9,4 +9,3 @@ abstract final class AutoTransition {
   static const double pointDp = 480;
   static const double slope = 0.4;
 }
-

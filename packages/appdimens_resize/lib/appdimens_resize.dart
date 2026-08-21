@@ -8,8 +8,18 @@
 library;
 
 export 'package:appdimens/appdimens.dart'
-    show AutoResizePercentBasis, ResizeBound, ResizeFixedDp, ResizeFixedSp,
-         ResizePercent, ResizeMath, ResizeRangePx, resizeFixedDp, resizeFixedSp,
-         resizePercentSw, resizePercentW, resizePercentH;
+    show
+        AutoResizePercentBasis,
+        ResizeBound,
+        ResizeFixedDp,
+        ResizeFixedSp,
+        ResizePercent,
+        ResizeMath,
+        ResizeRangePx,
+        resizeFixedDp,
+        resizeFixedSp,
+        resizePercentSw,
+        resizePercentW,
+        resizePercentH;
 export 'src/resize_engine.dart';
 export 'src/resize_widgets.dart';

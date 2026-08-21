@@ -20,8 +20,8 @@ abstract final class DimenDensity {
     bool applyAspectRatio,
     double? customSensitivityK,
   ) {
-    return StrategyResolution.applyAr(base * metrics.density, metrics,
-        applyAspectRatio, customSensitivityK);
+    return StrategyResolution.applyAr(
+        base * metrics.density, metrics, applyAspectRatio, customSensitivityK);
   }
 
   /// Starts the conditional [StrategyChain] for this strategy.

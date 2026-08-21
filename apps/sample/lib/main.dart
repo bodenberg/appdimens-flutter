@@ -59,8 +59,7 @@ class _DemoScreenState extends State<DemoScreen> {
       onStrategyChanged: (s) => setState(() => _strategy = s),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('AppDimens SDP Demo',
-              style: TextStyle(fontSize: 18.ssp)),
+          title: Text('AppDimens SDP Demo', style: TextStyle(fontSize: 18.ssp)),
           actions: [
             StrategyPicker(
               value: _strategy,
@@ -79,7 +78,8 @@ class _DemoScreenState extends State<DemoScreen> {
             _sectionTitle('2. Orientation inverters (Ph · Lw · Lh)'),
             _inverterCards(),
             SizedBox(height: 16.sdp),
-            _sectionTitle('3. Facilitators (Rotate · Mode · Qualifier · Screen + Plain)'),
+            _sectionTitle(
+                '3. Facilitators (Rotate · Mode · Qualifier · Screen + Plain)'),
             _facilitatorCards(),
             SizedBox(height: 16.sdp),
             _sectionTitle('4. DimenScaled builder chain'),
@@ -136,21 +136,20 @@ class _DemoScreenState extends State<DemoScreen> {
   Widget _sectionTitle(String title) => Padding(
         padding: EdgeInsets.only(bottom: 8.sdp),
         child: Text(title,
-            style: TextStyle(
-                fontSize: 15.ssp, fontWeight: FontWeight.w700)),
+            style: TextStyle(fontSize: 15.ssp, fontWeight: FontWeight.w700)),
       );
 
   Widget _coreCards() {
     return Column(
       children: [
-        _demoBox('60.demoSwDp → ${60.demoSwDp.toStringAsFixed(1)}',
-            60.demoSwDp, Colors.lightBlue),
+        _demoBox('60.demoSwDp → ${60.demoSwDp.toStringAsFixed(1)}', 60.demoSwDp,
+            Colors.lightBlue),
         _demoBox('60.demoSwDpa (+AR) → ${60.demoSwDpa.toStringAsFixed(1)}',
             60.demoSwDpa, Colors.indigo),
-        _demoBox('80.demoHdp → ${80.demoHdp.toStringAsFixed(1)}',
-            80.demoHdp, Colors.teal),
-        _demoBox('100.demoWdp → ${100.demoWdp.toStringAsFixed(1)}',
-            100.demoWdp, Colors.deepPurple),
+        _demoBox('80.demoHdp → ${80.demoHdp.toStringAsFixed(1)}', 80.demoHdp,
+            Colors.teal),
+        _demoBox('100.demoWdp → ${100.demoWdp.toStringAsFixed(1)}', 100.demoWdp,
+            Colors.deepPurple),
       ],
     );
   }
@@ -158,14 +157,14 @@ class _DemoScreenState extends State<DemoScreen> {
   Widget _inverterCards() {
     return Column(
       children: [
-        _demoBox('70.demoSwPh → ${70.demoSwPh.toStringAsFixed(1)}',
-            70.demoSwPh, Colors.orange),
-        _demoBox('70.demoSwLw → ${70.demoSwLw.toStringAsFixed(1)}',
-            70.demoSwLw, Colors.pink),
-        _demoBox('80.demoHLw → ${80.demoHLw.toStringAsFixed(1)}',
-            80.demoHLw, Colors.brown),
-        _demoBox('90.demoWLh → ${90.demoWLh.toStringAsFixed(1)}',
-            90.demoWLh, Colors.blueGrey),
+        _demoBox('70.demoSwPh → ${70.demoSwPh.toStringAsFixed(1)}', 70.demoSwPh,
+            Colors.orange),
+        _demoBox('70.demoSwLw → ${70.demoSwLw.toStringAsFixed(1)}', 70.demoSwLw,
+            Colors.pink),
+        _demoBox('80.demoHLw → ${80.demoHLw.toStringAsFixed(1)}', 80.demoHLw,
+            Colors.brown),
+        _demoBox('90.demoWLh → ${90.demoWLh.toStringAsFixed(1)}', 90.demoWLh,
+            Colors.blueGrey),
       ],
     );
   }
@@ -173,8 +172,10 @@ class _DemoScreenState extends State<DemoScreen> {
   Widget _facilitatorCards() {
     return Column(
       children: [
-        _demoBox('demoSdpRotate(50) → ${50.demoSdpRotate(70).toStringAsFixed(1)}',
-            50.demoSdpRotate(70), Colors.cyan),
+        _demoBox(
+            'demoSdpRotate(50) → ${50.demoSdpRotate(70).toStringAsFixed(1)}',
+            50.demoSdpRotate(70),
+            Colors.cyan),
         _demoBox(
             'demoSdpMode(200, TV) → ${40.demoSdpMode(90, UiModeType.television).toStringAsFixed(1)}',
             40.demoSdpMode(90, UiModeType.television),
@@ -224,7 +225,8 @@ class BuilderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final resolved = 100.scaledDp
+    final resolved = 100
+        .scaledDp
         .screen(UiModeType.television, DpQualifier.smallWidth, 600, 250)
         .screenMode(UiModeType.television, 500)
         .screenQualifier(DpQualifier.smallWidth, 600, 150)
@@ -245,8 +247,8 @@ class BuilderCard extends StatelessWidget {
             ),
             SizedBox(height: 12.sdp),
             Text('Resolved now: ${resolved.sdp.toStringAsFixed(2)} dp',
-                style: TextStyle(
-                    fontSize: 16.ssp, fontWeight: FontWeight.bold)),
+                style:
+                    TextStyle(fontSize: 16.ssp, fontWeight: FontWeight.bold)),
           ],
         ),
       ),
@@ -294,7 +296,8 @@ class StrategyPicker extends StatelessWidget {
   final DemoCalcStrategy value;
   final ValueChanged<DemoCalcStrategy> onChanged;
 
-  const StrategyPicker({super.key, required this.value, required this.onChanged});
+  const StrategyPicker(
+      {super.key, required this.value, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {

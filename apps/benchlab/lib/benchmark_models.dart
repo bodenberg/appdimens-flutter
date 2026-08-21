@@ -164,8 +164,10 @@ class BenchLabResult {
           '${composeApi.naiveModel.constant1dp.medianNs.toStringAsFixed(1)}')
       ..writeln()
       ..writeln('— Benchmark B · engine isolate (median ns/op) —')
-      ..writeln('AppDimens: ${coreEngine.appdimens.constant1dp.medianNs.toStringAsFixed(1)}')
-      ..writeln('Legacy:    ${coreEngine.legacyModel.constant1dp.medianNs.toStringAsFixed(1)}')
+      ..writeln(
+          'AppDimens: ${coreEngine.appdimens.constant1dp.medianNs.toStringAsFixed(1)}')
+      ..writeln(
+          'Legacy:    ${coreEngine.legacyModel.constant1dp.medianNs.toStringAsFixed(1)}')
       ..writeln()
       ..writeln('— Legacy T1/T2/T3 average (ns per 1 dp call) —')
       ..writeln('AppDimens: ${legacy.avgAppDimensNs.toStringAsFixed(1)} · '

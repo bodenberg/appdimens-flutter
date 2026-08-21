@@ -72,8 +72,7 @@ class _BenchlabScreenState extends State<BenchlabScreen> {
 
     setState(() => _phase = BenchPhase.composeApi);
     _composeApi = await _controller.runBenchmarkA((p, total) {
-      setState(() =>
-          _progress = BenchPhase.composeApi.progress * (p / total));
+      setState(() => _progress = BenchPhase.composeApi.progress * (p / total));
     });
     setState(() => _progress = BenchPhase.coreEngine.progress);
 
@@ -143,14 +142,14 @@ class _BenchlabScreenState extends State<BenchlabScreen> {
                                   color: Colors.cyanAccent)),
                           IconButton(
                             icon: const Icon(Icons.copy),
-                            onPressed: () => Clipboard.setData(
-                                ClipboardData(text: _report)),
+                            onPressed: () =>
+                                Clipboard.setData(ClipboardData(text: _report)),
                           ),
                         ],
                       ),
                       SelectableText(_report,
-                          style:
-                              TextStyle(fontSize: 11.ssp, fontFamily: 'monospace')),
+                          style: TextStyle(
+                              fontSize: 11.ssp, fontFamily: 'monospace')),
                     ],
                   ),
                 ),
@@ -209,7 +208,8 @@ class _BenchlabScreenState extends State<BenchlabScreen> {
               ),
             ),
             SizedBox(width: 8.sdp),
-            Expanded(child: Text(_phase.label, style: TextStyle(fontSize: 13.ssp))),
+            Expanded(
+                child: Text(_phase.label, style: TextStyle(fontSize: 13.ssp))),
           ]),
           SizedBox(height: 6.sdp),
           LinearProgressIndicator(value: _progress, minHeight: 5.sdp),
@@ -268,7 +268,8 @@ class _BenchlabScreenState extends State<BenchlabScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: TextStyle(fontSize: 13.ssp, fontWeight: FontWeight.bold)),
+          Text(title,
+              style: TextStyle(fontSize: 13.ssp, fontWeight: FontWeight.bold)),
           SizedBox(height: 4.sdp),
           _statCells(t.constant1dp),
         ],
@@ -305,12 +306,16 @@ class _BenchlabScreenState extends State<BenchlabScreen> {
           children: [
             sectionTitle('Benchmark A — UI probe'),
             _libBlock('AppDimens fast lane', _composeApi!.appdimens),
-            _libBlock('Concorrente 1 (modelo SDPS legado)',
-                _composeApi!.legacyModel),
+            _libBlock(
+                'Concorrente 1 (modelo SDPS legado)', _composeApi!.legacyModel),
             _libBlock('Lib #2 (recomputo ingênuo)', _composeApi!.naiveModel),
-            _ratioLine('o modelo legado', _composeApi!.appdimens.constant1dp.medianNs,
+            _ratioLine(
+                'o modelo legado',
+                _composeApi!.appdimens.constant1dp.medianNs,
                 _composeApi!.legacyModel.constant1dp.medianNs),
-            _ratioLine('o recomputo ingênuo', _composeApi!.appdimens.constant1dp.medianNs,
+            _ratioLine(
+                'o recomputo ingênuo',
+                _composeApi!.appdimens.constant1dp.medianNs,
                 _composeApi!.naiveModel.constant1dp.medianNs),
           ],
         ),
@@ -330,7 +335,9 @@ class _BenchlabScreenState extends State<BenchlabScreen> {
             sectionTitle('Benchmark B — engine (isolate)'),
             _libBlock('AppDimens', _coreEngine!.appdimens),
             _libBlock('Concorrente 1 (legado)', _coreEngine!.legacyModel),
-            _ratioLine('o modelo legado (off-main)', _coreEngine!.appdimens.constant1dp.medianNs,
+            _ratioLine(
+                'o modelo legado (off-main)',
+                _coreEngine!.appdimens.constant1dp.medianNs,
                 _coreEngine!.legacyModel.constant1dp.medianNs),
           ],
         ),
@@ -342,7 +349,8 @@ class _BenchlabScreenState extends State<BenchlabScreen> {
     final r = _resolution!;
     Widget row(String lib, double a, double b, double c) => Padding(
           padding: EdgeInsets.symmetric(vertical: 2.sdp),
-          child: Text('$lib: ${a.toStringAsFixed(3)} / '
+          child: Text(
+              '$lib: ${a.toStringAsFixed(3)} / '
               '${b.toStringAsFixed(3)} / ${c.toStringAsFixed(3)} px',
               style: TextStyle(fontSize: 12.ssp, fontFamily: 'monospace')),
         );
@@ -358,7 +366,8 @@ class _BenchlabScreenState extends State<BenchlabScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 sectionTitle('Resolução — 1 / 10 / 100 dp'),
-                row('AppDimens', r.dp1AppDimens, r.dp10AppDimens, r.dp100AppDimens),
+                row('AppDimens', r.dp1AppDimens, r.dp10AppDimens,
+                    r.dp100AppDimens),
                 row('Legado', r.dp1Legacy, r.dp10Legacy, r.dp100Legacy),
                 row('Ingênuo', r.dp1Naive, r.dp10Naive, r.dp100Naive),
               ],

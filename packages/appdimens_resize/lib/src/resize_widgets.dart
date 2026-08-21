@@ -35,7 +35,8 @@ class AutoResizeSquare extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       final scope = context.appDimensScopeSnapshot();
-      final pad = padding?.resolve(Directionality.of(context)) ?? EdgeInsets.zero;
+      final pad =
+          padding?.resolve(Directionality.of(context)) ?? EdgeInsets.zero;
       final inner = DimenResize.innerMaxDimensionsPx(
         boxWidthPx: constraints.maxWidth * scope.metrics.density,
         boxHeightPx: constraints.maxHeight * scope.metrics.density,
@@ -45,8 +46,8 @@ class AutoResizeSquare extends StatelessWidget {
         paddingBottomPx: pad.bottom * scope.metrics.density,
       );
       final range = DimenResize.rangePx(scope, min, max, step: step);
-      var side =
-          DimenResize.fittingInnerSquareSidePx(range, inner.width, inner.height);
+      var side = DimenResize.fittingInnerSquareSidePx(
+          range, inner.width, inner.height);
       if (side <= 0) side = range.lowPx;
       return Padding(
         padding: padding ?? EdgeInsets.zero,
@@ -90,7 +91,8 @@ class AutoResizeText extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       final scope = context.appDimensScopeSnapshot();
       final density = scope.metrics.density;
-      final fontScale = scope.metrics.fontScale > 0 ? scope.metrics.fontScale : 1.0;
+      final fontScale =
+          scope.metrics.fontScale > 0 ? scope.metrics.fontScale : 1.0;
       final steps = ResizeMath.buildResizeStepsPx(
         minSp.toDouble() * density,
         maxSp.toDouble() * density,
@@ -100,7 +102,8 @@ class AutoResizeText extends StatelessWidget {
         textDirection: TextDirection.ltr,
         maxLines: maxLines,
       );
-      double chosenPx = steps.isEmpty ? minSp.toDouble() * density : steps.first;
+      double chosenPx =
+          steps.isEmpty ? minSp.toDouble() * density : steps.first;
       for (final candidate in steps) {
         final sp = candidate / density;
         measurer.text = TextSpan(
@@ -108,8 +111,7 @@ class AutoResizeText extends StatelessWidget {
           style: (style ?? const TextStyle()).copyWith(fontSize: sp),
         );
         measurer.layout(maxWidth: constraints.maxWidth);
-        final fitsHeight =
-            maxLines == null || !measurer.didExceedMaxLines;
+        final fitsHeight = maxLines == null || !measurer.didExceedMaxLines;
         if (measurer.width <= constraints.maxWidth + 0.5 &&
             measurer.height <= constraints.maxHeight + 0.5 &&
             fitsHeight) {
@@ -131,7 +133,8 @@ class AutoResizeText extends StatelessWidget {
 }
 
 extension on BuildContext {
-  _ScopeSnapshot appDimensScopeSnapshot() => _ScopeSnapshot(AppDimensScope.metricsOrDefault);
+  _ScopeSnapshot appDimensScopeSnapshot() =>
+      _ScopeSnapshot(AppDimensScope.metricsOrDefault);
 }
 
 class _ScopeSnapshot implements AppDimensContextLike {

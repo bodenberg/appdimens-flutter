@@ -25,21 +25,33 @@ extension AppDimensFitDp on num {
   double get ftsdpia => _v(DpQualifier.smallWidth, ar: true, mw: true);
 
   double get ftsdpPh => _v(DpQualifier.smallWidth, inv: Inverter.swToPh);
-  double get ftsdpPha => _v(DpQualifier.smallWidth, inv: Inverter.swToPh, ar: true);
-  double get ftsdpPhi => _v(DpQualifier.smallWidth, inv: Inverter.swToPh, mw: true);
-  double get ftsdpPhia => _v(DpQualifier.smallWidth, inv: Inverter.swToPh, ar: true, mw: true);
+  double get ftsdpPha =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToPh, ar: true);
+  double get ftsdpPhi =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToPh, mw: true);
+  double get ftsdpPhia =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToPh, ar: true, mw: true);
   double get ftsdpLh => _v(DpQualifier.smallWidth, inv: Inverter.swToLh);
-  double get ftsdpLha => _v(DpQualifier.smallWidth, inv: Inverter.swToLh, ar: true);
-  double get ftsdpLhi => _v(DpQualifier.smallWidth, inv: Inverter.swToLh, mw: true);
-  double get ftsdpLhia => _v(DpQualifier.smallWidth, inv: Inverter.swToLh, ar: true, mw: true);
+  double get ftsdpLha =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToLh, ar: true);
+  double get ftsdpLhi =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToLh, mw: true);
+  double get ftsdpLhia =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToLh, ar: true, mw: true);
   double get ftsdpPw => _v(DpQualifier.smallWidth, inv: Inverter.swToPw);
-  double get ftsdpPwa => _v(DpQualifier.smallWidth, inv: Inverter.swToPw, ar: true);
-  double get ftsdpPwi => _v(DpQualifier.smallWidth, inv: Inverter.swToPw, mw: true);
-  double get ftsdpPwia => _v(DpQualifier.smallWidth, inv: Inverter.swToPw, ar: true, mw: true);
+  double get ftsdpPwa =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToPw, ar: true);
+  double get ftsdpPwi =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToPw, mw: true);
+  double get ftsdpPwia =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToPw, ar: true, mw: true);
   double get ftsdpLw => _v(DpQualifier.smallWidth, inv: Inverter.swToLw);
-  double get ftsdpLwa => _v(DpQualifier.smallWidth, inv: Inverter.swToLw, ar: true);
-  double get ftsdpLwi => _v(DpQualifier.smallWidth, inv: Inverter.swToLw, mw: true);
-  double get ftsdpLwia => _v(DpQualifier.smallWidth, inv: Inverter.swToLw, ar: true, mw: true);
+  double get ftsdpLwa =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToLw, ar: true);
+  double get ftsdpLwi =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToLw, mw: true);
+  double get ftsdpLwia =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToLw, ar: true, mw: true);
 
   double get ftsdpPx => ftsdp * AppDimensScope.metricsOrDefault.density;
 
@@ -51,11 +63,13 @@ extension AppDimensFitDp on num {
   double get fthdpLw => _v(DpQualifier.height, inv: Inverter.phToLw);
   double get fthdpLwa => _v(DpQualifier.height, inv: Inverter.phToLw, ar: true);
   double get fthdpLwi => _v(DpQualifier.height, inv: Inverter.phToLw, mw: true);
-  double get fthdpLwia => _v(DpQualifier.height, inv: Inverter.phToLw, ar: true, mw: true);
+  double get fthdpLwia =>
+      _v(DpQualifier.height, inv: Inverter.phToLw, ar: true, mw: true);
   double get fthdpPw => _v(DpQualifier.height, inv: Inverter.lhToPw);
   double get fthdpPwa => _v(DpQualifier.height, inv: Inverter.lhToPw, ar: true);
   double get fthdpPwi => _v(DpQualifier.height, inv: Inverter.lhToPw, mw: true);
-  double get fthdpPwia => _v(DpQualifier.height, inv: Inverter.lhToPw, ar: true, mw: true);
+  double get fthdpPwia =>
+      _v(DpQualifier.height, inv: Inverter.lhToPw, ar: true, mw: true);
 
   double get fthdpPx => fthdp * AppDimensScope.metricsOrDefault.density;
 
@@ -67,11 +81,13 @@ extension AppDimensFitDp on num {
   double get ftwdpLh => _v(DpQualifier.width, inv: Inverter.pwToLh);
   double get ftwdpLha => _v(DpQualifier.width, inv: Inverter.pwToLh, ar: true);
   double get ftwdpLhi => _v(DpQualifier.width, inv: Inverter.pwToLh, mw: true);
-  double get ftwdpLhia => _v(DpQualifier.width, inv: Inverter.pwToLh, ar: true, mw: true);
+  double get ftwdpLhia =>
+      _v(DpQualifier.width, inv: Inverter.pwToLh, ar: true, mw: true);
   double get ftwdpPh => _v(DpQualifier.width, inv: Inverter.lwToPh);
   double get ftwdpPha => _v(DpQualifier.width, inv: Inverter.lwToPh, ar: true);
   double get ftwdpPhi => _v(DpQualifier.width, inv: Inverter.lwToPh, mw: true);
-  double get ftwdpPhia => _v(DpQualifier.width, inv: Inverter.lwToPh, ar: true, mw: true);
+  double get ftwdpPhia =>
+      _v(DpQualifier.width, inv: Inverter.lwToPh, ar: true, mw: true);
 
   double get ftwdpPx => ftwdp * AppDimensScope.metricsOrDefault.density;
 
@@ -99,7 +115,8 @@ extension AppDimensFitDp on num {
     return fs > 0 ? ftwdp / fs : ftwdp;
   }
 
-  double get ftsspPx => ftssp * AppDimensScope.metricsOrDefault.density * _safeFs();
+  double get ftsspPx =>
+      ftssp * AppDimensScope.metricsOrDefault.density * _safeFs();
 
   double _safeFs() {
     final fs = AppDimensScope.metricsOrDefault.fontScale;

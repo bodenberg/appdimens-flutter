@@ -56,8 +56,7 @@ abstract final class DimenResize {
   }
 
   /// Largest step fitting inside the inner width.
-  static double fittingInnerWidthPx(
-          ResizeRangePx range, double innerWidthPx) =>
+  static double fittingInnerWidthPx(ResizeRangePx range, double innerWidthPx) =>
       range.resolveFitting((v) => v <= innerWidthPx);
 
   /// Largest step fitting inside the inner height.
@@ -67,9 +66,8 @@ abstract final class DimenResize {
 
   /// Largest step fitting as a square side of the inner box.
   static double fittingInnerSquareSidePx(
-          ResizeRangePx range, double innerWidthPx, double innerHeightPx) {
-    final limit =
-        innerWidthPx < innerHeightPx ? innerWidthPx : innerHeightPx;
+      ResizeRangePx range, double innerWidthPx, double innerHeightPx) {
+    final limit = innerWidthPx < innerHeightPx ? innerWidthPx : innerHeightPx;
     return range.resolveFitting((v) => v <= limit);
   }
 

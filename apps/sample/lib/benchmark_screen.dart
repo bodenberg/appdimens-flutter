@@ -76,8 +76,8 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
     }
     swatch.stop();
     assert(sink != 0);
-    setState(() => _calcResult = _perOp(swatch.elapsedMicroseconds * 1000,
-        _calcCalls * 4));
+    setState(() => _calcResult =
+        _perOp(swatch.elapsedMicroseconds * 1000, _calcCalls * 4));
   }
 
   Future<void> _runMicro() async {
@@ -143,8 +143,7 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
     final swB = Stopwatch()..start();
     var sinkB = 0.0;
     for (var i = 0; i < _microOpsPerBlock; i++) {
-      final minSide =
-          size.width < size.height ? size.width : size.height;
+      final minSide = size.width < size.height ? size.width : size.height;
       sinkB += 16 * (minSide / 300);
     }
     swB.stop();
@@ -201,14 +200,15 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
               _controls(),
               SizedBox(height: 12.sdp),
               _status(),
-              _section('Calculation Test ($_calcCalls calls)',
+              _section(
+                  'Calculation Test ($_calcCalls calls)',
                   _calcResult == null
                       ? null
                       : Text(_calcResult!.toString(),
                           style: TextStyle(fontSize: 13.ssp))),
               _section('Microbenchmark (per family)', _microTable()),
-              _section('Comparison — fast lane vs naive recompute',
-                  _compareTable()),
+              _section(
+                  'Comparison — fast lane vs naive recompute', _compareTable()),
               _section('Macro scroll ($_macroItemCount items)', _macroInfo()),
             ],
           ),
@@ -227,13 +227,14 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
           runSpacing: 8.sdp,
           children: [
             FilledButton(onPressed: _runAll, child: const Text('Full Run')),
-            OutlinedButton(onPressed: _runCalculation, child: const Text('Calc')),
+            OutlinedButton(
+                onPressed: _runCalculation, child: const Text('Calc')),
             OutlinedButton(onPressed: _runMicro, child: const Text('Micro')),
             OutlinedButton(
-                onPressed:
-                    _macroRunning ? null : () => _runMacro(),
+                onPressed: _macroRunning ? null : () => _runMacro(),
                 child: const Text('Macro')),
-            OutlinedButton(onPressed: _runComparison, child: const Text('Compare')),
+            OutlinedButton(
+                onPressed: _runComparison, child: const Text('Compare')),
           ],
         ),
       ),
@@ -257,7 +258,8 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
             height: 10.sdp,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: _phase == BenchPhase.idle ? Colors.grey : Colors.cyanAccent,
+              color:
+                  _phase == BenchPhase.idle ? Colors.grey : Colors.cyanAccent,
             ),
           ),
           SizedBox(width: 8.sdp),
@@ -310,8 +312,8 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
               children: [
                 Text(e.key, style: TextStyle(fontSize: 13.ssp)),
                 Text(_fmt(e.value.avgNs),
-                    style: TextStyle(
-                        fontSize: 13.ssp, fontFamily: 'monospace')),
+                    style:
+                        TextStyle(fontSize: 13.ssp, fontFamily: 'monospace')),
               ],
             ),
           ),
@@ -353,7 +355,8 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(label, style: TextStyle(fontSize: 13.ssp)),
-            Text(value, style: TextStyle(fontSize: 13.ssp, fontFamily: 'monospace')),
+            Text(value,
+                style: TextStyle(fontSize: 13.ssp, fontFamily: 'monospace')),
           ],
         ),
       );
@@ -362,7 +365,8 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
     return Text(
       _macroRunning
           ? 'Scrolled $_macroItems / $_macroItemCount items…'
-          : _phase == BenchPhase.done || _macroItems == _macroItemCount && _macroItems > 0
+          : _phase == BenchPhase.done ||
+                  _macroItems == _macroItemCount && _macroItems > 0
               ? 'Scroll pass complete ($_macroItemCount items resolved through sdp).'
               : 'Press Macro to run a $_macroItemCount-item scroll where every item '
                   'resolves 6 dimensions through the fast lane.',
