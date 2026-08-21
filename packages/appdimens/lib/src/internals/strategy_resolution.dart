@@ -13,8 +13,7 @@ import '../common/ui_mode_type.dart';
 import '../core/dimen_cache.dart';
 import '../core/dimen_calculation_plumbing.dart';
 import '../core/dimen_metrics.dart';
-import '../scaled/dimen_scaled_builder.dart'
-    show DpQualifierEntry, ScaledEntry;
+import '../scaled/dimen_scaled_builder.dart' show DpQualifierEntry, ScaledEntry;
 
 /// Pure strategy formula over a resolved axis: receives the base value, the
 /// coherent snapshot, the effective (post-inverter) qualifier, the aspect
@@ -219,7 +218,8 @@ abstract final class StrategyBranching {
     required double Function(num value) resolveWhenMatched,
     required double Function(num value) resolveDefault,
   }) =>
-      matchesUiMode(uiModeType) && matchesQualifier(qualifierType, qualifierValue)
+      matchesUiMode(uiModeType) &&
+              matchesQualifier(qualifierType, qualifierValue)
           ? resolveWhenMatched(alternate)
           : resolveDefault(base);
 }
@@ -266,8 +266,9 @@ class StrategyChain {
         entries: entries ?? this.entries,
         ignoreMultiWindows: ignoreMultiWindows ?? this.ignoreMultiWindows,
         applyAspectRatio: applyAspectRatio ?? this.applyAspectRatio,
-        customSensitivityK:
-            clearCustomK ? null : (customSensitivityK ?? this.customSensitivityK),
+        customSensitivityK: clearCustomK
+            ? null
+            : (customSensitivityK ?? this.customSensitivityK),
       );
 
   StrategyChain withAspectRatio({bool apply = true, double? sensitivityK}) =>
@@ -287,7 +288,8 @@ class StrategyChain {
   }) =>
       _add(ScaledEntry(
         uiModeType: uiModeType,
-        dpQualifierEntry: DpQualifierEntry(qualifierType, qualifierValue.toDouble()),
+        dpQualifierEntry:
+            DpQualifierEntry(qualifierType, qualifierValue.toDouble()),
         orientation: orientation,
         customValue: customValue.toDouble(),
         finalQualifierResolver: finalQualifierResolver,
@@ -320,7 +322,8 @@ class StrategyChain {
     Inverter inverter = Inverter.standard,
   }) =>
       _add(ScaledEntry(
-        dpQualifierEntry: DpQualifierEntry(qualifierType, qualifierValue.toDouble()),
+        dpQualifierEntry:
+            DpQualifierEntry(qualifierType, qualifierValue.toDouble()),
         orientation: orientation,
         customValue: customValue.toDouble(),
         finalQualifierResolver: finalQualifierResolver,
@@ -343,8 +346,7 @@ class StrategyChain {
       ));
 
   StrategyChain _add(ScaledEntry entry) {
-    final next = [...entries, entry]
-      ..sort((a, b) {
+    final next = [...entries, entry]..sort((a, b) {
         final p = a.priority.compareTo(b.priority);
         if (p != 0) return p;
         return (b.dpQualifierEntry?.value ?? 0)

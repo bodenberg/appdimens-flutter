@@ -13,6 +13,7 @@ import 'dart:math' as math;
 import 'package:appdimens/appdimens.dart';
 
 import 'factors.dart';
+
 /// Power strategy kernels (family port parity).
 abstract final class DimenPower {
   /// Core power kernel used by every extension in this package.
@@ -23,9 +24,14 @@ abstract final class DimenPower {
     bool applyAspectRatio,
     double? customSensitivityK,
   ) {
+    // Default sw path reuses the snapshot-memoized factor (KMP parity).
+    if (effectiveQualifier == DpQualifier.smallWidth &&
+        !applyAspectRatio &&
+        customSensitivityK == null) {
+      return base * metrics.powerScale;
+    }
     final d = StrategyResolution.axisDp(metrics, effectiveQualifier);
-    final p = math.pow(
-        d * DimenCache.invBaseRatio, PowerFactors.exponent);
+    final p = math.pow(d * DimenCache.invBaseRatio, PowerFactors.exponent);
     return StrategyResolution.applyAr(
         base * p.toDouble(), metrics, applyAspectRatio, customSensitivityK);
   }

@@ -102,7 +102,8 @@ class SnapshotCache {
   SnapshotCache(this.metrics);
 
   void insert(CacheKey key, double value) {
-    if (entries.length >= DimenCache.snapshotCacheSize && !entries.containsKey(key)) {
+    if (entries.length >= DimenCache.snapshotCacheSize &&
+        !entries.containsKey(key)) {
       final oldest = entries.keys.first;
       entries.remove(oldest);
     }
@@ -167,7 +168,8 @@ abstract final class AppDimensScope {
   }
 
   /// The effective snapshot: explicit slot, else the engine fallback.
-  static DimenMetrics get metricsOrDefault => _slot ?? DimenCache.fallbackMetrics;
+  static DimenMetrics get metricsOrDefault =>
+      _slot ?? DimenCache.fallbackMetrics;
 }
 
 /// EN: Snapshot-partitioned memoization shared by code APIs, widgets and every
@@ -232,8 +234,7 @@ abstract final class DimenCache {
   }
 
   /// The snapshot currently driving resolutions (scope → published → fallback).
-  static DimenMetrics get currentMetrics =>
-      AppDimensScope.metrics ?? _fallback;
+  static DimenMetrics get currentMetrics => AppDimensScope.metrics ?? _fallback;
 
   /// Coherent snapshot for an explicit context (never retained).
   static DimenMetrics metricsFor(AppDimensContextLike context) =>

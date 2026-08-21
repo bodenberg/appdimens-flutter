@@ -13,6 +13,7 @@ import 'dart:math' as math;
 import 'package:appdimens/appdimens.dart';
 
 import 'factors.dart';
+
 /// Logarithmic strategy kernels (family port parity).
 abstract final class DimenLogarithmic {
   /// Core logarithmic kernel used by every extension in this package.
@@ -23,6 +24,12 @@ abstract final class DimenLogarithmic {
     bool applyAspectRatio,
     double? customSensitivityK,
   ) {
+    // Default sw path reuses the snapshot-memoized factor (KMP parity).
+    if (effectiveQualifier == DpQualifier.smallWidth &&
+        !applyAspectRatio &&
+        customSensitivityK == null) {
+      return base * metrics.logarithmicScale;
+    }
     final d = StrategyResolution.axisDp(metrics, effectiveQualifier);
     double scale;
     if (d > DesignScaleConstants.baseWidthDp) {

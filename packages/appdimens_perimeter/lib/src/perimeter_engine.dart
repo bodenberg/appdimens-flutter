@@ -20,6 +20,9 @@ abstract final class DimenPerimeter {
     bool applyAspectRatio,
     double? customSensitivityK,
   ) {
+    if (!applyAspectRatio && customSensitivityK == null) {
+      return base * metrics.perimeterScale;
+    }
     return StrategyResolution.applyAr(base * metrics.perimeterScale, metrics,
         applyAspectRatio, customSensitivityK);
   }

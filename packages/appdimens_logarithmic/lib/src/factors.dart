@@ -8,4 +8,3 @@
 abstract final class LogarithmicCurve {
   static const double slope = 0.4;
 }
-

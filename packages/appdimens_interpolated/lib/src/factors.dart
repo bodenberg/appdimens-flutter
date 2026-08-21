@@ -10,4 +10,3 @@ abstract final class Interpolation {
   /// PT 0.0 = base crua · 1.0 = totalmente escalada.
   static const double defaultBlend = 0.5;
 }
-

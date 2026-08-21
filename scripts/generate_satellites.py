@@ -25,9 +25,15 @@ STRATEGIES = {
         "formula_doc": "`base × (d/300)^0.75` — perceptual sub-linear growth.",
         "calc": "CalcType.power",
         "qualifier_driven": True,
-        "body": """    final d = StrategyResolution.axisDp(metrics, effectiveQualifier);
+        "body": """    // Default sw path reuses the snapshot-memoized factor (KMP parity).
+    if (effectiveQualifier == DpQualifier.smallWidth &&
+        !applyAspectRatio &&
+        customSensitivityK == null) {
+      return base * metrics.powerScale;
+    }
+    final d = StrategyResolution.axisDp(metrics, effectiveQualifier);
     final p =
-        math.pow(d / DesignScaleConstants.baseWidthDp, PowerFactors.exponent);
+        math.pow(d * DimenCache.invBaseRatio, PowerFactors.exponent);
     return StrategyResolution.applyAr(
         base * p.toDouble(), metrics, applyAspectRatio, customSensitivityK);""",
         "extra": """/// Perceptual exponent of the power curve (0.75 — Stevens' exponents).
@@ -105,7 +111,10 @@ abstract final class AutoTransition {
         "formula_doc": "`base × √(min² + max²) / 611.6305` (qualifier-independent).",
         "calc": "CalcType.diagonal",
         "qualifier_driven": False,
-        "body": """    return StrategyResolution.applyAr(base * metrics.diagonalScale, metrics,
+        "body": """    if (!applyAspectRatio && customSensitivityK == null) {
+      return base * metrics.diagonalScale;
+    }
+    return StrategyResolution.applyAr(base * metrics.diagonalScale, metrics,
         applyAspectRatio, customSensitivityK);""",
         "extra": "",
     },
@@ -142,7 +151,13 @@ abstract final class AutoTransition {
         "formula_doc": "`out = b + (b·d/300 − b) × 0.5`.",
         "calc": "CalcType.interpolated",
         "qualifier_driven": True,
-        "body": """    final d = StrategyResolution.axisDp(metrics, effectiveQualifier);
+        "body": """    // Default sw path reuses the snapshot-memoized factor (KMP parity).
+    if (effectiveQualifier == DpQualifier.smallWidth &&
+        !applyAspectRatio &&
+        customSensitivityK == null) {
+      return base * metrics.interpolatedScale;
+    }
+    final d = StrategyResolution.axisDp(metrics, effectiveQualifier);
     final linear = base * (d * DimenCache.invBaseRatio);
     return StrategyResolution.applyAr(
         base + (linear - base) * Interpolation.defaultBlend,
@@ -165,7 +180,13 @@ abstract final class Interpolation {
         "formula_doc": "`d > 300 : 1 + 0.4·ln(d/300)` · `d ≤ 300 : 1 − 0.4·ln(300/d)`.",
         "calc": "CalcType.logarithmic",
         "qualifier_driven": True,
-        "body": """    final d = StrategyResolution.axisDp(metrics, effectiveQualifier);
+        "body": """    // Default sw path reuses the snapshot-memoized factor (KMP parity).
+    if (effectiveQualifier == DpQualifier.smallWidth &&
+        !applyAspectRatio &&
+        customSensitivityK == null) {
+      return base * metrics.logarithmicScale;
+    }
+    final d = StrategyResolution.axisDp(metrics, effectiveQualifier);
     double scale;
     if (d > DesignScaleConstants.baseWidthDp) {
       scale =
@@ -193,7 +214,10 @@ abstract final class LogarithmicCurve {
         "formula_doc": "`base × (minSide + maxSide) / 833` (qualifier-independent).",
         "calc": "CalcType.perimeter",
         "qualifier_driven": False,
-        "body": """    return StrategyResolution.applyAr(base * metrics.perimeterScale, metrics,
+        "body": """    if (!applyAspectRatio && customSensitivityK == null) {
+      return base * metrics.perimeterScale;
+    }
+    return StrategyResolution.applyAr(base * metrics.perimeterScale, metrics,
         applyAspectRatio, customSensitivityK);""",
         "extra": "",
     },

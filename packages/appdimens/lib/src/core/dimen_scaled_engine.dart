@@ -48,8 +48,8 @@ abstract final class DimenScaledEngine {
     if (DimenCalculationPlumbing.isMultiWindowConstrained(
       configuration,
       ignoreMultiWindows,
-      knownInMultiWindow: knownInMultiWindow ??
-          (metrics?.isInMultiWindowMode ?? false),
+      knownInMultiWindow:
+          knownInMultiWindow ?? (metrics?.isInMultiWindowMode ?? false),
     )) {
       return baseValue;
     }
@@ -57,14 +57,16 @@ abstract final class DimenScaledEngine {
         qualifier == DpQualifier.smallWidth && inverter == Inverter.standard;
     if (isDefaultSw && customSensitivityK == null) {
       final m = metrics ?? _matchingMetrics(configuration);
-      if (m != null) return baseValue * m.scaledMultiplier(applyAspectRatio, null);
+      if (m != null)
+        return baseValue * m.scaledMultiplier(applyAspectRatio, null);
     }
     final screenDimension =
         DimenCalculationPlumbing.readScreenDp(configuration, actualQualifier);
     if (applyAspectRatio) {
       final diff = screenDimension - DesignScaleConstants.baseWidthDp;
       final k = customSensitivityK ?? DimenCache.sensitivityDefault;
-      final logAr = DimenCalculationPlumbing.fastLn(_normalizedAr(configuration));
+      final logAr =
+          DimenCalculationPlumbing.fastLn(_normalizedAr(configuration));
       return baseValue *
           (1.0 + diff * (DimenCache.adjustmentScale + k * logAr));
     }
@@ -75,7 +77,6 @@ abstract final class DimenScaledEngine {
     final m = AppDimensScope.metricsOrDefault;
     return m.configuration == configuration ? m : null;
   }
-
 
   static double _normalizedAr(ScreenConfiguration configuration) {
     final w = configuration.screenWidthDp.toDouble();
@@ -106,7 +107,8 @@ abstract final class DimenScaledEngine {
         !ignoreMultiWindows &&
         customSensitivityK == null &&
         (qualifier == DpQualifier.smallWidth || !applyAspectRatio)) {
-      return base * scope.dimenMetrics.fastScaledMultiplier(qualifier, applyAspectRatio);
+      return base *
+          scope.dimenMetrics.fastScaledMultiplier(qualifier, applyAspectRatio);
     }
 
     final key = CacheKey(

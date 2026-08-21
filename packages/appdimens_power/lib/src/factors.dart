@@ -10,4 +10,3 @@ abstract final class PowerFactors {
   /// PT Expoente sublinear aplicado ao eixo normalizado.
   static const double exponent = 0.75;
 }
-

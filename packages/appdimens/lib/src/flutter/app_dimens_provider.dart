@@ -73,8 +73,7 @@ ViewAppDimensContext buildAppDimensContext(
     );
   }
   if (view != null) return ViewAppDimensContext.fromView(view);
-  return ViewAppDimensContext(
-      configuration: ScreenConfiguration.baseline);
+  return ViewAppDimensContext(configuration: ScreenConfiguration.baseline);
 }
 
 /// EN: Wrap your app once:
@@ -161,15 +160,15 @@ void publishAppDimensContext(
 ) {
   final metrics = DimenMetrics.from(
     context.configuration,
-    isInMultiWindowMode: config.forcedMultiWindow ?? context.isInMultiWindowMode,
+    isInMultiWindowMode:
+        config.forcedMultiWindow ?? context.isInMultiWindowMode,
   );
   AppDimensScope.publish(metrics);
   AppDimensScope.publishContext(context);
-  AppDimensScope.publishUiModeType(
-      config.forcedUiModeType ??
-          (context.uiModeType == UiModeType.undefined
-              ? UiModeType.normal
-              : context.uiModeType));
+  AppDimensScope.publishUiModeType(config.forcedUiModeType ??
+      (context.uiModeType == UiModeType.undefined
+          ? UiModeType.normal
+          : context.uiModeType));
 }
 
 /// EN: In-tree publisher for `MaterialApp.builder` — depends on
@@ -227,7 +226,8 @@ class AppDimensProvider extends InheritedWidget {
     final ctx = buildAppDimensContext(media, view);
     final metrics = DimenMetrics.from(
       ctx.configuration,
-      isInMultiWindowMode: widget?.config.forcedMultiWindow ?? ctx.isInMultiWindowMode,
+      isInMultiWindowMode:
+          widget?.config.forcedMultiWindow ?? ctx.isInMultiWindowMode,
     );
     return AppDimensSnapshot(
       metrics: metrics,

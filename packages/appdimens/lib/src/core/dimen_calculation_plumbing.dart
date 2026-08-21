@@ -126,6 +126,5 @@ abstract final class DimenCalculationPlumbing {
   }
 
   /// Guarded `ln`: exact logarithm when finite and positive, `0.0` otherwise.
-  static double fastLn(double v) =>
-      (v.isFinite && v > 0) ? math.log(v) : 0.0;
+  static double fastLn(double v) => (v.isFinite && v > 0) ? math.log(v) : 0.0;
 }

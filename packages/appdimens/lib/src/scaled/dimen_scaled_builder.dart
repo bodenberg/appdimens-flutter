@@ -86,8 +86,9 @@ class DimenScaled {
         entries: entries ?? this.entries,
         ignoreMultiWindows: ignoreMultiWindows ?? this.ignoreMultiWindows,
         applyAspectRatio: applyAspectRatio ?? this.applyAspectRatio,
-        customSensitivityK:
-            clearCustomK ? null : (customSensitivityK ?? this.customSensitivityK),
+        customSensitivityK: clearCustomK
+            ? null
+            : (customSensitivityK ?? this.customSensitivityK),
       );
 
   /// Enables the aspect-ratio aware curve.
@@ -112,7 +113,8 @@ class DimenScaled {
   }) =>
       _add(ScaledEntry(
         uiModeType: uiModeType,
-        dpQualifierEntry: DpQualifierEntry(qualifierType, qualifierValue.toDouble()),
+        dpQualifierEntry:
+            DpQualifierEntry(qualifierType, qualifierValue.toDouble()),
         orientation: orientation,
         customValue: customValue.toDouble(),
         finalQualifierResolver: finalQualifierResolver,
@@ -147,7 +149,8 @@ class DimenScaled {
     Inverter inverter = Inverter.standard,
   }) =>
       _add(ScaledEntry(
-        dpQualifierEntry: DpQualifierEntry(qualifierType, qualifierValue.toDouble()),
+        dpQualifierEntry:
+            DpQualifierEntry(qualifierType, qualifierValue.toDouble()),
         orientation: orientation,
         customValue: customValue.toDouble(),
         finalQualifierResolver: finalQualifierResolver,
@@ -171,11 +174,11 @@ class DimenScaled {
       ));
 
   DimenScaled _add(ScaledEntry entry) {
-    final next = [...entries, entry]
-      ..sort((a, b) {
+    final next = [...entries, entry]..sort((a, b) {
         final p = a.priority.compareTo(b.priority);
         if (p != 0) return p;
-        return (b.dpQualifierEntry?.value ?? 0).compareTo(a.dpQualifierEntry?.value ?? 0);
+        return (b.dpQualifierEntry?.value ?? 0)
+            .compareTo(a.dpQualifierEntry?.value ?? 0);
       });
     return _copy(entries: next);
   }
@@ -277,8 +280,9 @@ class ScaledSp {
         entries: entries ?? this.entries,
         ignoreMultiWindows: ignoreMultiWindows ?? this.ignoreMultiWindows,
         applyAspectRatio: applyAspectRatio ?? this.applyAspectRatio,
-        customSensitivityK:
-            clearCustomK ? null : (customSensitivityK ?? this.customSensitivityK),
+        customSensitivityK: clearCustomK
+            ? null
+            : (customSensitivityK ?? this.customSensitivityK),
       );
 
   ScaledSp withAspectRatio({bool enable = true, double? sensitivityK}) =>
@@ -299,7 +303,8 @@ class ScaledSp {
   }) =>
       _add(ScaledEntry(
         uiModeType: uiModeType,
-        dpQualifierEntry: DpQualifierEntry(qualifierType, qualifierValue.toDouble()),
+        dpQualifierEntry:
+            DpQualifierEntry(qualifierType, qualifierValue.toDouble()),
         orientation: orientation,
         customValue: customValue.toDouble(),
         finalQualifierResolver: finalQualifierResolver,
@@ -336,7 +341,8 @@ class ScaledSp {
     bool fontScale = true,
   }) =>
       _add(ScaledEntry(
-        dpQualifierEntry: DpQualifierEntry(qualifierType, qualifierValue.toDouble()),
+        dpQualifierEntry:
+            DpQualifierEntry(qualifierType, qualifierValue.toDouble()),
         orientation: orientation,
         customValue: customValue.toDouble(),
         finalQualifierResolver: finalQualifierResolver,
@@ -362,11 +368,11 @@ class ScaledSp {
       ));
 
   ScaledSp _add(ScaledEntry entry) {
-    final next = [...entries, entry]
-      ..sort((a, b) {
+    final next = [...entries, entry]..sort((a, b) {
         final p = a.priority.compareTo(b.priority);
         if (p != 0) return p;
-        return (b.dpQualifierEntry?.value ?? 0).compareTo(a.dpQualifierEntry?.value ?? 0);
+        return (b.dpQualifierEntry?.value ?? 0)
+            .compareTo(a.dpQualifierEntry?.value ?? 0);
       });
     return _copy(entries: next);
   }

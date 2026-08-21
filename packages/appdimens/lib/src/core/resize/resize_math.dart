@@ -48,7 +48,9 @@ class ResizeFixedSp extends ResizeBound {
   @override
   double resolveToPx(
           {required configuration, required density, required fontScale}) =>
-      sp.clamp(0, double.infinity) * density * (fontScale > 0 ? fontScale : 1.0);
+      sp.clamp(0, double.infinity) *
+      density *
+      (fontScale > 0 ? fontScale : 1.0);
 }
 
 /// Percent-of-axis bound (`value` in 0…100).
@@ -104,8 +106,8 @@ abstract final class ResizeMath {
       hi = t;
     }
     if (stepPx <= 0) return [lo];
-    final capacity = (((hi - lo) / stepPx).truncate() + 2)
-        .clamp(1, maxResizeSteps);
+    final capacity =
+        (((hi - lo) / stepPx).truncate() + 2).clamp(1, maxResizeSteps);
     final out = List<double>.filled(capacity, 0, growable: true);
     var count = 0;
     final epsilon = stepPx * 1e-4;
@@ -166,7 +168,8 @@ class ResizeRangePx {
   late final List<double> steps =
       ResizeMath.buildResizeStepsPx(lowPx, highPx, stepPx);
 
-  ResizeRangePx({required double minPx, required double maxPx, double stepPx = 1})
+  ResizeRangePx(
+      {required double minPx, required double maxPx, double stepPx = 1})
       : lowPx = minPx,
         highPx = maxPx,
         stepPx = stepPx <= 0 ? 1 : stepPx;

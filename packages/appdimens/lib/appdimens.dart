@@ -10,11 +10,7 @@ library;
 export 'appdimens_core.dart';
 export 'src/flutter/app_dimens_provider.dart';
 export 'src/internals/strategy_resolution.dart'
-    show
-        StrategyFormula,
-        StrategyResolution,
-        StrategyBranching,
-        StrategyChain;
+    show StrategyFormula, StrategyResolution, StrategyBranching, StrategyChain;
 export 'src/scaled/dimen_sdp_extensions.dart';
 export 'src/scaled/dimen_sdp_facade.dart';
 export 'src/scaled/dimen_ssp_extensions.dart';

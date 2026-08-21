@@ -25,21 +25,33 @@ extension AppDimensLogarithmicDp on num {
   double get logsdpia => _v(DpQualifier.smallWidth, ar: true, mw: true);
 
   double get logsdpPh => _v(DpQualifier.smallWidth, inv: Inverter.swToPh);
-  double get logsdpPha => _v(DpQualifier.smallWidth, inv: Inverter.swToPh, ar: true);
-  double get logsdpPhi => _v(DpQualifier.smallWidth, inv: Inverter.swToPh, mw: true);
-  double get logsdpPhia => _v(DpQualifier.smallWidth, inv: Inverter.swToPh, ar: true, mw: true);
+  double get logsdpPha =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToPh, ar: true);
+  double get logsdpPhi =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToPh, mw: true);
+  double get logsdpPhia =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToPh, ar: true, mw: true);
   double get logsdpLh => _v(DpQualifier.smallWidth, inv: Inverter.swToLh);
-  double get logsdpLha => _v(DpQualifier.smallWidth, inv: Inverter.swToLh, ar: true);
-  double get logsdpLhi => _v(DpQualifier.smallWidth, inv: Inverter.swToLh, mw: true);
-  double get logsdpLhia => _v(DpQualifier.smallWidth, inv: Inverter.swToLh, ar: true, mw: true);
+  double get logsdpLha =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToLh, ar: true);
+  double get logsdpLhi =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToLh, mw: true);
+  double get logsdpLhia =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToLh, ar: true, mw: true);
   double get logsdpPw => _v(DpQualifier.smallWidth, inv: Inverter.swToPw);
-  double get logsdpPwa => _v(DpQualifier.smallWidth, inv: Inverter.swToPw, ar: true);
-  double get logsdpPwi => _v(DpQualifier.smallWidth, inv: Inverter.swToPw, mw: true);
-  double get logsdpPwia => _v(DpQualifier.smallWidth, inv: Inverter.swToPw, ar: true, mw: true);
+  double get logsdpPwa =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToPw, ar: true);
+  double get logsdpPwi =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToPw, mw: true);
+  double get logsdpPwia =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToPw, ar: true, mw: true);
   double get logsdpLw => _v(DpQualifier.smallWidth, inv: Inverter.swToLw);
-  double get logsdpLwa => _v(DpQualifier.smallWidth, inv: Inverter.swToLw, ar: true);
-  double get logsdpLwi => _v(DpQualifier.smallWidth, inv: Inverter.swToLw, mw: true);
-  double get logsdpLwia => _v(DpQualifier.smallWidth, inv: Inverter.swToLw, ar: true, mw: true);
+  double get logsdpLwa =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToLw, ar: true);
+  double get logsdpLwi =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToLw, mw: true);
+  double get logsdpLwia =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToLw, ar: true, mw: true);
 
   double get logsdpPx => logsdp * AppDimensScope.metricsOrDefault.density;
 
@@ -49,13 +61,19 @@ extension AppDimensLogarithmicDp on num {
   double get loghdpi => _v(DpQualifier.height, mw: true);
   double get loghdpia => _v(DpQualifier.height, ar: true, mw: true);
   double get loghdpLw => _v(DpQualifier.height, inv: Inverter.phToLw);
-  double get loghdpLwa => _v(DpQualifier.height, inv: Inverter.phToLw, ar: true);
-  double get loghdpLwi => _v(DpQualifier.height, inv: Inverter.phToLw, mw: true);
-  double get loghdpLwia => _v(DpQualifier.height, inv: Inverter.phToLw, ar: true, mw: true);
+  double get loghdpLwa =>
+      _v(DpQualifier.height, inv: Inverter.phToLw, ar: true);
+  double get loghdpLwi =>
+      _v(DpQualifier.height, inv: Inverter.phToLw, mw: true);
+  double get loghdpLwia =>
+      _v(DpQualifier.height, inv: Inverter.phToLw, ar: true, mw: true);
   double get loghdpPw => _v(DpQualifier.height, inv: Inverter.lhToPw);
-  double get loghdpPwa => _v(DpQualifier.height, inv: Inverter.lhToPw, ar: true);
-  double get loghdpPwi => _v(DpQualifier.height, inv: Inverter.lhToPw, mw: true);
-  double get loghdpPwia => _v(DpQualifier.height, inv: Inverter.lhToPw, ar: true, mw: true);
+  double get loghdpPwa =>
+      _v(DpQualifier.height, inv: Inverter.lhToPw, ar: true);
+  double get loghdpPwi =>
+      _v(DpQualifier.height, inv: Inverter.lhToPw, mw: true);
+  double get loghdpPwia =>
+      _v(DpQualifier.height, inv: Inverter.lhToPw, ar: true, mw: true);
 
   double get loghdpPx => loghdp * AppDimensScope.metricsOrDefault.density;
 
@@ -67,11 +85,13 @@ extension AppDimensLogarithmicDp on num {
   double get logwdpLh => _v(DpQualifier.width, inv: Inverter.pwToLh);
   double get logwdpLha => _v(DpQualifier.width, inv: Inverter.pwToLh, ar: true);
   double get logwdpLhi => _v(DpQualifier.width, inv: Inverter.pwToLh, mw: true);
-  double get logwdpLhia => _v(DpQualifier.width, inv: Inverter.pwToLh, ar: true, mw: true);
+  double get logwdpLhia =>
+      _v(DpQualifier.width, inv: Inverter.pwToLh, ar: true, mw: true);
   double get logwdpPh => _v(DpQualifier.width, inv: Inverter.lwToPh);
   double get logwdpPha => _v(DpQualifier.width, inv: Inverter.lwToPh, ar: true);
   double get logwdpPhi => _v(DpQualifier.width, inv: Inverter.lwToPh, mw: true);
-  double get logwdpPhia => _v(DpQualifier.width, inv: Inverter.lwToPh, ar: true, mw: true);
+  double get logwdpPhia =>
+      _v(DpQualifier.width, inv: Inverter.lwToPh, ar: true, mw: true);
 
   double get logwdpPx => logwdp * AppDimensScope.metricsOrDefault.density;
 
@@ -99,7 +119,8 @@ extension AppDimensLogarithmicDp on num {
     return fs > 0 ? logwdp / fs : logwdp;
   }
 
-  double get logsspPx => logssp * AppDimensScope.metricsOrDefault.density * _safeFs();
+  double get logsspPx =>
+      logssp * AppDimensScope.metricsOrDefault.density * _safeFs();
 
   double _safeFs() {
     final fs = AppDimensScope.metricsOrDefault.fontScale;

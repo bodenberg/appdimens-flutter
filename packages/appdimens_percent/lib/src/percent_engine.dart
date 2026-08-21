@@ -43,16 +43,16 @@ abstract final class DimenPercent {
   // ── Literal space family ───────────────────────────────────────────────
 
   /// `(percent / 100) × smallest width`.
-  static double spaceSw(double percent) => _literal(percent,
-      AppDimensScope.metricsOrDefault.smallestWidthDp);
+  static double spaceSw(double percent) =>
+      _literal(percent, AppDimensScope.metricsOrDefault.smallestWidthDp);
 
   /// `(percent / 100) × current width`.
-  static double spaceW(double percent) => _literal(percent,
-      AppDimensScope.metricsOrDefault.screenWidthDp.toDouble());
+  static double spaceW(double percent) => _literal(
+      percent, AppDimensScope.metricsOrDefault.screenWidthDp.toDouble());
 
   /// `(percent / 100) × current height`.
-  static double spaceH(double percent) => _literal(percent,
-      AppDimensScope.metricsOrDefault.screenHeightDp.toDouble());
+  static double spaceH(double percent) => _literal(
+      percent, AppDimensScope.metricsOrDefault.screenHeightDp.toDouble());
 
   /// `(percent / 100) × referenceDp` (custom reference).
   static double space(double percent, double referenceDp) =>

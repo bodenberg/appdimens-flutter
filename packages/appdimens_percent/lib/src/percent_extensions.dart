@@ -27,26 +27,34 @@ extension AppDimensPercentDp on num {
   double get psdpia => _v(DpQualifier.smallWidth, ar: true, mw: true);
 
   double get psdpPh => _v(DpQualifier.smallWidth, inv: Inverter.swToPh);
-  double get psdpPha => _v(DpQualifier.smallWidth, inv: Inverter.swToPh, ar: true);
-  double get psdpPhi => _v(DpQualifier.smallWidth, inv: Inverter.swToPh, mw: true);
+  double get psdpPha =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToPh, ar: true);
+  double get psdpPhi =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToPh, mw: true);
   double get psdpPhia =>
       _v(DpQualifier.smallWidth, inv: Inverter.swToPh, ar: true, mw: true);
 
   double get psdpLh => _v(DpQualifier.smallWidth, inv: Inverter.swToLh);
-  double get psdpLha => _v(DpQualifier.smallWidth, inv: Inverter.swToLh, ar: true);
-  double get psdpLhi => _v(DpQualifier.smallWidth, inv: Inverter.swToLh, mw: true);
+  double get psdpLha =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToLh, ar: true);
+  double get psdpLhi =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToLh, mw: true);
   double get psdpLhia =>
       _v(DpQualifier.smallWidth, inv: Inverter.swToLh, ar: true, mw: true);
 
   double get psdpPw => _v(DpQualifier.smallWidth, inv: Inverter.swToPw);
-  double get psdpPwa => _v(DpQualifier.smallWidth, inv: Inverter.swToPw, ar: true);
-  double get psdpPwi => _v(DpQualifier.smallWidth, inv: Inverter.swToPw, mw: true);
+  double get psdpPwa =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToPw, ar: true);
+  double get psdpPwi =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToPw, mw: true);
   double get psdpPwia =>
       _v(DpQualifier.smallWidth, inv: Inverter.swToPw, ar: true, mw: true);
 
   double get psdpLw => _v(DpQualifier.smallWidth, inv: Inverter.swToLw);
-  double get psdpLwa => _v(DpQualifier.smallWidth, inv: Inverter.swToLw, ar: true);
-  double get psdpLwi => _v(DpQualifier.smallWidth, inv: Inverter.swToLw, mw: true);
+  double get psdpLwa =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToLw, ar: true);
+  double get psdpLwi =>
+      _v(DpQualifier.smallWidth, inv: Inverter.swToLw, mw: true);
   double get psdpLwia =>
       _v(DpQualifier.smallWidth, inv: Inverter.swToLw, ar: true, mw: true);
 
@@ -101,8 +109,8 @@ extension AppDimensPercentDp on num {
     return fs > 0 ? pwdp / fs : pwdp;
   }
 
-  double get psspPx => pssp * AppDimensScope.metricsOrDefault.density *
-      _safeFs();
+  double get psspPx =>
+      pssp * AppDimensScope.metricsOrDefault.density * _safeFs();
 
   double _safeFs() {
     final fs = AppDimensScope.metricsOrDefault.fontScale;

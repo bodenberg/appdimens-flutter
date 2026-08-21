@@ -97,8 +97,7 @@ class ViewAppDimensContext implements AppDimensContext {
     final physical = view.physicalSize;
     final widthDp = (physical.width / safeDpr).round();
     final heightDp = (physical.height / safeDpr).round();
-    final fontScale =
-        view.platformDispatcher.textScaleFactor; // guarded below
+    final fontScale = view.platformDispatcher.textScaleFactor; // guarded below
     return ViewAppDimensContext(
       configuration: ScreenConfiguration(
         screenWidthDp: math.max(widthDp, 1),

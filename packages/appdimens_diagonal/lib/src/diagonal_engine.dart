@@ -20,6 +20,9 @@ abstract final class DimenDiagonal {
     bool applyAspectRatio,
     double? customSensitivityK,
   ) {
+    if (!applyAspectRatio && customSensitivityK == null) {
+      return base * metrics.diagonalScale;
+    }
     return StrategyResolution.applyAr(base * metrics.diagonalScale, metrics,
         applyAspectRatio, customSensitivityK);
   }

@@ -40,34 +40,42 @@ double _densityOf() => AppDimensScope.metricsOrDefault.density;
 extension AppDimensScaledSp on num {
   // ── ssp (smallest width) ────────────────────────────────────────────────
 
-  double get ssp => ScaledKernel(toDouble()).sw(false);
-  double get sspa => ScaledKernel(toDouble()).swAr(false);
-  double get sspi => ScaledKernel(toDouble()).sw(true);
-  double get sspia => ScaledKernel(toDouble()).swAr(true);
+  double get ssp => ScaledKernel.sw(toDouble(), false);
+  double get sspa => ScaledKernel.swAr(toDouble(), false);
+  double get sspi => ScaledKernel.sw(toDouble(), true);
+  double get sspia => ScaledKernel.swAr(toDouble(), true);
 
-  double get sspPh => ScaledKernel(toDouble()).inverted(Inverter.swToPh);
-  double get sspPha => ScaledKernel(toDouble()).inverted(Inverter.swToPh, ar: true);
-  double get sspPhi => ScaledKernel(toDouble()).inverted(Inverter.swToPh, mw: true);
+  double get sspPh => ScaledKernel.inverted(toDouble(), Inverter.swToPh);
+  double get sspPha =>
+      ScaledKernel.inverted(toDouble(), Inverter.swToPh, ar: true);
+  double get sspPhi =>
+      ScaledKernel.inverted(toDouble(), Inverter.swToPh, mw: true);
   double get sspPhia =>
-      ScaledKernel(toDouble()).inverted(Inverter.swToPh, ar: true, mw: true);
+      ScaledKernel.inverted(toDouble(), Inverter.swToPh, ar: true, mw: true);
 
-  double get sspLh => ScaledKernel(toDouble()).inverted(Inverter.swToLh);
-  double get sspLha => ScaledKernel(toDouble()).inverted(Inverter.swToLh, ar: true);
-  double get sspLhi => ScaledKernel(toDouble()).inverted(Inverter.swToLh, mw: true);
+  double get sspLh => ScaledKernel.inverted(toDouble(), Inverter.swToLh);
+  double get sspLha =>
+      ScaledKernel.inverted(toDouble(), Inverter.swToLh, ar: true);
+  double get sspLhi =>
+      ScaledKernel.inverted(toDouble(), Inverter.swToLh, mw: true);
   double get sspLhia =>
-      ScaledKernel(toDouble()).inverted(Inverter.swToLh, ar: true, mw: true);
+      ScaledKernel.inverted(toDouble(), Inverter.swToLh, ar: true, mw: true);
 
-  double get sspPw => ScaledKernel(toDouble()).inverted(Inverter.swToPw);
-  double get sspPwa => ScaledKernel(toDouble()).inverted(Inverter.swToPw, ar: true);
-  double get sspPwi => ScaledKernel(toDouble()).inverted(Inverter.swToPw, mw: true);
+  double get sspPw => ScaledKernel.inverted(toDouble(), Inverter.swToPw);
+  double get sspPwa =>
+      ScaledKernel.inverted(toDouble(), Inverter.swToPw, ar: true);
+  double get sspPwi =>
+      ScaledKernel.inverted(toDouble(), Inverter.swToPw, mw: true);
   double get sspPwia =>
-      ScaledKernel(toDouble()).inverted(Inverter.swToPw, ar: true, mw: true);
+      ScaledKernel.inverted(toDouble(), Inverter.swToPw, ar: true, mw: true);
 
-  double get sspLw => ScaledKernel(toDouble()).inverted(Inverter.swToLw);
-  double get sspLwa => ScaledKernel(toDouble()).inverted(Inverter.swToLw, ar: true);
-  double get sspLwi => ScaledKernel(toDouble()).inverted(Inverter.swToLw, mw: true);
+  double get sspLw => ScaledKernel.inverted(toDouble(), Inverter.swToLw);
+  double get sspLwa =>
+      ScaledKernel.inverted(toDouble(), Inverter.swToLw, ar: true);
+  double get sspLwi =>
+      ScaledKernel.inverted(toDouble(), Inverter.swToLw, mw: true);
   double get sspLwia =>
-      ScaledKernel(toDouble()).inverted(Inverter.swToLw, ar: true, mw: true);
+      ScaledKernel.inverted(toDouble(), Inverter.swToLw, ar: true, mw: true);
 
   // Rendered physical pixels.
   double get sspPx => ssp * _densityOf() * _fontScaleOf();
@@ -78,22 +86,26 @@ extension AppDimensScaledSp on num {
 
   // ── hsp (height) ────────────────────────────────────────────────────────
 
-  double get hsp => ScaledKernel(toDouble()).h(false);
-  double get hspa => ScaledKernel(toDouble()).hAr(false);
-  double get hspi => ScaledKernel(toDouble()).h(true);
-  double get hspia => ScaledKernel(toDouble()).hAr(true);
+  double get hsp => ScaledKernel.h(toDouble(), false);
+  double get hspa => ScaledKernel.hAr(toDouble(), false);
+  double get hspi => ScaledKernel.h(toDouble(), true);
+  double get hspia => ScaledKernel.hAr(toDouble(), true);
 
-  double get hspLw => ScaledKernel(toDouble()).inverted(Inverter.phToLw);
-  double get hspLwa => ScaledKernel(toDouble()).inverted(Inverter.phToLw, ar: true);
-  double get hspLwi => ScaledKernel(toDouble()).inverted(Inverter.phToLw, mw: true);
+  double get hspLw => ScaledKernel.inverted(toDouble(), Inverter.phToLw);
+  double get hspLwa =>
+      ScaledKernel.inverted(toDouble(), Inverter.phToLw, ar: true);
+  double get hspLwi =>
+      ScaledKernel.inverted(toDouble(), Inverter.phToLw, mw: true);
   double get hspLwia =>
-      ScaledKernel(toDouble()).inverted(Inverter.phToLw, ar: true, mw: true);
+      ScaledKernel.inverted(toDouble(), Inverter.phToLw, ar: true, mw: true);
 
-  double get hspPw => ScaledKernel(toDouble()).inverted(Inverter.lhToPw);
-  double get hspPwa => ScaledKernel(toDouble()).inverted(Inverter.lhToPw, ar: true);
-  double get hspPwi => ScaledKernel(toDouble()).inverted(Inverter.lhToPw, mw: true);
+  double get hspPw => ScaledKernel.inverted(toDouble(), Inverter.lhToPw);
+  double get hspPwa =>
+      ScaledKernel.inverted(toDouble(), Inverter.lhToPw, ar: true);
+  double get hspPwi =>
+      ScaledKernel.inverted(toDouble(), Inverter.lhToPw, mw: true);
   double get hspPwia =>
-      ScaledKernel(toDouble()).inverted(Inverter.lhToPw, ar: true, mw: true);
+      ScaledKernel.inverted(toDouble(), Inverter.lhToPw, ar: true, mw: true);
 
   double get hspPx => hsp * _densityOf() * _fontScaleOf();
   double get hspLwPx => hspLw * _densityOf() * _fontScaleOf();
@@ -101,22 +113,26 @@ extension AppDimensScaledSp on num {
 
   // ── wsp (width) ─────────────────────────────────────────────────────────
 
-  double get wsp => ScaledKernel(toDouble()).w(false);
-  double get wspa => ScaledKernel(toDouble()).wAr(false);
-  double get wspi => ScaledKernel(toDouble()).w(true);
-  double get wspia => ScaledKernel(toDouble()).wAr(true);
+  double get wsp => ScaledKernel.w(toDouble(), false);
+  double get wspa => ScaledKernel.wAr(toDouble(), false);
+  double get wspi => ScaledKernel.w(toDouble(), true);
+  double get wspia => ScaledKernel.wAr(toDouble(), true);
 
-  double get wspLh => ScaledKernel(toDouble()).inverted(Inverter.pwToLh);
-  double get wspLha => ScaledKernel(toDouble()).inverted(Inverter.pwToLh, ar: true);
-  double get wspLhi => ScaledKernel(toDouble()).inverted(Inverter.pwToLh, mw: true);
+  double get wspLh => ScaledKernel.inverted(toDouble(), Inverter.pwToLh);
+  double get wspLha =>
+      ScaledKernel.inverted(toDouble(), Inverter.pwToLh, ar: true);
+  double get wspLhi =>
+      ScaledKernel.inverted(toDouble(), Inverter.pwToLh, mw: true);
   double get wspLhia =>
-      ScaledKernel(toDouble()).inverted(Inverter.pwToLh, ar: true, mw: true);
+      ScaledKernel.inverted(toDouble(), Inverter.pwToLh, ar: true, mw: true);
 
-  double get wspPh => ScaledKernel(toDouble()).inverted(Inverter.lwToPh);
-  double get wspPha => ScaledKernel(toDouble()).inverted(Inverter.lwToPh, ar: true);
-  double get wspPhi => ScaledKernel(toDouble()).inverted(Inverter.lwToPh, mw: true);
+  double get wspPh => ScaledKernel.inverted(toDouble(), Inverter.lwToPh);
+  double get wspPha =>
+      ScaledKernel.inverted(toDouble(), Inverter.lwToPh, ar: true);
+  double get wspPhi =>
+      ScaledKernel.inverted(toDouble(), Inverter.lwToPh, mw: true);
   double get wspPhia =>
-      ScaledKernel(toDouble()).inverted(Inverter.lwToPh, ar: true, mw: true);
+      ScaledKernel.inverted(toDouble(), Inverter.lwToPh, ar: true, mw: true);
 
   double get wspPx => wsp * _densityOf() * _fontScaleOf();
   double get wspLhPx => wspLh * _densityOf() * _fontScaleOf();
@@ -190,18 +206,18 @@ extension AppDimensScaledSp on num {
 extension AppDimensScaledSpFacilitators on num {
   double sspRotate(num rotationValue,
           {OrientationRequest orientation = OrientationRequest.landscape}) =>
-      AppDimensScaledFacilitators(this).sdpRotate(rotationValue,
-          orientation: orientation);
+      AppDimensScaledFacilitators(this)
+          .sdpRotate(rotationValue, orientation: orientation);
 
   double hspRotate(num rotationValue,
           {OrientationRequest orientation = OrientationRequest.landscape}) =>
-      AppDimensScaledFacilitators(this).hdpRotate(rotationValue,
-          orientation: orientation);
+      AppDimensScaledFacilitators(this)
+          .hdpRotate(rotationValue, orientation: orientation);
 
   double wspRotate(num rotationValue,
           {OrientationRequest orientation = OrientationRequest.landscape}) =>
-      AppDimensScaledFacilitators(this).wdpRotate(rotationValue,
-          orientation: orientation);
+      AppDimensScaledFacilitators(this)
+          .wdpRotate(rotationValue, orientation: orientation);
 
   double sspRotatePlain(num alternative,
           {OrientationRequest orientation = OrientationRequest.landscape}) =>
@@ -214,13 +230,13 @@ extension AppDimensScaledSpFacilitators on num {
   double sspModePlain(num alternative, UiModeType uiModeType) =>
       AppDimensScaledFacilitators(this).sdpModePlain(alternative, uiModeType);
 
-  double sspQualifier(num qualifiedValue, DpQualifier qualifierType,
-          num qualifierValue) =>
+  double sspQualifier(
+          num qualifiedValue, DpQualifier qualifierType, num qualifierValue) =>
       AppDimensScaledFacilitators(this)
           .sdpQualifier(qualifiedValue, qualifierType, qualifierValue);
 
-  double sspQualifierPlain(num alternative, DpQualifier qualifierType,
-          num qualifierValue) =>
+  double sspQualifierPlain(
+          num alternative, DpQualifier qualifierType, num qualifierValue) =>
       AppDimensScaledFacilitators(this)
           .sdpQualifierPlain(alternative, qualifierType, qualifierValue);
 

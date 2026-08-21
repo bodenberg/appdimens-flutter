@@ -60,7 +60,8 @@ class ScreenConfiguration {
   /// and finally to the 300 dp design baseline.
   int get effectiveSmallestWidthDp {
     if (smallestScreenWidthDp > 0) return smallestScreenWidthDp;
-    final minDim = screenWidthDp < screenHeightDp ? screenWidthDp : screenHeightDp;
+    final minDim =
+        screenWidthDp < screenHeightDp ? screenWidthDp : screenHeightDp;
     if (minDim > 0) return minDim;
     return 300;
   }

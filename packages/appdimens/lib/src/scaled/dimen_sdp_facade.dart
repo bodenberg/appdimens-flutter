@@ -24,17 +24,18 @@ import '../core/dimen_scaled_engine.dart';
 /// final pad = 16.sdpOf(context);
 /// ```
 extension AppDimensScaledContext on num {
-  double sdpOf(AppDimensContext context) => _ctx(context, DpQualifier.smallWidth,
-      applyAspectRatio: false);
+  double sdpOf(AppDimensContext context) =>
+      _ctx(context, DpQualifier.smallWidth, applyAspectRatio: false);
 
   double sdpaOf(AppDimensContext context) =>
       _ctx(context, DpQualifier.smallWidth, applyAspectRatio: true);
 
-  double sdpiOf(AppDimensContext context) => _ctx(context, DpQualifier.smallWidth,
-      ignoreMultiWindows: true);
+  double sdpiOf(AppDimensContext context) =>
+      _ctx(context, DpQualifier.smallWidth, ignoreMultiWindows: true);
 
-  double sdpiaOf(AppDimensContext context) => _ctx(context, DpQualifier.smallWidth,
-      ignoreMultiWindows: true, applyAspectRatio: true);
+  double sdpiaOf(AppDimensContext context) =>
+      _ctx(context, DpQualifier.smallWidth,
+          ignoreMultiWindows: true, applyAspectRatio: true);
 
   double hdpOf(AppDimensContext context) =>
       _ctx(context, DpQualifier.height, applyAspectRatio: false);
@@ -201,14 +202,18 @@ abstract final class DimenSdp {
 ///
 /// PT: Fachada estática espelhando o `object DimenSsp` do Kotlin.
 abstract final class DimenSsp {
-  static void warmupCache(AppDimensContext context) => DimenSdp.warmupCache(context);
+  static void warmupCache(AppDimensContext context) =>
+      DimenSdp.warmupCache(context);
 
-  static double ssp(AppDimensContext context, num value, {bool fontScale = true}) =>
+  static double ssp(AppDimensContext context, num value,
+          {bool fontScale = true}) =>
       value.sspOf(context, fontScale: fontScale);
 
-  static double hsp(AppDimensContext context, num value, {bool fontScale = true}) =>
+  static double hsp(AppDimensContext context, num value,
+          {bool fontScale = true}) =>
       value.hspOf(context, fontScale: fontScale);
 
-  static double wsp(AppDimensContext context, num value, {bool fontScale = true}) =>
+  static double wsp(AppDimensContext context, num value,
+          {bool fontScale = true}) =>
       value.wspOf(context, fontScale: fontScale);
 }

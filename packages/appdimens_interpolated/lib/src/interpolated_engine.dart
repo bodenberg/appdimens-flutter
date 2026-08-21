@@ -11,6 +11,7 @@
 import 'package:appdimens/appdimens.dart';
 
 import 'factors.dart';
+
 /// Interpolated strategy kernels (family port parity).
 abstract final class DimenInterpolated {
   /// Core interpolated kernel used by every extension in this package.
@@ -21,6 +22,12 @@ abstract final class DimenInterpolated {
     bool applyAspectRatio,
     double? customSensitivityK,
   ) {
+    // Default sw path reuses the snapshot-memoized factor (KMP parity).
+    if (effectiveQualifier == DpQualifier.smallWidth &&
+        !applyAspectRatio &&
+        customSensitivityK == null) {
+      return base * metrics.interpolatedScale;
+    }
     final d = StrategyResolution.axisDp(metrics, effectiveQualifier);
     final linear = base * (d * DimenCache.invBaseRatio);
     return StrategyResolution.applyAr(

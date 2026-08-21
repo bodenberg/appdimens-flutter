@@ -26,13 +26,21 @@ double _axisDpFor(DimenMetrics m, Inverter inverter) {
     case Inverter.standard:
       return m.smallestWidthDp;
     case Inverter.phToLw:
-      return m.isLandscape ? m.screenWidthDp.toDouble() : m.screenHeightDp.toDouble();
+      return m.isLandscape
+          ? m.screenWidthDp.toDouble()
+          : m.screenHeightDp.toDouble();
     case Inverter.pwToLh:
-      return m.isLandscape ? m.screenHeightDp.toDouble() : m.screenWidthDp.toDouble();
+      return m.isLandscape
+          ? m.screenHeightDp.toDouble()
+          : m.screenWidthDp.toDouble();
     case Inverter.lhToPw:
-      return m.isPortrait ? m.screenWidthDp.toDouble() : m.screenHeightDp.toDouble();
+      return m.isPortrait
+          ? m.screenWidthDp.toDouble()
+          : m.screenHeightDp.toDouble();
     case Inverter.lwToPh:
-      return m.isPortrait ? m.screenHeightDp.toDouble() : m.screenWidthDp.toDouble();
+      return m.isPortrait
+          ? m.screenHeightDp.toDouble()
+          : m.screenWidthDp.toDouble();
     case Inverter.swToLh:
       return m.isLandscape ? m.screenHeightDp.toDouble() : m.smallestWidthDp;
     case Inverter.swToLw:
@@ -44,54 +52,56 @@ double _axisDpFor(DimenMetrics m, Inverter inverter) {
   }
 }
 
-/// EN: Shared resolution state used by the fast-lane kernels.
+/// EN: Shared fast-lane kernels — static, zero-allocation (one snapshot read
+/// + one multiply on the dominant paths).
 ///
-/// PT: Estado de resolução compartilhado pelos kernels da faixa rápida.
-class ScaledKernel {
-  final double base;
-  const ScaledKernel(this.base);
-
-  double sw(bool mw) {
+/// PT: Kernels da faixa rápida — estáticos e sem alocação (uma leitura do
+/// snapshot + uma multiplicação nos caminhos dominantes).
+abstract final class ScaledKernel {
+  static double sw(double base, bool mw) {
     final m = _m;
     if (mw && m.isInMultiWindowMode) return base;
     return base * m.scale;
   }
 
-  double swAr(bool mw) {
+  static double swAr(double base, bool mw) {
     final m = _m;
     if (mw && m.isInMultiWindowMode) return base;
     return base * m.defaultScaledAspectRatioMultiplier;
   }
 
-  double h(bool mw) {
+  static double h(double base, bool mw) {
     final m = _m;
     if (mw && m.isInMultiWindowMode) return base;
     return base * m.screenHeightFactor;
   }
 
-  double hAr(bool mw) {
+  static double hAr(double base, bool mw) {
     final m = _m;
     if (mw && m.isInMultiWindowMode) return base;
     return base * _arFactorFor(m, m.screenHeightDp.toDouble());
   }
 
-  double w(bool mw) {
+  static double w(double base, bool mw) {
     final m = _m;
     if (mw && m.isInMultiWindowMode) return base;
     return base * m.screenWidthFactor;
   }
 
-  double wAr(bool mw) {
+  static double wAr(double base, bool mw) {
     final m = _m;
     if (mw && m.isInMultiWindowMode) return base;
     return base * _arFactorFor(m, m.screenWidthDp.toDouble());
   }
 
-  double inverted(Inverter inverter, {bool ar = false, bool mw = false}) {
+  static double inverted(double base, Inverter inverter,
+      {bool ar = false, bool mw = false}) {
     final m = _m;
     if (mw && m.isInMultiWindowMode) return base;
     final axisDp = _axisDpFor(m, inverter);
-    return ar ? base * _arFactorFor(m, axisDp) : base * (axisDp * DimenCache.invBaseRatio);
+    return ar
+        ? base * _arFactorFor(m, axisDp)
+        : base * (axisDp * DimenCache.invBaseRatio);
   }
 }
 
@@ -125,42 +135,50 @@ extension AppDimensScaledDp on num {
 
   /// EN `base × sw/300` — the default recommended path.
   /// PT `base × sw/300` — o caminho padrão recomendado.
-  double get sdp => ScaledKernel(toDouble()).sw(false);
-  double get sdpa => ScaledKernel(toDouble()).swAr(false);
-  double get sdpi => ScaledKernel(toDouble()).sw(true);
-  double get sdpia => ScaledKernel(toDouble()).swAr(true);
+  double get sdp => ScaledKernel.sw(toDouble(), false);
+  double get sdpa => ScaledKernel.swAr(toDouble(), false);
+  double get sdpi => ScaledKernel.sw(toDouble(), true);
+  double get sdpia => ScaledKernel.swAr(toDouble(), true);
 
   /// EN SW in portrait acts as HEIGHT.
   /// PT SW em retrato age como HEIGHT.
-  double get sdpPh => ScaledKernel(toDouble()).inverted(Inverter.swToPh);
-  double get sdpPha => ScaledKernel(toDouble()).inverted(Inverter.swToPh, ar: true);
-  double get sdpPhi => ScaledKernel(toDouble()).inverted(Inverter.swToPh, mw: true);
+  double get sdpPh => ScaledKernel.inverted(toDouble(), Inverter.swToPh);
+  double get sdpPha =>
+      ScaledKernel.inverted(toDouble(), Inverter.swToPh, ar: true);
+  double get sdpPhi =>
+      ScaledKernel.inverted(toDouble(), Inverter.swToPh, mw: true);
   double get sdpPhia =>
-      ScaledKernel(toDouble()).inverted(Inverter.swToPh, ar: true, mw: true);
+      ScaledKernel.inverted(toDouble(), Inverter.swToPh, ar: true, mw: true);
 
   /// EN SW in landscape acts as HEIGHT.
   /// PT SW em paisagem age como HEIGHT.
-  double get sdpLh => ScaledKernel(toDouble()).inverted(Inverter.swToLh);
-  double get sdpLha => ScaledKernel(toDouble()).inverted(Inverter.swToLh, ar: true);
-  double get sdpLhi => ScaledKernel(toDouble()).inverted(Inverter.swToLh, mw: true);
+  double get sdpLh => ScaledKernel.inverted(toDouble(), Inverter.swToLh);
+  double get sdpLha =>
+      ScaledKernel.inverted(toDouble(), Inverter.swToLh, ar: true);
+  double get sdpLhi =>
+      ScaledKernel.inverted(toDouble(), Inverter.swToLh, mw: true);
   double get sdpLhia =>
-      ScaledKernel(toDouble()).inverted(Inverter.swToLh, ar: true, mw: true);
+      ScaledKernel.inverted(toDouble(), Inverter.swToLh, ar: true, mw: true);
 
   /// EN SW in portrait acts as WIDTH.
   /// PT SW em retrato age como WIDTH.
-  double get sdpPw => ScaledKernel(toDouble()).inverted(Inverter.swToPw);
-  double get sdpPwa => ScaledKernel(toDouble()).inverted(Inverter.swToPw, ar: true);
-  double get sdpPwi => ScaledKernel(toDouble()).inverted(Inverter.swToPw, mw: true);
+  double get sdpPw => ScaledKernel.inverted(toDouble(), Inverter.swToPw);
+  double get sdpPwa =>
+      ScaledKernel.inverted(toDouble(), Inverter.swToPw, ar: true);
+  double get sdpPwi =>
+      ScaledKernel.inverted(toDouble(), Inverter.swToPw, mw: true);
   double get sdpPwia =>
-      ScaledKernel(toDouble()).inverted(Inverter.swToPw, ar: true, mw: true);
+      ScaledKernel.inverted(toDouble(), Inverter.swToPw, ar: true, mw: true);
 
   /// EN SW in landscape acts as WIDTH.
   /// PT SW em paisagem age como WIDTH.
-  double get sdpLw => ScaledKernel(toDouble()).inverted(Inverter.swToLw);
-  double get sdpLwa => ScaledKernel(toDouble()).inverted(Inverter.swToLw, ar: true);
-  double get sdpLwi => ScaledKernel(toDouble()).inverted(Inverter.swToLw, mw: true);
+  double get sdpLw => ScaledKernel.inverted(toDouble(), Inverter.swToLw);
+  double get sdpLwa =>
+      ScaledKernel.inverted(toDouble(), Inverter.swToLw, ar: true);
+  double get sdpLwi =>
+      ScaledKernel.inverted(toDouble(), Inverter.swToLw, mw: true);
   double get sdpLwia =>
-      ScaledKernel(toDouble()).inverted(Inverter.swToLw, ar: true, mw: true);
+      ScaledKernel.inverted(toDouble(), Inverter.swToLw, ar: true, mw: true);
 
   /// Physical-pixel twins of the sdp family.
   double get sdpPx => sdp * _m.density;
@@ -176,26 +194,30 @@ extension AppDimensScaledDp on num {
 
   /// EN `base × h/300`.
   /// PT `base × h/300`.
-  double get hdp => ScaledKernel(toDouble()).h(false);
-  double get hdpa => ScaledKernel(toDouble()).hAr(false);
-  double get hdpi => ScaledKernel(toDouble()).h(true);
-  double get hdpia => ScaledKernel(toDouble()).hAr(true);
+  double get hdp => ScaledKernel.h(toDouble(), false);
+  double get hdpa => ScaledKernel.hAr(toDouble(), false);
+  double get hdpi => ScaledKernel.h(toDouble(), true);
+  double get hdpia => ScaledKernel.hAr(toDouble(), true);
 
   /// EN HEIGHT in landscape acts as WIDTH.
   /// PT HEIGHT em paisagem age como WIDTH.
-  double get hdpLw => ScaledKernel(toDouble()).inverted(Inverter.phToLw);
-  double get hdpLwa => ScaledKernel(toDouble()).inverted(Inverter.phToLw, ar: true);
-  double get hdpLwi => ScaledKernel(toDouble()).inverted(Inverter.phToLw, mw: true);
+  double get hdpLw => ScaledKernel.inverted(toDouble(), Inverter.phToLw);
+  double get hdpLwa =>
+      ScaledKernel.inverted(toDouble(), Inverter.phToLw, ar: true);
+  double get hdpLwi =>
+      ScaledKernel.inverted(toDouble(), Inverter.phToLw, mw: true);
   double get hdpLwia =>
-      ScaledKernel(toDouble()).inverted(Inverter.phToLw, ar: true, mw: true);
+      ScaledKernel.inverted(toDouble(), Inverter.phToLw, ar: true, mw: true);
 
   /// EN HEIGHT in portrait acts as WIDTH.
   /// PT HEIGHT em retrato age como WIDTH.
-  double get hdpPw => ScaledKernel(toDouble()).inverted(Inverter.lhToPw);
-  double get hdpPwa => ScaledKernel(toDouble()).inverted(Inverter.lhToPw, ar: true);
-  double get hdpPwi => ScaledKernel(toDouble()).inverted(Inverter.lhToPw, mw: true);
+  double get hdpPw => ScaledKernel.inverted(toDouble(), Inverter.lhToPw);
+  double get hdpPwa =>
+      ScaledKernel.inverted(toDouble(), Inverter.lhToPw, ar: true);
+  double get hdpPwi =>
+      ScaledKernel.inverted(toDouble(), Inverter.lhToPw, mw: true);
   double get hdpPwia =>
-      ScaledKernel(toDouble()).inverted(Inverter.lhToPw, ar: true, mw: true);
+      ScaledKernel.inverted(toDouble(), Inverter.lhToPw, ar: true, mw: true);
 
   double get hdpPx => hdp * _m.density;
   double get hdpaPx => hdpa * _m.density;
@@ -206,26 +228,30 @@ extension AppDimensScaledDp on num {
 
   /// EN `base × w/300`.
   /// PT `base × w/300`.
-  double get wdp => ScaledKernel(toDouble()).w(false);
-  double get wdpa => ScaledKernel(toDouble()).wAr(false);
-  double get wdpi => ScaledKernel(toDouble()).w(true);
-  double get wdpia => ScaledKernel(toDouble()).wAr(true);
+  double get wdp => ScaledKernel.w(toDouble(), false);
+  double get wdpa => ScaledKernel.wAr(toDouble(), false);
+  double get wdpi => ScaledKernel.w(toDouble(), true);
+  double get wdpia => ScaledKernel.wAr(toDouble(), true);
 
   /// EN WIDTH in landscape acts as HEIGHT.
   /// PT WIDTH em paisagem age como HEIGHT.
-  double get wdpLh => ScaledKernel(toDouble()).inverted(Inverter.pwToLh);
-  double get wdpLha => ScaledKernel(toDouble()).inverted(Inverter.pwToLh, ar: true);
-  double get wdpLhi => ScaledKernel(toDouble()).inverted(Inverter.pwToLh, mw: true);
+  double get wdpLh => ScaledKernel.inverted(toDouble(), Inverter.pwToLh);
+  double get wdpLha =>
+      ScaledKernel.inverted(toDouble(), Inverter.pwToLh, ar: true);
+  double get wdpLhi =>
+      ScaledKernel.inverted(toDouble(), Inverter.pwToLh, mw: true);
   double get wdpLhia =>
-      ScaledKernel(toDouble()).inverted(Inverter.pwToLh, ar: true, mw: true);
+      ScaledKernel.inverted(toDouble(), Inverter.pwToLh, ar: true, mw: true);
 
   /// EN WIDTH in portrait acts as HEIGHT.
   /// PT WIDTH em retrato age como HEIGHT.
-  double get wdpPh => ScaledKernel(toDouble()).inverted(Inverter.lwToPh);
-  double get wdpPha => ScaledKernel(toDouble()).inverted(Inverter.lwToPh, ar: true);
-  double get wdpPhi => ScaledKernel(toDouble()).inverted(Inverter.lwToPh, mw: true);
+  double get wdpPh => ScaledKernel.inverted(toDouble(), Inverter.lwToPh);
+  double get wdpPha =>
+      ScaledKernel.inverted(toDouble(), Inverter.lwToPh, ar: true);
+  double get wdpPhi =>
+      ScaledKernel.inverted(toDouble(), Inverter.lwToPh, mw: true);
   double get wdpPhia =>
-      ScaledKernel(toDouble()).inverted(Inverter.lwToPh, ar: true, mw: true);
+      ScaledKernel.inverted(toDouble(), Inverter.lwToPh, ar: true, mw: true);
 
   double get wdpPx => wdp * _m.density;
   double get wdpaPx => wdpa * _m.density;
@@ -358,8 +384,8 @@ extension AppDimensScaledFacilitators on num {
     bool applyAspectRatio = false,
     double? customSensitivityK,
   }) =>
-      _branchQualifier(qualifiedValue, qualifierType, qualifierValue,
-          DpQualifier.smallWidth,
+      _branchQualifier(
+          qualifiedValue, qualifierType, qualifierValue, DpQualifier.smallWidth,
           finalQualifierResolver: finalQualifierResolver,
           ignoreMultiWindows: ignoreMultiWindows,
           applyAspectRatio: applyAspectRatio,
@@ -374,8 +400,8 @@ extension AppDimensScaledFacilitators on num {
     bool applyAspectRatio = false,
     double? customSensitivityK,
   }) =>
-      _branchQualifier(qualifiedValue, qualifierType, qualifierValue,
-          DpQualifier.height,
+      _branchQualifier(
+          qualifiedValue, qualifierType, qualifierValue, DpQualifier.height,
           finalQualifierResolver: finalQualifierResolver,
           ignoreMultiWindows: ignoreMultiWindows,
           applyAspectRatio: applyAspectRatio,
@@ -390,8 +416,8 @@ extension AppDimensScaledFacilitators on num {
     bool applyAspectRatio = false,
     double? customSensitivityK,
   }) =>
-      _branchQualifier(qualifiedValue, qualifierType, qualifierValue,
-          DpQualifier.width,
+      _branchQualifier(
+          qualifiedValue, qualifierType, qualifierValue, DpQualifier.width,
           finalQualifierResolver: finalQualifierResolver,
           ignoreMultiWindows: ignoreMultiWindows,
           applyAspectRatio: applyAspectRatio,
