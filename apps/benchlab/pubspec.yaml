@@ -1,0 +1,18 @@
+name: appdimens_benchlab
+description: AppDimens benchlab application (Flutter port of the KMP/Dynamic benchlab module).
+publish_to: none
+version: 3.2.0
+environment:
+  sdk: ^3.6.0
+resolution: workspace
+dependencies:
+  appdimens:
+    path: ../../packages/appdimens
+  appdimens_bom:
+    path: ../../packages/appdimens_bom
+  flutter:
+    sdk: flutter
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
