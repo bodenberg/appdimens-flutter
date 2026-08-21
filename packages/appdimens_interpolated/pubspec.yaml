@@ -8,9 +8,7 @@ environment:
   flutter: ">=3.27.0"
 resolution: workspace
 dependencies:
-  appdimens:
-    path: ../appdimens
-    version: ^3.2.0
+  appdimens: ^3.2.0
   flutter:
     sdk: flutter
 dev_dependencies:

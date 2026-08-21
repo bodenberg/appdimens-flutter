@@ -51,8 +51,11 @@ cd ../appdimens_units        && flutter pub publish
 cd ../appdimens_bom          && flutter pub publish        # 15. last
 ```
 
-Because this is a **pub workspace**, `publish` converts the internal `path`
-dependencies into hosted `^3.2.0` constraints automatically.
+All inter-package dependencies are declared as **hosted constraints**
+(`appdimens: ^3.2.0`). Inside the workspace, pub resolves them automatically
+to the local members; on publish, the hosted source is used directly — the
+pattern recommended by the official workspace docs (no `path` dependencies in
+publishable packages).
 
 ## 3. Automated publishing (recommended for next versions)
 
