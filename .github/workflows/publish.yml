@@ -1,0 +1,54 @@
+name: publish
+
+on:
+  push:
+    tags: ["v3.*"]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run only (no upload)"
+        type: boolean
+        default: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get && flutter analyze . && flutter test packages apps
+
+      - name: Dry-run all packages
+        strategy:
+          fail-fast: true
+          matrix:
+            package:
+              [appdimens, appdimens_auto, appdimens_bom, appdimens_density,
+               appdimens_diagonal, appdimens_fill, appdimens_fit,
+               appdimens_fluid, appdimens_interpolated,
+               appdimens_logarithmic, appdimens_percent, appdimens_perimeter,
+               appdimens_power, appdimens_resize, appdimens_units]
+        run: |
+          cd "packages/${{ matrix.package }}"
+          flutter pub publish --dry-run
+
+      - name: Publish core → satellites → BOM
+        if: ${{ inputs.dry_run != true }}
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
+        run: |
+          CONFIG_HOME="$HOME/.config"
+          mkdir -p "$CONFIG_HOME/dart"
+          echo "$PUB_CREDENTIALS" > "$CONFIG_HOME/dart/pub-credentials.json"
+          for p in appdimens appdimens_percent appdimens_power \
+                   appdimens_fluid appdimens_auto appdimens_logarithmic \
+                   appdimens_interpolated appdimens_diagonal \
+                   appdimens_perimeter appdimens_density appdimens_fill \
+                   appdimens_fit appdimens_resize appdimens_units \
+                   appdimens_bom; do
+            cd "packages/$p"
+            dart pub publish --force
+            cd - > /dev/null
+          done

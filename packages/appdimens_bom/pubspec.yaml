@@ -10,30 +10,43 @@ resolution: workspace
 dependencies:
   appdimens:
     path: ../appdimens
+    version: ^3.2.0
   appdimens_auto:
     path: ../appdimens_auto
+    version: ^3.2.0
   appdimens_density:
     path: ../appdimens_density
+    version: ^3.2.0
   appdimens_diagonal:
     path: ../appdimens_diagonal
+    version: ^3.2.0
   appdimens_fill:
     path: ../appdimens_fill
+    version: ^3.2.0
   appdimens_fit:
     path: ../appdimens_fit
+    version: ^3.2.0
   appdimens_fluid:
     path: ../appdimens_fluid
+    version: ^3.2.0
   appdimens_interpolated:
     path: ../appdimens_interpolated
+    version: ^3.2.0
   appdimens_logarithmic:
     path: ../appdimens_logarithmic
+    version: ^3.2.0
   appdimens_percent:
     path: ../appdimens_percent
+    version: ^3.2.0
   appdimens_perimeter:
     path: ../appdimens_perimeter
+    version: ^3.2.0
   appdimens_power:
     path: ../appdimens_power
+    version: ^3.2.0
   appdimens_resize:
     path: ../appdimens_resize
+    version: ^3.2.0
   appdimens_units:
     path: ../appdimens_units
-publish_to: none
+    version: ^3.2.0

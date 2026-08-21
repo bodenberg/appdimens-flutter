@@ -10,6 +10,7 @@ resolution: workspace
 dependencies:
   appdimens:
     path: ../appdimens
+    version: ^3.2.0
   flutter:
     sdk: flutter
 dev_dependencies:
@@ -21,4 +22,3 @@ topics:
   - ui
   - scaling
 
-publish_to: none
