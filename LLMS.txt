@@ -1,0 +1,56 @@
+# AppDimens Flutter
+
+> AppDimens Flutter is a multi-platform library for responsive `dp`-class dimensioning in Flutter (Android · iOS · Web · Windows · macOS · Linux). It is the Flutter port of the AppDimens family and ships 14 scaling strategies (Scaled, Percent, Power, Fluid, Auto, Diagonal, Fill, Fit, Interpolated, Logarithmic, Perimeter, Density, Resize, Physical units) over an immutable per-window `DimenMetrics` snapshot, a snapshot-partitioned `DimenCache` with fast-lane resolution, and constraint-based resize widgets.
+
+Important notes:
+- Principal package: `appdimens` (common + core + scaled); one opt-in satellite per strategy (`appdimens_percent`, `appdimens_power`, …) and an all-in-one meta-package `appdimens_bom`. Satellites depend only on `appdimens`.
+- Current version: **3.2.0** — Dart ≥ 3.6, Flutter ≥ 3.27, pure Dart engine (no platform channels).
+- Wrap the app once with `AppDimensApp(child: MaterialApp(...))` (or `AppDimensScopeBinder` inside `MaterialApp.builder`) so `16.sdp`-style getters resolve through the global fast lane; without a provider they resolve against the deterministic 300×533 reference.
+- The recommended default strategy is **Scaled** (`sdp` / `hdp` / `wdp` / `ssp`, optionally `sdpa` for aspect-ratio tuning); the `a` suffix adds aspect-ratio awareness; `i` / `ia` are internal multi-window flags and should not be surfaced to users.
+- Suffix grammar is shared by every strategy: *(none)* / `a` / `i` / `ia`, inverters `Ph/Lh/Pw/Lw`, `…Px` physical-pixel twins, sp stems (`ssp/hsp/wsp`) and no-font-scale stems (`sem/hem/wem`).
+- Facilitators on every stem: `sdpRotate`, `sdpMode`, `sdpQualifier`, `sdpScreen` plus logic-only Plain pairs; conditional chains via `100.scaledDp.screen(...)` builders (priority: ui+qualifier → ui → qualifier → orientation).
+- Explicit-context mode for tests/isolates: `16.sdpOf(context)`, `16.toDynamicScaledDp(ctx, qualifier, …)`, facades `DimenSdp.sdp(ctx, v)`.
+
+## Documentation
+
+- [README.md](README.md): Installation, quick start, all strategies, cache & performance overview
+- [GUIDE-FOR-BEGINNERS.md](GUIDE-FOR-BEGINNERS.md): Step-by-step plain-language guide
+- [DOCUMENTATION/README.md](DOCUMENTATION/README.md): Per-strategy explanations and decision flow
+- [DOCUMENTATION/MODULES.md](DOCUMENTATION/MODULES.md): Pub workspace package graph and dependency rules
+- [DOCUMENTATION/API-CONVENTIONS.md](DOCUMENTATION/API-CONVENTIONS.md): Naming grammar, suffixes, inverters, facilitators, builders, resolution modes
+- [DOCUMENTATION/MATHEMATICS-AND-CALCULUS.md](DOCUMENTATION/MATHEMATICS-AND-CALCULUS.md): Formulas, constants, the `DimenMetrics` snapshot and per-strategy kernels
+- [PUBLISHING.md](PUBLISHING.md): How to publish the packages to pub.dev (order, dry-run, automation)
+- [PERFORMANCE.md](PERFORMANCE.md): Technical performance report (fast lane ≈ 6–12 ns/op)
+- [PERFORMANCE-COMPARATIVE.md](PERFORMANCE-COMPARATIVE.md): Comparative benchmark vs naive recompute and legacy models
+- [MIGRATION.md](MIGRATION.md): Replacing the deprecated 2.x `fx/dy` API
+
+## Strategy guides
+
+- [Scaled](DOCUMENTATION/scaled.md): Default linear curve around the 300 dp reference
+- [Percent](DOCUMENTATION/percent.md): Literal fractions of a screen axis (`spaceW/spaceH`) plus `psdp/phdp/pwdp/pssp`
+- [Power](DOCUMENTATION/power.md): Sub-linear growth `(d/300)^0.75` for large screens
+- [Fluid](DOCUMENTATION/fluid.md): Clamped lerp between `b×0.8` and `b×1.2` over [320, 768] dp
+- [Auto](DOCUMENTATION/auto.md): Linear phones, log-damped beyond the 480 dp transition
+- [Diagonal](DOCUMENTATION/diagonal.md): Window-diagonal ratio — orientation-stable
+- [Fill](DOCUMENTATION/fill.md): Cover-like growth using the larger axis ratio
+- [Fit](DOCUMENTATION/fit.md): Contain-like growth using the smaller axis ratio
+- [Interpolated](DOCUMENTATION/interpolated.md): Fixed 50 % blend between raw and scaled
+- [Logarithmic](DOCUMENTATION/logarithmic.md): Symmetric ±0.4·ln damping around the baseline
+- [Perimeter](DOCUMENTATION/perimeter.md): Half-perimeter ratio `(min+max)/833`
+- [Density](DOCUMENTATION/density.md): Physical-density alignment (`dpi/160`)
+- [Resize](DOCUMENTATION/resize.md): Constraint-based auto-fit (`AutoResizeText`, `AutoResizeSquare`, `ResizeBound`)
+- [Physical units](DOCUMENTATION/physical-units.md): Real-world mm / cm / inch helpers
+
+## Example code
+
+- [Sample app](apps/sample/lib/main.dart): Strategy-routing demo, facilitators, builder chains, auto-resize
+- [Strategy routing](apps/sample/lib/demo_routing.dart): DemoCalc-style dispatch across all 12 curves
+- [Benchmark dashboard](apps/sample/lib/benchmark_screen.dart): In-app calculation/micro/macro/compare phases
+- [BenchLab](apps/benchlab/lib/main.dart): Competitor benchmark with parity tables and report export
+
+## Optional
+
+- [CONTRIBUTING.md](CONTRIBUTING.md): Contribution guidelines and module rules
+- [SECURITY.md](SECURITY.md): Security policy and supported versions
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md): Community code of conduct
+- [LICENSE](LICENSE): Apache License 2.0
