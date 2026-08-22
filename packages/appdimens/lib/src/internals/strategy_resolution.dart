@@ -6,6 +6,8 @@
 /// INTERNAL: shared resolution machinery for the family satellite packages
 /// (percent, power, fluid, …). Not meant for direct application use — import
 /// `package:appdimens/appdimens.dart` plus the satellite barrels instead.
+library;
+
 import '../common/dp_qualifier.dart';
 import '../common/inverter.dart';
 import '../common/orientation.dart';

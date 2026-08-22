@@ -8,6 +8,8 @@
 /// EN: Formula: `d > 300 : 1 + 0.4·ln(d/300)` · `d ≤ 300 : 1 − 0.4·ln(300/d)`.
 ///
 /// PT: Fórmula: `d > 300 : 1 + 0.4·ln(d/300)` · `d ≤ 300 : 1 − 0.4·ln(300/d)`.
+library;
+
 import 'dart:math' as math;
 
 import 'package:appdimens/appdimens.dart';

@@ -8,6 +8,8 @@
 /// EN: Formula: `base × max(minSide/300, maxSide/533)` (may crop overflow).
 ///
 /// PT: Fórmula: `base × max(minSide/300, maxSide/533)` (may crop overflow).
+library;
+
 import 'dart:math' as math;
 
 import 'package:appdimens/appdimens.dart';

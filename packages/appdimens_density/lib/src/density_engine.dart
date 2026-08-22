@@ -8,6 +8,8 @@
 /// EN: Formula: `base × (dpi / 160)` (qualifier-independent).
 ///
 /// PT: Fórmula: `base × (dpi / 160)` (qualifier-independent).
+library;
+
 import 'package:appdimens/appdimens.dart';
 
 /// Density strategy kernels (family port parity).

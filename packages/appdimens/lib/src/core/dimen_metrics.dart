@@ -4,6 +4,8 @@
 /// Library: AppDimens
 ///
 /// The immutable resolution snapshot — the heart of the AppDimens fast lane.
+library;
+
 import 'dart:math' as math;
 
 import '../common/dp_qualifier.dart';
@@ -45,17 +47,14 @@ class DimenMetrics {
     required int smallestScreenWidthDp,
     required int densityDpi,
     double fontScale = 1.0,
-    int orientation = ScreenConfiguration.orientationUndefined,
-    int uiMode = 0,
-    bool isInMultiWindowMode = false,
+    this.orientation = ScreenConfiguration.orientationUndefined,
+    this.uiMode = 0,
+    this.isInMultiWindowMode = false,
     ScreenConfiguration? configuration,
   })  : screenWidthDp = screenWidthDp,
         screenHeightDp = screenHeightDp,
         smallestScreenWidthDp = smallestScreenWidthDp,
         densityDpi = densityDpi,
-        orientation = orientation,
-        uiMode = uiMode,
-        isInMultiWindowMode = isInMultiWindowMode,
         _fontScaleRaw = (fontScale.isFinite && fontScale > 0) ? fontScale : 1.0,
         configuration = configuration ?? const ScreenConfiguration(),
         _d = _Derived.compute(
@@ -245,7 +244,7 @@ class DimenMetrics {
 
   @override
   String toString() =>
-      'DimenMetrics(${screenWidthDp}×${screenHeightDp}, sw=$smallestWidthDp, '
+      'DimenMetrics($screenWidthDp×$screenHeightDp, sw=$smallestWidthDp, '
       'd=$density, fs=$fontScale, mw=$isInMultiWindowMode)';
 }
 

@@ -8,6 +8,8 @@
 /// EN: Formula: `base × min(minSide/300, maxSide/533)` (always fits).
 ///
 /// PT: Fórmula: `base × min(minSide/300, maxSide/533)` (always fits).
+library;
+
 import 'dart:math' as math;
 
 import 'package:appdimens/appdimens.dart';

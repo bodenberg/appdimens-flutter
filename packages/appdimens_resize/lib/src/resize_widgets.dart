@@ -5,6 +5,8 @@
 ///
 /// Resize widgets — auto-resize text and sizes inside `LayoutBuilder`
 /// constraints (the Flutter analog of the KMP `BoxWithConstraints` APIs).
+library;
+
 import 'package:flutter/widgets.dart';
 
 import 'package:appdimens/appdimens.dart';

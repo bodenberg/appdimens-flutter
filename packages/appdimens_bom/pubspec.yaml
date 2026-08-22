@@ -8,32 +8,26 @@ environment:
   flutter: ">=3.27.0"
 resolution: workspace
 dependencies:
-  appdimens:
-    path: ../appdimens
-  appdimens_auto:
-    path: ../appdimens_auto
-  appdimens_density:
-    path: ../appdimens_density
-  appdimens_diagonal:
-    path: ../appdimens_diagonal
-  appdimens_fill:
-    path: ../appdimens_fill
-  appdimens_fit:
-    path: ../appdimens_fit
-  appdimens_fluid:
-    path: ../appdimens_fluid
-  appdimens_interpolated:
-    path: ../appdimens_interpolated
-  appdimens_logarithmic:
-    path: ../appdimens_logarithmic
-  appdimens_percent:
-    path: ../appdimens_percent
-  appdimens_perimeter:
-    path: ../appdimens_perimeter
-  appdimens_power:
-    path: ../appdimens_power
-  appdimens_resize:
-    path: ../appdimens_resize
-  appdimens_units:
-    path: ../appdimens_units
-publish_to: none
+  appdimens: ^3.2.0
+  appdimens_auto: ^3.2.0
+  appdimens_density: ^3.2.0
+  appdimens_diagonal: ^3.2.0
+  appdimens_fill: ^3.2.0
+  appdimens_fit: ^3.2.0
+  appdimens_fluid: ^3.2.0
+  appdimens_interpolated: ^3.2.0
+  appdimens_logarithmic: ^3.2.0
+  appdimens_percent: ^3.2.0
+  appdimens_perimeter: ^3.2.0
+  appdimens_power: ^3.2.0
+  appdimens_resize: ^3.2.0
+  appdimens_units: ^3.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+topics:
+  - responsive
+  - ui

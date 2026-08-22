@@ -4,6 +4,8 @@
 /// Library: AppDimens
 ///
 /// Shared pure-math scaling kernels for the Scaled strategy (sdp/hdp/wdp/ssp).
+library;
+
 import '../common/dp_qualifier.dart';
 import '../common/inverter.dart';
 import 'design_scale_constants.dart';
@@ -57,8 +59,9 @@ abstract final class DimenScaledEngine {
         qualifier == DpQualifier.smallWidth && inverter == Inverter.standard;
     if (isDefaultSw && customSensitivityK == null) {
       final m = metrics ?? _matchingMetrics(configuration);
-      if (m != null)
+      if (m != null) {
         return baseValue * m.scaledMultiplier(applyAspectRatio, null);
+      }
     }
     final screenDimension =
         DimenCalculationPlumbing.readScreenDp(configuration, actualQualifier);

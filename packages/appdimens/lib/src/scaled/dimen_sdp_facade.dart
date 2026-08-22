@@ -5,6 +5,8 @@
 ///
 /// Explicit-context variants (`sdpOf(context)` family) and the Java-style
 /// facades (`DimenSdp` / `DimenSsp`).
+library;
+
 import '../common/dp_qualifier.dart';
 import '../common/inverter.dart';
 import 'dimen_scaled_builder.dart';

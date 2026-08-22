@@ -6,6 +6,8 @@
 /// Immutable conditional builder chains (`DimenScaled` / `ScaledSp`) with the
 /// family priority model: **UiMode+Qualifier → UiMode → Qualifier →
 /// Orientation**.
+library;
+
 import '../common/dp_qualifier.dart';
 import '../common/inverter.dart';
 import '../common/orientation.dart';

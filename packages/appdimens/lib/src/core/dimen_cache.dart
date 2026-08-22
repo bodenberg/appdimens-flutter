@@ -5,6 +5,8 @@
 ///
 /// Lock-free-friendly snapshot-partitioned result cache + the global fast-lane
 /// metrics scope.
+library;
+
 import '../common/dp_qualifier.dart';
 import '../common/inverter.dart';
 import '../common/ui_mode_type.dart';
