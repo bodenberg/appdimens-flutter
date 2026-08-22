@@ -7,7 +7,7 @@
 /// sp stems `pssp · phsp · pwsp` / `psem · phem · pwem`).
 library;
 
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 
 import 'percent_engine.dart';
 

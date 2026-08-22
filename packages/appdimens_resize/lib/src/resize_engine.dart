@@ -6,7 +6,7 @@
 /// Resize strategy — constraint-based auto-fit (largest size that still fits).
 library;
 
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 
 /// EN: Resize helpers mirroring `DimenResize` in Kotlin. The resize strategy
 /// is not a scaling curve — it searches the largest candidate within

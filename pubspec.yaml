@@ -6,7 +6,7 @@ environment:
   sdk: ^3.6.0
 
 workspace:
-  - packages/appdimens
+  - packages/appdimens_flutter
   - packages/appdimens_auto
   - packages/appdimens_bom
   - packages/appdimens_density

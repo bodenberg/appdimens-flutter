@@ -26,7 +26,7 @@ variation on *how* that multiplier grows.
 ## 3. Setup (once)
 
 ```dart
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 
 void main() => runApp(
       AppDimensApp(                 // ← publishes the window snapshot
@@ -84,7 +84,7 @@ Each strategy lives in its own package — add only what you use:
 
 ```yaml
 dependencies:
-  appdimens: ^3.2.0
+  appdimens_flutter: ^3.2.0
   appdimens_auto: ^3.2.0
 ```
 

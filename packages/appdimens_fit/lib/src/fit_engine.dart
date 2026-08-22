@@ -10,7 +10,7 @@
 /// PT: Fórmula: `base × min(minSide/300, maxSide/533)` (always fits).
 library;
 
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 
 /// Fit strategy kernels (family port parity).
 abstract final class DimenFit {

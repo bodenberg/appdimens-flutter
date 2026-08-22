@@ -8,7 +8,7 @@
 /// `appdimens-kmp-diagonal`).
 library;
 
-export 'package:appdimens/appdimens.dart'
+export 'package:appdimens_flutter/appdimens.dart'
     show DpQualifier, Inverter, OrientationRequest, UiModeType;
 export 'src/diagonal_engine.dart';
 export 'src/diagonal_extensions.dart';

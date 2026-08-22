@@ -250,7 +250,7 @@ def gen_engine(name, cfg):
     body = "\n".join("    " + ln.strip() if False else ln for ln in [cfg["body"]])
     needs_math = "math." in cfg["body"]
     needs_factors = bool(cfg["extra"].strip())
-    imp = "import 'package:appdimens/appdimens.dart';\n\n"
+    imp = "import 'package:appdimens_flutter/appdimens.dart';\n\n"
     if needs_math:
         imp = "import 'dart:math' as math;\n\n" + imp
     if needs_factors:
@@ -289,7 +289,7 @@ abstract final class {cls} {{
     extra_types = cfg["extra"]
     if extra_types.strip():
         write(factors, HEADER + "/// Curve constants for this strategy.\n" +
-              extra_types.replace("import 'dart:math' as math;\n\nimport 'package:appdimens/appdimens.dart';\n\n", ""))
+              extra_types.replace("import 'dart:math' as math;\n\nimport 'package:appdimens_flutter/appdimens.dart';\n\n", ""))
     else:
         write(factors, HEADER + "/// Reserved for future curve tuning.\nlibrary;\n")
 
@@ -312,7 +312,7 @@ def gen_extensions(name, cfg):
     A(f"/// PT: Família `{stem}sdp` em [num] — gramática de sufixos idêntica a toda a")
     A("/// família AppDimens: *(nenhum)* / **a** (proporção) / **i** (ignora multi-janela)")
     A("/// / **ia**; inversores **Ph/Lh/Pw/Lw**; gêmeos `…Px` retornam pixels físicos.")
-    A("import 'package:appdimens/appdimens.dart';")
+    A("import 'package:appdimens_flutter/appdimens.dart';")
     A("")
     A(f"import '{name}_engine.dart';")
     A("")
@@ -504,7 +504,7 @@ def gen_barrel(name, cfg):
 /// `appdimens-kmp-{name}`).
 library;
 
-export 'package:appdimens/appdimens.dart'
+export 'package:appdimens_flutter/appdimens.dart'
     show DpQualifier, Inverter, OrientationRequest, UiModeType;
 export 'src/{name}_engine.dart';
 export 'src/{name}_extensions.dart';

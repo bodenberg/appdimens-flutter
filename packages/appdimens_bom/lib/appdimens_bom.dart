@@ -8,7 +8,7 @@
 /// the Kotlin family.
 library;
 
-export 'package:appdimens/appdimens.dart';
+export 'package:appdimens_flutter/appdimens.dart';
 export 'package:appdimens_auto/appdimens_auto.dart';
 export 'package:appdimens_density/appdimens_density.dart';
 export 'package:appdimens_diagonal/appdimens_diagonal.dart';

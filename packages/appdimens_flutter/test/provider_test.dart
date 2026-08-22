@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 
 void main() {
   setUp(() {

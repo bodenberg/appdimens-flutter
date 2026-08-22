@@ -10,7 +10,7 @@
 /// PT: Fórmula: `base × (d/300)^0.75` — perceptual sub-linear growth.
 library;
 
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 
 
 /// Power strategy kernels (family port parity).

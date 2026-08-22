@@ -8,7 +8,7 @@
 /// `appdimens-kmp-fluid`).
 library;
 
-export 'package:appdimens/appdimens.dart'
+export 'package:appdimens_flutter/appdimens.dart'
     show DpQualifier, Inverter, OrientationRequest, UiModeType;
 export 'src/fluid_engine.dart';
 export 'src/fluid_extensions.dart';

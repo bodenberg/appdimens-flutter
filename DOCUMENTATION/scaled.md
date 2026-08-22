@@ -1,6 +1,6 @@
 # Scaled — the default strategy (sdp · hdp · wdp · ssp)
 
-> Strategy module: `appdimens` · part of the AppDimens Flutter family
+> Strategy module: `appdimens_flutter` · part of the AppDimens Flutter family
 
 ## What it is
 
@@ -18,7 +18,7 @@ out = b × (1 + (d − 300) × (0.10/30 + k × ln(AR/1.78)))   // with the a suf
 ## How to use
 
 ```dart
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 final pad    = 16.sdp;        // smallest-width curve
 final height = 48.hdp;         // height curve
 final width  = 100.wdp;        // width curve

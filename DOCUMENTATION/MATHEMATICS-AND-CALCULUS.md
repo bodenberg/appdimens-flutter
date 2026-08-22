@@ -158,7 +158,7 @@ otherwise: (sw − w) ≥ sw × 10%   ⇒ constrained (return base unscaled)
 * Dart runs doubles; Kotlin runs floats. Differences appear after ~7 significant
   digits (e.g. `16.sdp` on a 392 dp phone differs from the float result by
   ≈ 3×10⁻⁷ dp).
-* Generated reference vectors (`packages/appdimens/test/reference_vectors.dart`)
+* Generated reference vectors (`packages/appdimens_flutter/test/reference_vectors.dart`)
   verify every formula against an independent model with a `10⁻⁶` tolerance —
   four orders of magnitude stricter than the family's `< 0.05 dp` policy.
 * Degenerate inputs are guarded: non-positive dimensions fall back to the

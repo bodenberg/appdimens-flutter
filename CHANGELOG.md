@@ -10,7 +10,7 @@ Complete rewrite replacing the deprecated 2.x Flutter library with a faithful,
 modular port of **AppDimens Dynamic 3.1.9 / AppDimens KMP 1.0.1**.
 
 ### Added
-- Principal artifact `appdimens`: common enums, `ScreenConfiguration`,
+- Principal artifact `appdimens_flutter`: common enums, `ScreenConfiguration`,
   `DimenMetrics` snapshot (eager precomputed factors), `DimenCache`
   (snapshot-partitioned, bypass rules identical to Kotlin),
   `DimenScaledEngine`, Scaled families (`sdp/hdp/wdp/ssp/hsp/wsp/sem/hem/wem`

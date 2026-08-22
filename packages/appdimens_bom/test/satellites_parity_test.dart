@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:appdimens_bom/appdimens_bom.dart';
 
-import '../../appdimens/test/reference_vectors.dart';
+import '../../appdimens_flutter/test/reference_vectors.dart';
 
 const _phoneCfg = ScreenConfiguration(
   screenWidthDp: 392,

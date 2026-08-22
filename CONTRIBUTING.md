@@ -15,7 +15,7 @@ flutter pub get          # workspace resolution (Dart ≥3.6 / Flutter ≥3.27)
    (`python3 scripts/generate_satellites.py`). Do not hand-edit generated
    extension files except through the generator.
 2. **Formulas are frozen contracts** — any math change must regenerate
-   `packages/appdimens/test/reference_vectors.dart` and be justified against
+   `packages/appdimens_flutter/test/reference_vectors.dart` and be justified against
    the Kotlin family docs.
 3. **Quality gates** before every PR:
 

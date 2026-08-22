@@ -59,7 +59,7 @@ Write values like `16.sdp` and the library scales them from the live window snap
 | 🪟 **Per-window snapshots** | Immutable `DimenMetrics` published by `AppDimensProvider`; rotation, split-screen and font-scale changes self-heal — no stale values |
 | 🧊 **Snapshot-partitioned cache** | Max 4 partitions × 512 entries; dominant families bypass the hash entirely (one multiply beats a lookup) |
 | 🔤 **One grammar everywhere** | Suffixes `a` · `i` · `ia`, inverters `Ph/Lh/Pw/Lw`, facilitators `Rotate/Mode/Qualifier/Screen` (+ logic-only `Plain`) on every strategy |
-| 🧩 **Modular** | Principal artifact `appdimens` plus one opt-in package per strategy (`appdimens_percent`, `appdimens_power`, …) and an all-in-one `appdimens_bom` |
+| 🧩 **Modular** | Principal artifact `appdimens_flutter` plus one opt-in package per strategy (`appdimens_percent`, `appdimens_power`, …) and an all-in-one `appdimens_bom` |
 | ♾️ **Multiplatform** | Android · iOS · Web · Windows · macOS · Linux — pure Dart engine, zero platform channels |
 
 ---
@@ -70,7 +70,7 @@ Write values like `16.sdp` and the library scales them from the live window snap
 
 ```yaml
 dependencies:
-  appdimens: ^3.2.0            # principal artifact (core + scaled)
+  appdimens_flutter: ^3.2.0            # principal artifact (core + scaled)
   # optional strategies, exactly like the Kotlin satellite modules:
   appdimens_percent: ^3.2.0
   appdimens_auto: ^3.2.0
@@ -83,7 +83,7 @@ dependencies:
 ### Wrap your app once
 
 ```dart
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 
 void main() => runApp(
       AppDimensApp(                       // publishes the window snapshot
@@ -95,7 +95,7 @@ void main() => runApp(
 ### Use it
 
 ```dart
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 
 Box(
   width: 100.wdp,
@@ -178,7 +178,7 @@ final px  = AppDimens.getDimensionInPx(context, DpQualifier.smallWidth, 16);
 
 | Package | Contents |
 |---|---|
-| **`appdimens`** | `common`, `core` (engine/cache/metrics), **scaled** families, provider |
+| **`appdimens_flutter`** | `common`, `core` (engine/cache/metrics), **scaled** families, provider |
 | **`appdimens_percent`** … **`appdimens_units`** | One package per strategy — mirrors `appdimens-kmp-*` / `appdimens-dynamic-*` |
 | **`appdimens_bom`** | Meta-package re-exporting everything at a coherent version |
 | **`apps/sample`** | Converted sample app (strategy routing demo + benchmark dashboard) |

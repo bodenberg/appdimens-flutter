@@ -8,7 +8,7 @@
 /// `appdimens-kmp-interpolated`).
 library;
 
-export 'package:appdimens/appdimens.dart'
+export 'package:appdimens_flutter/appdimens.dart'
     show DpQualifier, Inverter, OrientationRequest, UiModeType;
 export 'src/interpolated_engine.dart';
 export 'src/interpolated_extensions.dart';

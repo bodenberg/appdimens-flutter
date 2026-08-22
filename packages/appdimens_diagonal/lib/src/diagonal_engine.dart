@@ -10,7 +10,7 @@
 /// PT: Fórmula: `base × √(min² + max²) / 611.6305` (qualifier-independent).
 library;
 
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 
 /// Diagonal strategy kernels (family port parity).
 abstract final class DimenDiagonal {

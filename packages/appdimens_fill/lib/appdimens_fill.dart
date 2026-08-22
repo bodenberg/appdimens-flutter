@@ -8,7 +8,7 @@
 /// `appdimens-kmp-fill`).
 library;
 
-export 'package:appdimens/appdimens.dart'
+export 'package:appdimens_flutter/appdimens.dart'
     show DpQualifier, Inverter, OrientationRequest, UiModeType;
 export 'src/fill_engine.dart';
 export 'src/fill_extensions.dart';

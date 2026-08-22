@@ -10,7 +10,7 @@ recommended usage** — mirroring the documentation of the Kotlin family.
 
 | # | Strategy | Package | Guide | Dp stems |
 |---|----------|---------|-------|----------|
-| 1 | Scaled *(default)* | `appdimens` | [scaled.md](scaled.md) | `sdp` / `hdp` / `wdp` |
+| 1 | Scaled *(default)* | `appdimens_flutter` | [scaled.md](scaled.md) | `sdp` / `hdp` / `wdp` |
 | 2 | Percent | `appdimens_percent` | [percent.md](percent.md) | `psdp` / `phdp` / `pwdp` |
 | 3 | Power | `appdimens_power` | [power.md](power.md) | `pwsdp` / `pwhdp` / `pwwdp` |
 | 4 | Fluid | `appdimens_fluid` | [fluid.md](fluid.md) | `fsdp` / `fhdp` / `fwdp` |

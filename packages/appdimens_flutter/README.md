@@ -10,7 +10,7 @@ The principal artifact: core engine, immutable window snapshots, snapshot-partit
 
 ```yaml
 dependencies:
-  appdimens: ^3.2.0
+  appdimens_flutter: ^3.2.0
 ```
 
 > Prefer one dependency for everything? Use [`appdimens_bom`](https://pub.dev/packages/appdimens_bom).
@@ -18,7 +18,7 @@ dependencies:
 ## Usage
 
 ```dart
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens_flutter.dart';
 final pad  = 16.sdp;    // smallest-width curve
 final h    = 48.hdp;    // height curve
 final size = 100.wdp;   // width curve

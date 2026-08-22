@@ -8,7 +8,7 @@
 /// `appdimens-kmp-perimeter`).
 library;
 
-export 'package:appdimens/appdimens.dart'
+export 'package:appdimens_flutter/appdimens.dart'
     show DpQualifier, Inverter, OrientationRequest, UiModeType;
 export 'src/perimeter_engine.dart';
 export 'src/perimeter_extensions.dart';

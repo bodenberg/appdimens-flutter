@@ -9,7 +9,7 @@ library;
 
 import 'package:flutter/widgets.dart';
 
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 import 'resize_engine.dart';
 
 /// EN: Lays out [child] with the largest square side in `[min, max]` that

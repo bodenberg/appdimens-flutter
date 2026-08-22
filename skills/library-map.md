@@ -10,7 +10,7 @@ Read this file when you need package locations, resolution-mode symmetry, or cor
 
 | Strategy | Package | Source roots |
 |---|---|---|
-| scaled (+ common/core) | `appdimens` | `packages/appdimens/lib/src/{common,core,scaled,flutter}` |
+| scaled (+ common/core) | `appdimens_flutter` | `packages/appdimens_flutter/lib/src/{common,core,scaled,flutter}` |
 | *(BOM)* | `appdimens_bom` | `packages/appdimens_bom/lib/appdimens_bom.dart` |
 | auto | `appdimens_auto` | `packages/appdimens_auto/lib/src/` |
 | density | `appdimens_density` | `packages/appdimens_density/lib/src/` |
@@ -26,9 +26,9 @@ Read this file when you need package locations, resolution-mode symmetry, or cor
 | resize | `appdimens_resize` | `packages/appdimens_resize/lib/src/` |
 | units (physical) | `appdimens_units` | `packages/appdimens_units/lib/src/` |
 
-Full graph: [DOCUMENTATION/MODULES.md](../DOCUMENTATION/MODULES.md). Satellites depend only on `appdimens`. `appdimens_bom` re-exports everything at one version. Satellite extension files are generated from [`scripts/generate_satellites.py`](https://github.com/bodenberg/appdimens-flutter/blob/main/scripts/generate_satellites.py) — edit the generator, not the generated stems.
+Full graph: [DOCUMENTATION/MODULES.md](../DOCUMENTATION/MODULES.md). Satellites depend only on `appdimens_flutter`. `appdimens_bom` re-exports everything at one version. Satellite extension files are generated from [`scripts/generate_satellites.py`](https://github.com/bodenberg/appdimens-flutter/blob/main/scripts/generate_satellites.py) — edit the generator, not the generated stems.
 
-## Source layout (`packages/appdimens`)
+## Source layout (`packages/appdimens_flutter`)
 
 - **`lib/src/common/`** — shared enums/value types: `DpQualifier` (smallWidth, height, width), `Inverter` (8 mappings + standard), `DimensOrientation`, `UiModeType` (incl. fold states), `UnitType`.
 - **`lib/src/core/`** — cross-cutting engine: `ScreenConfiguration` (immutable window config), `DimenMetrics` (per-window snapshot with eagerly precomputed factors: scale, width/height factors, AR multipliers, lazy satellite scales), `DimenCache` (snapshot-partitioned cache, max 4×512 entries, bypass rules identical to the Kotlin engine; `AppDimensScope` fast-lane slot; no persistence), `DimenCalculationPlumbing` (inverter resolution, axis reads, multi-window heuristic), `DimenScaledEngine` (scaled kernels incl. sp semantics), `DesignScaleConstants`, resize math (`ResizeMath`, `ResizeBound`, `AutoResizePercentBasis`, `ResizeRangePx`).
@@ -82,7 +82,7 @@ Use for pattern reference:
 ## Internal `CalcType`
 
 Debug/cache tagging only — end users think in strategy names. Values: auto, diagonal, fill, fit, fluid, interpolated, logarithmic, percent, perimeter, power, resize, scaled, unities, aspectRatio, density.
-Source: [dimen_cache.dart](https://github.com/bodenberg/appdimens-flutter/blob/main/packages/appdimens/lib/src/core/dimen_cache.dart)
+Source: [dimen_cache.dart](https://github.com/bodenberg/appdimens-flutter/blob/main/packages/appdimens_flutter/lib/src/core/dimen_cache.dart)
 
 ---
 

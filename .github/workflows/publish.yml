@@ -25,7 +25,7 @@ jobs:
           fail-fast: true
           matrix:
             package:
-              [appdimens, appdimens_auto, appdimens_bom, appdimens_density,
+              [appdimens_flutter, appdimens_auto, appdimens_bom, appdimens_density,
                appdimens_diagonal, appdimens_fill, appdimens_fit,
                appdimens_fluid, appdimens_interpolated,
                appdimens_logarithmic, appdimens_percent, appdimens_perimeter,
@@ -42,7 +42,7 @@ jobs:
           CONFIG_HOME="$HOME/.config"
           mkdir -p "$CONFIG_HOME/dart"
           echo "$PUB_CREDENTIALS" > "$CONFIG_HOME/dart/pub-credentials.json"
-          for p in appdimens appdimens_percent appdimens_power \
+          for p in appdimens_flutter appdimens_percent appdimens_power \
                    appdimens_fluid appdimens_auto appdimens_logarithmic \
                    appdimens_interpolated appdimens_diagonal \
                    appdimens_perimeter appdimens_density appdimens_fill \

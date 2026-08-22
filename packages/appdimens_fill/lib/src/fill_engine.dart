@@ -10,7 +10,7 @@
 /// PT: Fórmula: `base × max(minSide/300, maxSide/533)` (may crop overflow).
 library;
 
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 
 /// Fill strategy kernels (family port parity).
 abstract final class DimenFill {

@@ -2,7 +2,7 @@
 
 > Branch: `feature/appdimens-flutter-3.2.0-modular`
 > Sources analyzed: `appdimens-kmp` 1.0.1 (7 platforms) · `appdimens-dynamic` 3.1.9 (Android)
-> Target: complete replacement of the deprecated `appdimens` Flutter package on `main`.
+> Target: complete replacement of the deprecated `appdimens_flutter` Flutter package on `main`.
 
 ---
 
@@ -94,7 +94,7 @@ Sp stems mirror (`ssp,hsp,wsp`) and no-font-scale (`sem,hem,wem`).
 ```
 ├── pubspec.yaml                     # pub workspace root
 ├── packages/
-│   ├── appdimens/                   # MAIN: core + scaled + plain + provider (family principal artifact)
+│   ├── appdimens_flutter/          # MAIN: core + scaled + plain + provider (family principal artifact)
 │   ├── appdimens_percent/  appdimens_power/   appdimens_fluid/
 │   ├── appdimens_auto/     appdimens_density/ appdimens_diagonal/
 │   ├── appdimens_fill/     appdimens_fit/     appdimens_interpolated/
@@ -116,7 +116,7 @@ Version: **3.2.0** (aligned with the AppDimens Dynamic 3.x family). SDK: Dart �
 
 ## 3. Execution order (as requested)
 
-1. **Main module** `packages/appdimens`: common enums → design constants → ScreenConfiguration → DimenMetrics → DimenCalculationPlumbing → DimenCache (snapshot-partitioned + fast slot) → scaled kernels → sdp/hdp/wdp/ssp/hsp/wsp/sem families + inverters + facilitators + Plain branch → DimenScaled/ScaledSp builders → AppDimensContext + AppDimensProvider/CompositionLocals → resize core (ResizeMath/ResizeBound).
+1. **Main module** `packages/appdimens_flutter`: common enums → design constants → ScreenConfiguration → DimenMetrics → DimenCalculationPlumbing → DimenCache (snapshot-partitioned + fast slot) → scaled kernels → sdp/hdp/wdp/ssp/hsp/wsp/sem families + inverters + facilitators + Plain branch → DimenScaled/ScaledSp builders → AppDimensContext + AppDimensProvider/CompositionLocals → resize core (ResizeMath/ResizeBound).
 2. **Satellites**: each mirrors KMP file-for-file (extensions + object facade + factors), same prefix grammar.
 3. **Sample app**: DemoCalc routing (12 strategies), core/inverter/facilitator/builder/auto-resize sections, benchmark dashboard (calc/micro/macro/compare).
 4. **Benchlab**: Benchmark A (UI chunked probe vs competitors), Benchmark B (isolate engine), legacy T1/T2/T3 passes, resolution-parity tables, ratio banners, report generator.

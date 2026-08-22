@@ -7,7 +7,7 @@
 /// family (`spaceW`, `spaceH`, …).
 library;
 
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 
 /// EN: Percent strategy kernels. The dp/sp curves follow the same linear law
 /// as Scaled (`b × d/300`, qualifier-driven) while the **space** family

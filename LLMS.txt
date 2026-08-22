@@ -3,7 +3,7 @@
 > AppDimens Flutter is a multi-platform library for responsive `dp`-class dimensioning in Flutter (Android · iOS · Web · Windows · macOS · Linux). It is the Flutter port of the AppDimens family and ships 14 scaling strategies (Scaled, Percent, Power, Fluid, Auto, Diagonal, Fill, Fit, Interpolated, Logarithmic, Perimeter, Density, Resize, Physical units) over an immutable per-window `DimenMetrics` snapshot, a snapshot-partitioned `DimenCache` with fast-lane resolution, and constraint-based resize widgets.
 
 Important notes:
-- Principal package: `appdimens` (common + core + scaled); one opt-in satellite per strategy (`appdimens_percent`, `appdimens_power`, …) and an all-in-one meta-package `appdimens_bom`. Satellites depend only on `appdimens`.
+- Principal package: `appdimens_flutter` (common + core + scaled); one opt-in satellite per strategy (`appdimens_percent`, `appdimens_power`, …) and an all-in-one meta-package `appdimens_bom`. Satellites depend only on `appdimens_flutter`.
 - Current version: **3.2.0** — Dart ≥ 3.6, Flutter ≥ 3.27, pure Dart engine (no platform channels).
 - Wrap the app once with `AppDimensApp(child: MaterialApp(...))` (or `AppDimensScopeBinder` inside `MaterialApp.builder`) so `16.sdp`-style getters resolve through the global fast lane; without a provider they resolve against the deterministic 300×533 reference.
 - The recommended default strategy is **Scaled** (`sdp` / `hdp` / `wdp` / `ssp`, optionally `sdpa` for aspect-ratio tuning); the `a` suffix adds aspect-ratio awareness; `i` / `ia` are internal multi-window flags and should not be surfaced to users.

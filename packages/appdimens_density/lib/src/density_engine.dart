@@ -10,7 +10,7 @@
 /// PT: Fórmula: `base × (dpi / 160)` (qualifier-independent).
 library;
 
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 
 /// Density strategy kernels (family port parity).
 abstract final class DimenDensity {

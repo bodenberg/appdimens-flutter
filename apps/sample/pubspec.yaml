@@ -6,8 +6,8 @@ environment:
   sdk: ^3.6.0
 resolution: workspace
 dependencies:
-  appdimens:
-    path: ../../packages/appdimens
+  appdimens_flutter:
+    path: ../../packages/appdimens_flutter
   appdimens_bom:
     path: ../../packages/appdimens_bom
   flutter:

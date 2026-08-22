@@ -5,9 +5,9 @@ description: Use this skill for any Flutter responsive layout or scaling questio
 
 # AppDimens Flutter — project workflow
 
-**Library (3.2.0):** `appdimens` (scaled + core), `appdimens_<strategy>`, BOM `appdimens_bom`. See [MODULES.md](../DOCUMENTATION/MODULES.md).
+**Library (3.2.0):** `appdimens_flutter` (scaled + core), `appdimens_<strategy>`, BOM `appdimens_bom`. See [MODULES.md](../DOCUMENTATION/MODULES.md).
 
-**Install:** `appdimens: ^3.2.0` plus the strategy satellites you need (or `appdimens_bom: ^3.2.0` for everything).
+**Install:** `appdimens_flutter: ^3.2.0` plus the strategy satellites you need (or `appdimens_bom: ^3.2.0` for everything).
 
 On release bumps, update version URLs in this file, `library-map.md`, and `reference.md` together.
 
@@ -30,7 +30,7 @@ On release bumps, update version URLs in this file, `library-map.md`, and `refer
 ## Agent Preflight (run before any non-trivial edit)
 
 1. Read [library-map.md](library-map.md) for package layout and strategy ↔ doc mapping.
-2. For the **specific packages/symbols** you'll touch: browse [`packages/appdimens/`](https://github.com/bodenberg/appdimens-flutter/tree/main/packages/appdimens/lib) (principal) or the matching [`packages/appdimens_<strategy>/`](https://github.com/bodenberg/appdimens-flutter/tree/main/packages) satellite on GitHub, or use IDE "Navigate to Declaration" on the pub package. For API detail, see [DOCUMENTATION/API-CONVENTIONS.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/API-CONVENTIONS.md). Do not rely on memory.
+2. For the **specific packages/symbols** you'll touch: browse [`packages/appdimens_flutter/`](https://github.com/bodenberg/appdimens-flutter/tree/main/packages/appdimens_flutter/lib) (principal) or the matching [`packages/appdimens_<strategy>/`](https://github.com/bodenberg/appdimens-flutter/tree/main/packages) satellite on GitHub, or use IDE "Navigate to Declaration" on the pub package. For API detail, see [DOCUMENTATION/API-CONVENTIONS.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/API-CONVENTIONS.md). Do not rely on memory.
 3. Skim the upstream example that matches the user's task (links above). Restrict deep reading to **relevant packages and call sites** — full module audits only when explicitly requested.
 
 **Hard rule:** never surface `ignoreMultiWindows`, `*i`, or `*ia` suffixes to users.
@@ -100,7 +100,7 @@ For each major screen or module, ask for plain-language criteria (e.g., "no clip
 
 ### Default: Scaled
 
-**`packages/appdimens`** — recommend this first. Linear scaling around a **300 dp** reference on the chosen axis.
+**`packages/appdimens_flutter`** — recommend this first. Linear scaling around a **300 dp** reference on the chosen axis.
 
 | Variant | Typical use |
 |---------|-------------|
@@ -139,7 +139,7 @@ Use only when requirements or QA justify leaving scaled. **Before recommending a
 
 Apply regardless of strategy or resolution mode:
 
-1. **Strategy isolation** — satellites depend only on `appdimens` and do not cross-import. One strategy per calculation path.
+1. **Strategy isolation** — satellites depend only on `appdimens_flutter` and do not cross-import. One strategy per calculation path.
 2. **`AppDimensApp`** — required once at the root for fast-lane getters; `AppDimensScopeBinder` belongs in `MaterialApp.builder`. Facilitators (`sdpMode`, `sdpScreen`, `sspScreen`) read the published ui-mode/qualifier slots.
 3. **Config churn** — no explicit invalidation is required for correctness: every resolution is keyed by the immutable per-window `DimenMetrics` snapshot, so a rotated/resized window can never read a stale value. `DimenCache.invalidateOnConfigChange` exists as an eager memory-release hook only.
 4. **Hot paths** — the extension getters allocate nothing and carry monomorphic inline kernels; prefer them over building chains per frame. Cache `DimenScaled`/`StrategyChain` instances outside `build` when the chain is static.
@@ -178,4 +178,4 @@ Reference: [DOCUMENTATION/resize.md](https://github.com/bodenberg/appdimens-flut
 
 ## Output Style
 
-For every decision state: chosen strategy, package (`appdimens` or `appdimens_<strategy>`), resolution mode (fast lane vs explicit context), axis (`sdp` vs `hdp` vs `wdp`), whether resize vs global scaling, and which acceptance criterion it satisfies. Prefer small, reviewable diffs aligned with existing project patterns.
+For every decision state: chosen strategy, package (`appdimens_flutter` or `appdimens_<strategy>`), resolution mode (fast lane vs explicit context), axis (`sdp` vs `hdp` vs `wdp`), whether resize vs global scaling, and which acceptance criterion it satisfies. Prefer small, reviewable diffs aligned with existing project patterns.

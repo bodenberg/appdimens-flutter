@@ -10,7 +10,7 @@
 /// PT: Fórmula: plateau at `b×0.8` below 320 dp, plateau at `b×1.2` above 768 dp, linear lerp between.
 library;
 
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 
 import 'factors.dart';
 

@@ -10,7 +10,7 @@
 /// PT: Fórmula: `d ≤ 480 : d/300`; else `480/300 + 0.4·ln(1 + (d−480)/300)`.
 library;
 
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 
 
 /// Auto strategy kernels (family port parity).

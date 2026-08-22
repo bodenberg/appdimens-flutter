@@ -1,4 +1,4 @@
-# Migration — deprecated `appdimens` 2.x → AppDimens 3.2
+# Migration — deprecated 2.x API → AppDimens Flutter 3.2
 
 This branch **replaces** the deprecated Flutter library (`fx`/`dy`
 builders) with a faithful port of the AppDimens Dynamic/KMP family. The old

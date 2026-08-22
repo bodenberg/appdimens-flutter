@@ -7,7 +7,7 @@
 /// Flutter family (port of `appdimens-dynamic-resize` / `appdimens-kmp-resize`).
 library;
 
-export 'package:appdimens/appdimens.dart'
+export 'package:appdimens_flutter/appdimens.dart'
     show
         AutoResizePercentBasis,
         ResizeBound,

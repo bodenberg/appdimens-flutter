@@ -10,7 +10,7 @@
 /// PT: Fórmula: `base × (minSide + maxSide) / 833` (qualifier-independent).
 library;
 
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 
 /// Perimeter strategy kernels (family port parity).
 abstract final class DimenPerimeter {

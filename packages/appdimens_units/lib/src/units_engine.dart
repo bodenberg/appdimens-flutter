@@ -8,7 +8,7 @@ library;
 
 import 'dart:math' as math;
 
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 
 /// Physical conversion constants.
 abstract final class PhysicalUnitConstants {

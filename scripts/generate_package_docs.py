@@ -54,7 +54,7 @@ Apache License 2.0 — © Jean Bodenberg.
 """
 
 PACKAGES = {
-    "appdimens": dict(
+    "appdimens_flutter": dict(
         title="AppDimens — Smart Responsive Dimensioning",
         blurb=(
             "The principal artifact: core engine, immutable window snapshots, "
@@ -72,7 +72,7 @@ final box = 100.scaledDp
     .screenQualifier(DpQualifier.smallWidth, 600, 150);""",
         doc="scaled",
         stems=("| `sdp` / `hdp` / `wdp` | smallest width / height / width | `ssp/hsp/wsp` | `sem/hem/wem` |\n"),
-        pkg="appdimens",
+        pkg="appdimens_flutter",
     ),
     "appdimens_percent": dict(
         title="AppDimens Percent",
@@ -189,7 +189,7 @@ final cm   = 25.4.mmToCm;""",
 BOM_README = """# AppDimens BOM
 
 Meta-package that re-exports the principal artifact
-([appdimens](https://pub.dev/packages/appdimens)) and **every** strategy
+([appdimens_flutter](https://pub.dev/packages/appdimens_flutter)) and **every** strategy
 satellite at a coherent version — the Maven-BOM equivalent of the AppDimens
 Kotlin family.
 
@@ -212,7 +212,7 @@ final w   = 50.spaceW;   // percent
 final t   = 16.fsdp;     // fluid
 ```
 
-Included modules: appdimens · percent · power · fluid · auto · diagonal ·
+Included modules: appdimens_flutter · percent · power · fluid · auto · diagonal ·
 fill · fit · interpolated · logarithmic · perimeter · density · resize · units.
 
 Family docs: [DOCUMENTATION](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/README.md).

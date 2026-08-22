@@ -7,5 +7,5 @@
 /// (port of `appdimens-dynamic-units` / `appdimens-kmp-units`).
 library;
 
-export 'package:appdimens/appdimens.dart' show UnitType;
+export 'package:appdimens_flutter/appdimens.dart' show UnitType;
 export 'src/units_engine.dart';

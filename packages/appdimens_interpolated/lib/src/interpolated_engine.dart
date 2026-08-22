@@ -10,7 +10,7 @@
 /// PT: Fórmula: `out = b + (b·d/300 − b) × 0.5`.
 library;
 
-import 'package:appdimens/appdimens.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 
 import 'factors.dart';
 

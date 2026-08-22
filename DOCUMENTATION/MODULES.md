@@ -1,6 +1,6 @@
 # Modules — AppDimens Flutter 3.2
 
-The library ships as a **principal artifact** (`appdimens` = common + core +
+The library ships as a **principal artifact** (`appdimens_flutter` = common + core +
 scaled) plus optional strategy satellites and an all-in-one meta-package — the
 same packaging philosophy as `appdimens-kmp` / `appdimens-dynamic`.
 
@@ -18,7 +18,7 @@ same packaging philosophy as `appdimens-kmp` / `appdimens-dynamic`.
         └───────────────┬───────┴─────────────┬─────────────┘
                         ▼                     ▼
                   ┌───────────────────────────────┐
-                  │           appdimens           │  ← principal artifact
+                  │       appdimens_flutter       │  ← principal artifact
                   │  common · core · scaled       │
                   └───────────────────────────────┘
 ```
@@ -27,7 +27,7 @@ same packaging philosophy as `appdimens-kmp` / `appdimens-dynamic`.
 
 | Package | Contents |
 |---|---|
-| **`appdimens`** | `common` enums (`DpQualifier`, `Inverter`, `UiModeType`, …), `core` engine (`ScreenConfiguration`, `DimenMetrics`, `DimenCache`, `DimenScaledEngine`, plumbing), **scaled** families + facilitators, `AppDimensProvider`/`AppDimensApp`, resize math primitives |
+| **`appdimens_flutter`** | `common` enums (`DpQualifier`, `Inverter`, `UiModeType`, …), `core` engine (`ScreenConfiguration`, `DimenMetrics`, `DimenCache`, `DimenScaledEngine`, plumbing), **scaled** families + facilitators, `AppDimensProvider`/`AppDimensApp`, resize math primitives |
 | **`appdimens_percent`** | Percent curves + literal space family (`spaceW/spaceH/spaceSw`) |
 | **`appdimens_power`** | Sub-linear power curve `(d/300)^0.75` |
 | **`appdimens_fluid`** | Clamped lerp between `b×0.8` and `b×1.2` over `[320, 768]` |
@@ -45,9 +45,9 @@ same packaging philosophy as `appdimens-kmp` / `appdimens-dynamic`.
 
 ## Dependency rules
 
-1. Satellites depend **only** on `appdimens` (never on each other) — you can
+1. Satellites depend **only** on `appdimens_flutter` (never on each other) — you can
    adopt exactly the strategies you need.
-2. The shared grammar lives in `appdimens`' internal
+2. The shared grammar lives in `appdimens_flutter`' internal
    `strategy_resolution.dart`; satellites contribute only their formula.
 3. Apps may depend on `appdimens_bom` for convenience or on individual
    satellites to keep the dependency tree minimal.

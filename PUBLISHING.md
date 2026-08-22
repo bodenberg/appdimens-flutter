@@ -12,7 +12,7 @@ published).
    (e.g. `bodenberg.dev`) at pub.dev → Publisher settings, then add
    `publisher: bodenberg.dev` to every package pubspec — the equivalent of
    the `io.github.bodenberg` group id used by the Kotlin family.
-3. Confirm the names are free: `appdimens`, `appdimens_percent`, … (checked
+3. Confirm the names are free: `appdimens_flutter`, `appdimens_percent`, … (checked
    free at preparation time).
 
 ## 1. Validate everything
@@ -34,7 +34,7 @@ Consumers resolve hosted dependencies, so publish the core first and the BOM
 last:
 
 ```bash
-cd packages/appdimens        && flutter pub publish        # 1. core
+cd packages/appdimens_flutter        && flutter pub publish        # 1. core
 cd ../appdimens_percent      && flutter pub publish        # 2. satellites…
 cd ../appdimens_power        && flutter pub publish
 cd ../appdimens_fluid        && flutter pub publish
@@ -52,7 +52,7 @@ cd ../appdimens_bom          && flutter pub publish        # 15. last
 ```
 
 All inter-package dependencies are declared as **hosted constraints**
-(`appdimens: ^3.2.0`). Inside the workspace, pub resolves them automatically
+(`appdimens_flutter: ^3.2.0`). Inside the workspace, pub resolves them automatically
 to the local members; on publish, the hosted source is used directly — the
 pattern recommended by the official workspace docs (no `path` dependencies in
 publishable packages).
