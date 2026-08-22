@@ -10,11 +10,8 @@
 /// PT: Fórmula: `d > 300 : 1 + 0.4·ln(d/300)` · `d ≤ 300 : 1 − 0.4·ln(300/d)`.
 library;
 
-import 'dart:math' as math;
-
 import 'package:appdimens/appdimens.dart';
 
-import 'factors.dart';
 
 /// Logarithmic strategy kernels (family port parity).
 abstract final class DimenLogarithmic {
@@ -32,18 +29,12 @@ abstract final class DimenLogarithmic {
         customSensitivityK == null) {
       return base * metrics.logarithmicScale;
     }
-    final d = StrategyResolution.axisDp(metrics, effectiveQualifier);
-    double scale;
-    if (d > DesignScaleConstants.baseWidthDp) {
-      scale =
-          1 + LogarithmicCurve.slope * math.log(d * DimenCache.invBaseRatio);
-    } else if (d > 0) {
-      scale = 1 -
-          LogarithmicCurve.slope *
-              math.log(DesignScaleConstants.baseWidthDp / d);
-    } else {
-      scale = 1;
-    }
+    // Per-axis piecewise factors are hoisted onto the snapshot.
+    final scale = switch (effectiveQualifier) {
+      DpQualifier.width => metrics.logarithmicWidthFactor,
+      DpQualifier.height => metrics.logarithmicHeightFactor,
+      DpQualifier.smallWidth => metrics.logarithmicScale,
+    };
     return StrategyResolution.applyAr(
         base * scale, metrics, applyAspectRatio, customSensitivityK);
   }

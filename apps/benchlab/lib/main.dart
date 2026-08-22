@@ -44,20 +44,31 @@ class _BenchlabScreenState extends State<BenchlabScreen> {
   DpResolution3? _resolution;
   String _report = '';
 
-  late BenchLabController _controller;
+  BenchLabController? _controller;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final view = WidgetsBinding.instance.platformDispatcher.views.first;
-    final dpr = view.devicePixelRatio;
-    final size = view.physicalSize / dpr;
-    _controller = BenchLabController(
+    // EN: Read metrics from MediaQuery (registered dependency) so the
+    // controller refreshes on resize/rotation — a cold-start first frame
+    // may still report physicalSize zero.
+    // PT: Lê métricas do MediaQuery (dependência registrada) para o
+    // controlador se atualizar em resize/rotação — a primeira frame pode
+    // ainda reportar physicalSize zero.
+    final media = MediaQuery.of(context);
+    final dpr = media.devicePixelRatio;
+    final size = media.size;
+    final next = BenchLabController(
       swDp: size.width < size.height ? size.width : size.height,
       widthDp: size.width,
       heightDp: size.height,
       density: dpr,
     );
+    if (_controller == null ||
+        _controller!.swDp != next.swDp ||
+        _controller!.density != next.density) {
+      _controller = next;
+    }
   }
 
   Future<void> _runFull() async {
@@ -71,17 +82,17 @@ class _BenchlabScreenState extends State<BenchlabScreen> {
     });
 
     setState(() => _phase = BenchPhase.composeApi);
-    _composeApi = await _controller.runBenchmarkA((p, total) {
+    _composeApi = await _controller!.runBenchmarkA((p, total) {
       setState(() => _progress = BenchPhase.composeApi.progress * (p / total));
     });
     setState(() => _progress = BenchPhase.coreEngine.progress);
 
     setState(() => _phase = BenchPhase.coreEngine);
-    _coreEngine = await _controller.runBenchmarkB();
+    _coreEngine = await _controller!.runBenchmarkB();
     setState(() => _progress = BenchPhase.legacy.progress);
 
     setState(() => _phase = BenchPhase.legacy);
-    final (legacy, resolution) = await _controller.runLegacyPasses();
+    final (legacy, resolution) = await _controller!.runLegacyPasses();
     _legacy = legacy;
     _resolution = resolution;
 
@@ -98,16 +109,19 @@ class _BenchlabScreenState extends State<BenchlabScreen> {
       coreEngine: _coreEngine!,
       legacy: _legacy!,
       resolution: _resolution!,
-      windowWidthDp: _controller.widthDp,
-      windowHeightDp: _controller.heightDp,
-      density: _controller.density,
+      windowWidthDp: _controller!.widthDp,
+      windowHeightDp: _controller!.heightDp,
+      density: _controller!.density,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final view = WidgetsBinding.instance.platformDispatcher.views.first;
-    final size = view.physicalSize / view.devicePixelRatio;
+    // EN: MediaQuery-driven header (reactive to resize; never stuck at 0×0).
+    // PT: Cabeçalho via MediaQuery (reativo a resize; nunca preso em 0×0).
+    final media = MediaQuery.of(context);
+    final size = media.size;
+    final dpr = media.devicePixelRatio;
     return Scaffold(
       appBar: AppBar(title: const Text('AppDimens BenchLab')),
       body: Container(
@@ -115,7 +129,7 @@ class _BenchlabScreenState extends State<BenchlabScreen> {
         child: ListView(
           padding: EdgeInsets.all(16.sdp),
           children: [
-            _deviceCard(size, view.devicePixelRatio),
+            _deviceCard(size, dpr),
             SizedBox(height: 12.sdp),
             _actionPanel(),
             SizedBox(height: 8.sdp),

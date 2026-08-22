@@ -21,7 +21,8 @@ import 'fill_engine.dart';
 
 extension AppDimensFillDp on num {
   // ── flsdp (smallest width) ────────────────────────────────────────────────────
-  double get flsdp => _v(DpQualifier.smallWidth);
+  /// Monomorphic fast lane — `max(minDp/300, maxDp/533)` hoisted per snapshot.
+  double get flsdp => toDouble() * AppDimensScope.metricsOrDefault.fillScale;
   double get flsdpa => _v(DpQualifier.smallWidth, ar: true);
   double get flsdpi => _v(DpQualifier.smallWidth, mw: true);
   double get flsdpia => _v(DpQualifier.smallWidth, ar: true, mw: true);
@@ -58,7 +59,8 @@ extension AppDimensFillDp on num {
   double get flsdpPx => flsdp * AppDimensScope.metricsOrDefault.density;
 
   // ── flhdp (height) ────────────────────────────────────────────────────────────
-  double get flhdp => _v(DpQualifier.height);
+  /// Monomorphic fast lane — fill is axis-independent.
+  double get flhdp => toDouble() * AppDimensScope.metricsOrDefault.fillScale;
   double get flhdpa => _v(DpQualifier.height, ar: true);
   double get flhdpi => _v(DpQualifier.height, mw: true);
   double get flhdpia => _v(DpQualifier.height, ar: true, mw: true);
@@ -76,7 +78,8 @@ extension AppDimensFillDp on num {
   double get flhdpPx => flhdp * AppDimensScope.metricsOrDefault.density;
 
   // ── flwdp (width) ─────────────────────────────────────────────────────────────
-  double get flwdp => _v(DpQualifier.width);
+  /// Monomorphic fast lane — fill is axis-independent.
+  double get flwdp => toDouble() * AppDimensScope.metricsOrDefault.fillScale;
   double get flwdpa => _v(DpQualifier.width, ar: true);
   double get flwdpi => _v(DpQualifier.width, mw: true);
   double get flwdpia => _v(DpQualifier.width, ar: true, mw: true);

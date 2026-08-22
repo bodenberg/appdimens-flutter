@@ -21,7 +21,8 @@ import 'fit_engine.dart';
 
 extension AppDimensFitDp on num {
   // ── ftsdp (smallest width) ────────────────────────────────────────────────────
-  double get ftsdp => _v(DpQualifier.smallWidth);
+  /// Monomorphic fast lane — `min(minDp/300, maxDp/533)` hoisted per snapshot.
+  double get ftsdp => toDouble() * AppDimensScope.metricsOrDefault.fitScale;
   double get ftsdpa => _v(DpQualifier.smallWidth, ar: true);
   double get ftsdpi => _v(DpQualifier.smallWidth, mw: true);
   double get ftsdpia => _v(DpQualifier.smallWidth, ar: true, mw: true);
@@ -58,7 +59,8 @@ extension AppDimensFitDp on num {
   double get ftsdpPx => ftsdp * AppDimensScope.metricsOrDefault.density;
 
   // ── fthdp (height) ────────────────────────────────────────────────────────────
-  double get fthdp => _v(DpQualifier.height);
+  /// Monomorphic fast lane — fit is axis-independent.
+  double get fthdp => toDouble() * AppDimensScope.metricsOrDefault.fitScale;
   double get fthdpa => _v(DpQualifier.height, ar: true);
   double get fthdpi => _v(DpQualifier.height, mw: true);
   double get fthdpia => _v(DpQualifier.height, ar: true, mw: true);
@@ -76,7 +78,8 @@ extension AppDimensFitDp on num {
   double get fthdpPx => fthdp * AppDimensScope.metricsOrDefault.density;
 
   // ── ftwdp (width) ─────────────────────────────────────────────────────────────
-  double get ftwdp => _v(DpQualifier.width);
+  /// Monomorphic fast lane — fit is axis-independent.
+  double get ftwdp => toDouble() * AppDimensScope.metricsOrDefault.fitScale;
   double get ftwdpa => _v(DpQualifier.width, ar: true);
   double get ftwdpi => _v(DpQualifier.width, mw: true);
   double get ftwdpia => _v(DpQualifier.width, ar: true, mw: true);

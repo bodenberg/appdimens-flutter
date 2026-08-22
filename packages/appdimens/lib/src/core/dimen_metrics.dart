@@ -129,39 +129,58 @@ class DimenMetrics {
       _d.defaultScaledAspectRatioMultiplier;
 
   // ───────────────────────────────────────────────────────────────────────
-  // SATELLITE FACTORS — computed at most once per snapshot, only when read.
+  // SATELLITE FACTORS — eagerly derived once per snapshot (plain final
+  // loads on the hot lane: no lazy-init branch, no per-call transcendental
+  // re-evaluation). Axis variants cover the hdp/wdp stems of the
+  // non-linear families.
   // ───────────────────────────────────────────────────────────────────────
 
   /// `(sw / 300)^0.75` — power satellite default-path scale.
-  late final double powerScale =
-      math.pow(_d.smallestWidthDp * DimenCache.invBaseRatio, 0.75).toDouble();
+  double get powerScale => _d.powerScale;
+
+  /// `(w / 300)^0.75` — power WIDTH-axis factor.
+  double get powerWidthFactor => _d.powerWidthFactor;
+
+  /// `(h / 300)^0.75` — power HEIGHT-axis factor.
+  double get powerHeightFactor => _d.powerHeightFactor;
 
   /// `1 + (sw/300 − 1) × 0.5` — interpolated satellite default-path scale.
-  late final double interpolatedScale =
-      1 + (_d.smallestWidthDp * DimenCache.invBaseRatio - 1) * 0.5;
+  double get interpolatedScale => _d.interpolatedScale;
 
   /// `√(min² + max²) / 611.6305` — diagonal satellite default-path scale.
-  late final double diagonalScale = () {
-    final min2 = _d.minDimensionDp * _d.minDimensionDp;
-    final max2 = _d.maxDimensionDp * _d.maxDimensionDp;
-    return math.sqrt(min2 + max2) / DesignScaleConstants.baseDiagonalDp;
-  }();
+  double get diagonalScale => _d.diagonalScale;
 
   /// `(min + max) / 833` — perimeter satellite default-path scale.
-  late final double perimeterScale = (_d.minDimensionDp + _d.maxDimensionDp) /
-      DesignScaleConstants.basePerimeterDp;
+  double get perimeterScale => _d.perimeterScale;
 
   /// Logarithmic satellite default-path scale (piecewise ±0.4·ln).
-  late final double logarithmicScale = () {
-    final sw = _d.smallestWidthDp;
-    if (sw > DesignScaleConstants.baseWidthDp) {
-      return 1 + 0.4 * math.log(sw * DimenCache.invBaseRatio);
-    }
-    if (sw > 0) {
-      return 1 - 0.4 * math.log(DesignScaleConstants.baseWidthDp / sw);
-    }
-    return 1.0;
-  }();
+  double get logarithmicScale => _d.logarithmicScale;
+
+  /// Logarithmic WIDTH-axis factor (piecewise ±slope·ln).
+  double get logarithmicWidthFactor => _d.logarithmicWidthFactor;
+
+  /// Logarithmic HEIGHT-axis factor (piecewise ±slope·ln).
+  double get logarithmicHeightFactor => _d.logarithmicHeightFactor;
+
+  /// Auto satellite smallest-width scale (flat below the transition point,
+  /// log-curved above).
+  double get autoScale => _d.autoScale;
+
+  /// Auto WIDTH-axis factor.
+  double get autoWidthFactor => _d.autoWidthFactor;
+
+  /// Auto HEIGHT-axis factor.
+  double get autoHeightFactor => _d.autoHeightFactor;
+
+  /// `min(minDp/300, maxDp/533)` — fit (contain) scale.
+  double get fitScale => _d.fitScale;
+
+  /// `max(minDp/300, maxDp/533)` — fill (cover) scale.
+  double get fillScale => _d.fillScale;
+
+  /// Shared AR slope `adjScale + k_default · lnAR` — hoists one multiply-add
+  /// out of every per-axis AR factor computation.
+  double get aspectRatioSlope => _d.aspectRatioSlope;
 
   /// Multiplier used by the scaled SDP/SSP path. Invalid sensitivities are
   /// rejected instead of leaking NaN or infinity into a layout.
@@ -249,7 +268,8 @@ class DimenMetrics {
 }
 
 /// Eagerly computed derived factors — plain final fields, so every hot-lane
-/// read is a single field load (no `late` initialization checks).
+/// read is a single field load (no `late` initialization checks, no
+/// transcendental re-evaluation per call).
 class _Derived {
   final double minDimensionDp;
   final double maxDimensionDp;
@@ -263,6 +283,23 @@ class _Derived {
   final double defaultAspectRatioMultiplier;
   final double defaultScaledAspectRatioMultiplier;
 
+  // Satellite factors (eager; pure functions of this snapshot).
+  final double powerScale;
+  final double powerWidthFactor;
+  final double powerHeightFactor;
+  final double interpolatedScale;
+  final double diagonalScale;
+  final double perimeterScale;
+  final double logarithmicScale;
+  final double logarithmicWidthFactor;
+  final double logarithmicHeightFactor;
+  final double autoScale;
+  final double autoWidthFactor;
+  final double autoHeightFactor;
+  final double fitScale;
+  final double fillScale;
+  final double aspectRatioSlope;
+
   _Derived._(
     this.minDimensionDp,
     this.maxDimensionDp,
@@ -275,6 +312,21 @@ class _Derived {
     this.logNormalizedAspectRatio,
     this.defaultAspectRatioMultiplier,
     this.defaultScaledAspectRatioMultiplier,
+    this.powerScale,
+    this.powerWidthFactor,
+    this.powerHeightFactor,
+    this.interpolatedScale,
+    this.diagonalScale,
+    this.perimeterScale,
+    this.logarithmicScale,
+    this.logarithmicWidthFactor,
+    this.logarithmicHeightFactor,
+    this.autoScale,
+    this.autoWidthFactor,
+    this.autoHeightFactor,
+    this.fitScale,
+    this.fillScale,
+    this.aspectRatioSlope,
   );
 
   factory _Derived.compute({
@@ -298,6 +350,46 @@ class _Derived {
     var norm = rawAr / DesignScaleConstants.referenceAspectRatio;
     if (!norm.isFinite || norm <= 0) norm = 1.0;
     final lnAr = math.log(norm);
+
+    // Per-axis doubles (exact integer values; identical to axisDp reads).
+    final wd = w.toDouble();
+    final hd = h.toDouble();
+
+    // Power curve — `(axis/300)^0.75` (Stevens' exponent parity).
+    const pwExp = 0.75; // PowerFactors.exponent
+    final powerSw =
+        math.pow(smallest * DimenCache.invBaseRatio, pwExp).toDouble();
+    final powerW = math.pow(wd * DimenCache.invBaseRatio, pwExp).toDouble();
+    final powerH = math.pow(hd * DimenCache.invBaseRatio, pwExp).toDouble();
+
+    // Logarithmic curve — piecewise ±0.4·ln around the 300 dp reference
+    // (`LogarithmicCurve.slope` parity).
+    const logSlope = 0.4;
+    double logFactor(double d) {
+      if (d > DesignScaleConstants.baseWidthDp) {
+        return 1 + logSlope * math.log(d * DimenCache.invBaseRatio);
+      }
+      if (d > 0) {
+        return 1 - logSlope * math.log(DesignScaleConstants.baseWidthDp / d);
+      }
+      return 1.0;
+    }
+
+    // Auto curve — flat linear below the transition point, log-curved above
+    // (`AutoTransition.pointDp` / `.slope` parity).
+    const autoPoint = 480.0;
+    const autoSlope = 0.4;
+    double autoFactor(double d) {
+      if (d <= autoPoint) return d * DimenCache.invBaseRatio;
+      return autoPoint * DimenCache.invBaseRatio +
+          autoSlope *
+              math.log(1 + (d - autoPoint) * DimenCache.invBaseRatio);
+    }
+
+    // Fit / fill — contain/cover ratios against the 300×533 reference.
+    final fitRatioMin = minDim / DesignScaleConstants.baseWidthDp;
+    final fitRatioMax = maxDim / DesignScaleConstants.baseHeightDp;
+
     return _Derived._(
       minDim,
       maxDim,
@@ -313,6 +405,22 @@ class _Derived {
           (smallest - DesignScaleConstants.baseWidthDp) *
               (DimenCache.adjustmentScale +
                   DimenCache.sensitivityDefault * lnAr),
+      powerSw,
+      powerW,
+      powerH,
+      1 + (smallest * DimenCache.invBaseRatio - 1) * 0.5,
+      math.sqrt(minDim * minDim + maxDim * maxDim) /
+          DesignScaleConstants.baseDiagonalDp,
+      (minDim + maxDim) / DesignScaleConstants.basePerimeterDp,
+      logFactor(smallest),
+      logFactor(wd),
+      logFactor(hd),
+      autoFactor(smallest),
+      autoFactor(wd),
+      autoFactor(hd),
+      math.min(fitRatioMin, fitRatioMax),
+      math.max(fitRatioMin, fitRatioMax),
+      DimenCache.adjustmentScale + DimenCache.sensitivityDefault * lnAr,
     );
   }
 }

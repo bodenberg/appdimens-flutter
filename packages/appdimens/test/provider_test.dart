@@ -75,4 +75,83 @@ void main() {
       ),
     );
   });
+
+  testWidgets('live window resize recomputes .wdp values (KMP parity)',
+      (tester) async {
+    addTearDown(tester.view.reset);
+    tester.view.devicePixelRatio = 1.0;
+    tester.view.physicalSize = const Size(390, 844);
+
+    await tester.pumpWidget(
+      AppDimensApp(
+        child: MaterialApp(
+          home: Scaffold(
+            body: AppDimensReactiveBuilder(
+              builder: (context) =>
+                  Text('w=${100.wdp.toStringAsFixed(2)}'),
+            ),
+          ),
+        ),
+      ),
+    );
+    expect(AppDimensScope.metrics!.screenWidthDp, 390);
+
+    // Live resize WITHOUT re-pumping a new widget tree — mirrors a user
+    // dragging the window edge on desktop/web or entering split-screen.
+    tester.view.physicalSize = const Size(600, 844);
+    await tester.pump();
+    await tester.pump();
+
+    expect(AppDimensScope.metrics!.screenWidthDp, 600);
+    final text = tester.widget<Text>(find.byType(Text)).data!;
+    expect(
+      text,
+      'w=${(100 * 600 * DimenCache.invBaseRatio).toStringAsFixed(2)}',
+    );
+  });
+
+  testWidgets('ignore-multi-window variants (i suffix) stay unscaled while '
+      'multi-window is active, scaled twins keep adjusting', (tester) async {
+    addTearDown(tester.view.reset);
+    tester.view.devicePixelRatio = 1.0;
+    tester.view.physicalSize = const Size(390, 844);
+
+    double? sdpValue;
+    double? sdpiValue;
+    await tester.pumpWidget(
+      AppDimensApp(
+        config: const AppDimensConfig(forcedMultiWindow: true),
+        child: MaterialApp(
+          home: Builder(builder: (context) {
+            sdpValue = 16.sdp;
+            sdpiValue = 16.sdpi;
+            return const SizedBox.shrink();
+          }),
+        ),
+      ),
+    );
+
+    // Multi-window active: plain `.sdp` keeps scaling with the live window,
+    // `.sdpi` returns the raw base (no adjustment).
+    expect(AppDimensScope.metrics!.isInMultiWindowMode, isTrue);
+    expect(sdpiValue, 16.0);
+    expect(sdpValue, closeTo(16 * AppDimensScope.metrics!.scale, 1e-9));
+
+    // Without multi-window both scale identically.
+    double? plainSdp;
+    double? plainSdpi;
+    await tester.pumpWidget(
+      AppDimensApp(
+        child: MaterialApp(
+          home: Builder(builder: (context) {
+            plainSdp = 16.sdp;
+            plainSdpi = 16.sdpi;
+            return const SizedBox.shrink();
+          }),
+        ),
+      ),
+    );
+    expect(AppDimensScope.metrics!.isInMultiWindowMode, isFalse);
+    expect(plainSdp, closeTo(plainSdpi!, 1e-9));
+  });
 }

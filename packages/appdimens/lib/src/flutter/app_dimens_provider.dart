@@ -7,7 +7,6 @@
 /// the global fast-lane scope on every configuration change.
 library;
 
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:ui' show FlutterView;
 
@@ -45,6 +44,15 @@ class AppDimensSnapshot {
     required this.context,
     required this.uiModeType,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      other is AppDimensSnapshot &&
+      other.metrics == metrics &&
+      other.uiModeType == uiModeType;
+
+  @override
+  int get hashCode => Object.hash(metrics, uiModeType);
 }
 
 /// Builds a [ViewAppDimensContext] from the ambient [MediaQueryData] (or a
@@ -114,34 +122,38 @@ class _AppDimensAppState extends State<AppDimensApp>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _publish();
   }
 
   @override
   void didUpdateWidget(AppDimensApp oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.config != widget.config) _publish();
+    if (oldWidget.config != widget.config) setState(() {});
   }
 
+  // EN: Metrics/text-scale/brightness changes schedule a rebuild; the fresh
+  // snapshot is computed synchronously during the next build (below) so
+  // every `.sdp` read in that same frame sees the live window — matching
+  // KMP, where a window change recomposes all readers before the next draw.
+  //
+  // PT: Mudanças de métricas/escala de texto/brilho agendam rebuild; o novo
+  // snapshot é calculado sincronamente no próximo build (abaixo) para que
+  // toda leitura `.sdp` naquele mesmo frame veja a janela viva — como no
+  // KMP, onde uma mudança de janela recomposta todos os leitores antes do
+  // próximo desenho.
   @override
-  void didChangeMetrics() {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _publish();
-    });
-  }
+  void didChangeMetrics() => setState(() {});
 
   @override
-  void didChangeTextScaleFactor() => _publish();
+  void didChangeTextScaleFactor() => setState(() {});
 
   @override
-  void didChangePlatformBrightness() => _publish();
+  void didChangePlatformBrightness() => setState(() {});
 
-  void _publish() {
+  AppDimensSnapshot _resolveSnapshot(AppDimensConfig config) {
     final view = WidgetsBinding.instance.platformDispatcher.views.isNotEmpty
         ? WidgetsBinding.instance.platformDispatcher.views.first
         : null;
-    final ctx = buildAppDimensContext(null, view);
-    publishAppDimensContext(ctx, widget.config);
+    return _snapshotFrom(buildAppDimensContext(null, view), config);
   }
 
   @override
@@ -151,8 +163,44 @@ class _AppDimensAppState extends State<AppDimensApp>
   }
 
   @override
-  Widget build(BuildContext context) =>
-      AppDimensProvider(config: widget.config, child: widget.child);
+  Widget build(BuildContext context) {
+    final snapshot = _resolveSnapshot(widget.config);
+    publishAppDimensContext(snapshot.context, widget.config);
+    return AppDimensProvider(
+      config: widget.config,
+      snapshot: snapshot,
+      child: widget.child,
+    );
+  }
+}
+
+/// Resolves the coherent [AppDimensSnapshot] for [context]/[config].
+AppDimensSnapshot _snapshotFrom(
+  AppDimensContext context,
+  AppDimensConfig config,
+) {
+  final multiWindow = config.forcedMultiWindow ?? context.isInMultiWindowMode;
+  final metrics = DimenMetrics.from(context.configuration,
+      isInMultiWindowMode: multiWindow);
+  final uiModeType = config.forcedUiModeType ??
+      (context.uiModeType == UiModeType.undefined
+          ? UiModeType.normal
+          : context.uiModeType);
+  if (context is ViewAppDimensContext && multiWindow) {
+    context = ViewAppDimensContext(
+      configuration: context.configuration,
+      density: context.density,
+      xdpi: context.xdpi,
+      fontScale: context.fontScale,
+      isInMultiWindowMode: true,
+      uiModeType: context.uiModeType,
+    );
+  }
+  return AppDimensSnapshot(
+    metrics: metrics,
+    context: context,
+    uiModeType: uiModeType,
+  );
 }
 
 /// Publishes an explicit context into the global fast-lane scope.
@@ -167,10 +215,14 @@ void publishAppDimensContext(
   );
   AppDimensScope.publish(metrics);
   AppDimensScope.publishContext(context);
-  AppDimensScope.publishUiModeType(config.forcedUiModeType ??
+  final uiModeType = config.forcedUiModeType ??
       (context.uiModeType == UiModeType.undefined
           ? UiModeType.normal
-          : context.uiModeType));
+          : context.uiModeType);
+  AppDimensScope.publishUiModeType(uiModeType);
+  // Notify reactive subscribers only when the visible snapshot changed —
+  // identical republications must not cause spurious rebuilds.
+  AppDimensScope.fireIfChanged(metrics, uiModeType);
 }
 
 /// EN: In-tree publisher for `MaterialApp.builder` — depends on
@@ -200,20 +252,64 @@ class AppDimensScopeBinder extends StatelessWidget {
   Widget build(BuildContext context) {
     final media = MediaQuery.maybeOf(context);
     final view = View.maybeOf(context);
-    publishAppDimensContext(buildAppDimensContext(media, view), config);
-    return AppDimensProvider(config: config, child: child);
+    final snapshot =
+        _snapshotFrom(buildAppDimensContext(media, view), config);
+    publishAppDimensContext(snapshot.context, config);
+    return AppDimensProvider(
+      config: config,
+      snapshot: snapshot,
+      child: child,
+    );
   }
+}
+
+/// EN: Rebuilds [builder]'s subtree whenever the published window snapshot
+/// changes — the Flutter analog of a Compose function reading
+/// `LocalDimenMetrics.current`. Use it around UI whose `.sdp`/`.ssp` values
+/// must track live window resizes:
+/// ```dart
+/// AppDimensReactiveBuilder(
+///   builder: (context) => Text('${16.sdp} dp'),
+/// )
+/// ```
+///
+/// PT: Reconstrói a subárvore de [builder] sempre que o snapshot publicado
+/// da janela mudar — o análogo Flutter de uma função Compose que lê
+/// `LocalDimenMetrics.current`. Use ao redor de UI cujos valores `.sdp`/
+/// `.ssp` devem acompanhar resizes ao vivo.
+class AppDimensReactiveBuilder extends StatelessWidget {
+  final WidgetBuilder builder;
+
+  const AppDimensReactiveBuilder({super.key, required this.builder});
+
+  @override
+  Widget build(BuildContext context) => ListenableBuilder(
+        listenable: AppDimensScope.notifier,
+        builder: (context, _) => builder(context),
+      );
 }
 
 /// EN: InheritedWidget exposing the resolved snapshot to descendants.
 ///
+/// When rebuilt with a changed [snapshot], all registered dependents are
+/// notified — so a metrics change (resize, rotation, split-screen) reaches
+/// every widget that watches the scope.
+///
 /// PT: InheritedWidget que expõe o snapshot resolvido aos descendentes.
+///
+/// Quando reconstruído com um [snapshot] diferente, todos os dependentes
+/// registrados são notificados — assim uma mudança de métricas (resize,
+/// rotação, split-screen) alcança todo widget que observa o escopo.
 class AppDimensProvider extends InheritedWidget {
   final AppDimensConfig config;
+
+  /// Precomputed snapshot from the publisher; `null` when mounted manually.
+  final AppDimensSnapshot? snapshot;
 
   const AppDimensProvider({
     super.key,
     this.config = const AppDimensConfig(),
+    this.snapshot,
     required super.child,
   });
 
@@ -243,5 +339,5 @@ class AppDimensProvider extends InheritedWidget {
 
   @override
   bool updateShouldNotify(AppDimensProvider oldWidget) =>
-      config != oldWidget.config;
+      config != oldWidget.config || snapshot != oldWidget.snapshot;
 }

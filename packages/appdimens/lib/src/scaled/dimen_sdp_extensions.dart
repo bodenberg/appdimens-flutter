@@ -18,10 +18,7 @@ import 'dimen_scaled_builder.dart';
 DimenMetrics get _m => AppDimensScope.metricsOrDefault;
 
 double _arFactorFor(DimenMetrics m, double axisDp) =>
-    1 +
-    (axisDp - 300.0) *
-        (DimenCache.adjustmentScale +
-            DimenCache.sensitivityDefault * m.logNormalizedAspectRatio);
+    1 + (axisDp - 300.0) * m.aspectRatioSlope;
 
 double _axisDpFor(DimenMetrics m, Inverter inverter) {
   switch (inverter) {
@@ -135,10 +132,14 @@ abstract final class ScaledKernel {
 extension AppDimensScaledDp on num {
   // ── Smallest Width (sdp) ────────────────────────────────────────────────
 
-  /// EN `base × sw/300` — the default recommended path.
-  /// PT `base × sw/300` — o caminho padrão recomendado.
-  double get sdp => ScaledKernel.sw(toDouble(), false);
-  double get sdpa => ScaledKernel.swAr(toDouble(), false);
+  /// EN `base × sw/300` — the default recommended path. Monomorphic inline
+  /// kernel: one scope read + one multiply, no extra call layer (the
+  /// `ignoreMultiWindows` guard is statically false here).
+  /// PT `base × sw/300` — o caminho padrão recomendado. Kernel inline
+  /// monomórfico: uma leitura de escopo + uma multiplicação.
+  double get sdp => toDouble() * AppDimensScope.metricsOrDefault.scale;
+  double get sdpa =>
+      toDouble() * AppDimensScope.metricsOrDefault.defaultScaledAspectRatioMultiplier;
   double get sdpi => ScaledKernel.sw(toDouble(), true);
   double get sdpia => ScaledKernel.swAr(toDouble(), true);
 
@@ -182,9 +183,17 @@ extension AppDimensScaledDp on num {
   double get sdpLwia =>
       ScaledKernel.inverted(toDouble(), Inverter.swToLw, ar: true, mw: true);
 
-  /// Physical-pixel twins of the sdp family.
-  double get sdpPx => sdp * _m.density;
-  double get sdpaPx => sdpa * _m.density;
+  /// Physical-pixel twins of the sdp family (single scope read).
+  double get sdpPx {
+    final m = _m;
+    return toDouble() * m.scale * m.density;
+  }
+
+  double get sdpaPx {
+    final m = _m;
+    return toDouble() * m.defaultScaledAspectRatioMultiplier * m.density;
+  }
+
   double get sdpiPx => sdpi * _m.density;
   double get sdpiaPx => sdpia * _m.density;
   double get sdpPhPx => sdpPh * _m.density;
@@ -194,9 +203,10 @@ extension AppDimensScaledDp on num {
 
   // ── Height (hdp) ────────────────────────────────────────────────────────
 
-  /// EN `base × h/300`.
-  /// PT `base × h/300`.
-  double get hdp => ScaledKernel.h(toDouble(), false);
+  /// EN `base × h/300`. Monomorphic inline kernel.
+  /// PT `base × h/300`. Kernel inline monomórfico.
+  double get hdp =>
+      toDouble() * AppDimensScope.metricsOrDefault.screenHeightFactor;
   double get hdpa => ScaledKernel.hAr(toDouble(), false);
   double get hdpi => ScaledKernel.h(toDouble(), true);
   double get hdpia => ScaledKernel.hAr(toDouble(), true);
@@ -221,16 +231,21 @@ extension AppDimensScaledDp on num {
   double get hdpPwia =>
       ScaledKernel.inverted(toDouble(), Inverter.lhToPw, ar: true, mw: true);
 
-  double get hdpPx => hdp * _m.density;
+  double get hdpPx {
+    final m = _m;
+    return toDouble() * m.screenHeightFactor * m.density;
+  }
+
   double get hdpaPx => hdpa * _m.density;
   double get hdpLwPx => hdpLw * _m.density;
   double get hdpPwPx => hdpPw * _m.density;
 
   // ── Width (wdp) ─────────────────────────────────────────────────────────
 
-  /// EN `base × w/300`.
-  /// PT `base × w/300`.
-  double get wdp => ScaledKernel.w(toDouble(), false);
+  /// EN `base × w/300`. Monomorphic inline kernel.
+  /// PT `base × w/300`. Kernel inline monomórfico.
+  double get wdp =>
+      toDouble() * AppDimensScope.metricsOrDefault.screenWidthFactor;
   double get wdpa => ScaledKernel.wAr(toDouble(), false);
   double get wdpi => ScaledKernel.w(toDouble(), true);
   double get wdpia => ScaledKernel.wAr(toDouble(), true);
@@ -255,7 +270,11 @@ extension AppDimensScaledDp on num {
   double get wdpPhia =>
       ScaledKernel.inverted(toDouble(), Inverter.lwToPh, ar: true, mw: true);
 
-  double get wdpPx => wdp * _m.density;
+  double get wdpPx {
+    final m = _m;
+    return toDouble() * m.screenWidthFactor * m.density;
+  }
+
   double get wdpaPx => wdpa * _m.density;
   double get wdpLhPx => wdpLh * _m.density;
   double get wdpPhPx => wdpPh * _m.density;

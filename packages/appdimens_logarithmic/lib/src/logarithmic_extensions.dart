@@ -21,7 +21,10 @@ import 'logarithmic_engine.dart';
 
 extension AppDimensLogarithmicDp on num {
   // ── logsdp (smallest width) ────────────────────────────────────────────────────
-  double get logsdp => _v(DpQualifier.smallWidth);
+
+  /// Monomorphic fast lane — piecewise ±0.4·ln factor hoisted per snapshot.
+  double get logsdp =>
+      toDouble() * AppDimensScope.metricsOrDefault.logarithmicScale;
   double get logsdpa => _v(DpQualifier.smallWidth, ar: true);
   double get logsdpi => _v(DpQualifier.smallWidth, mw: true);
   double get logsdpia => _v(DpQualifier.smallWidth, ar: true, mw: true);
@@ -58,7 +61,10 @@ extension AppDimensLogarithmicDp on num {
   double get logsdpPx => logsdp * AppDimensScope.metricsOrDefault.density;
 
   // ── loghdp (height) ────────────────────────────────────────────────────────────
-  double get loghdp => _v(DpQualifier.height);
+
+  /// Monomorphic fast lane — piecewise ±0.4·ln factor hoisted per snapshot.
+  double get loghdp =>
+      toDouble() * AppDimensScope.metricsOrDefault.logarithmicHeightFactor;
   double get loghdpa => _v(DpQualifier.height, ar: true);
   double get loghdpi => _v(DpQualifier.height, mw: true);
   double get loghdpia => _v(DpQualifier.height, ar: true, mw: true);
@@ -80,7 +86,10 @@ extension AppDimensLogarithmicDp on num {
   double get loghdpPx => loghdp * AppDimensScope.metricsOrDefault.density;
 
   // ── logwdp (width) ─────────────────────────────────────────────────────────────
-  double get logwdp => _v(DpQualifier.width);
+
+  /// Monomorphic fast lane — piecewise ±0.4·ln factor hoisted per snapshot.
+  double get logwdp =>
+      toDouble() * AppDimensScope.metricsOrDefault.logarithmicWidthFactor;
   double get logwdpa => _v(DpQualifier.width, ar: true);
   double get logwdpi => _v(DpQualifier.width, mw: true);
   double get logwdpia => _v(DpQualifier.width, ar: true, mw: true);

@@ -17,11 +17,16 @@ library;
 
 import 'package:appdimens/appdimens.dart';
 
+import 'factors.dart';
 import 'interpolated_engine.dart';
 
 extension AppDimensInterpolatedDp on num {
   // ── isdp (smallest width) ────────────────────────────────────────────────────
-  double get isdp => _v(DpQualifier.smallWidth);
+
+  /// EN: Monomorphic fast lane — bit-exact with the engine's memoized sw path.
+  /// PT: Faixa rápida monomórfica — bit-exato com o caminho sw memoizado.
+  double get isdp =>
+      toDouble() * AppDimensScope.metricsOrDefault.interpolatedScale;
   double get isdpa => _v(DpQualifier.smallWidth, ar: true);
   double get isdpi => _v(DpQualifier.smallWidth, mw: true);
   double get isdpia => _v(DpQualifier.smallWidth, ar: true, mw: true);
@@ -58,7 +63,16 @@ extension AppDimensInterpolatedDp on num {
   double get isdpPx => isdp * AppDimensScope.metricsOrDefault.density;
 
   // ── ihdp (height) ────────────────────────────────────────────────────────────
-  double get ihdp => _v(DpQualifier.height);
+
+  /// Monomorphic fast lane — inlines the blend with the exact engine op order
+  /// (`b + (b·(h/300) − b) × 0.5`) using the snapshot factor for `h/300`.
+  double get ihdp {
+    final b = toDouble();
+    final linear =
+        b * AppDimensScope.metricsOrDefault.screenHeightFactor;
+    return b + (linear - b) * Interpolation.defaultBlend;
+  }
+
   double get ihdpa => _v(DpQualifier.height, ar: true);
   double get ihdpi => _v(DpQualifier.height, mw: true);
   double get ihdpia => _v(DpQualifier.height, ar: true, mw: true);
@@ -76,7 +90,14 @@ extension AppDimensInterpolatedDp on num {
   double get ihdpPx => ihdp * AppDimensScope.metricsOrDefault.density;
 
   // ── iwdp (width) ─────────────────────────────────────────────────────────────
-  double get iwdp => _v(DpQualifier.width);
+  /// Monomorphic fast lane — inlines the blend with the exact engine op order
+  /// (`b + (b·(w/300) − b) × 0.5`) using the snapshot factor for `w/300`.
+  double get iwdp {
+    final b = toDouble();
+    final linear = b * AppDimensScope.metricsOrDefault.screenWidthFactor;
+    return b + (linear - b) * Interpolation.defaultBlend;
+  }
+
   double get iwdpa => _v(DpQualifier.width, ar: true);
   double get iwdpi => _v(DpQualifier.width, mw: true);
   double get iwdpia => _v(DpQualifier.width, ar: true, mw: true);

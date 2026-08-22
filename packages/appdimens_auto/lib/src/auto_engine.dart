@@ -10,11 +10,8 @@
 /// PT: Fórmula: `d ≤ 480 : d/300`; else `480/300 + 0.4·ln(1 + (d−480)/300)`.
 library;
 
-import 'dart:math' as math;
-
 import 'package:appdimens/appdimens.dart';
 
-import 'factors.dart';
 
 /// Auto strategy kernels (family port parity).
 abstract final class DimenAuto {
@@ -26,16 +23,12 @@ abstract final class DimenAuto {
     bool applyAspectRatio,
     double? customSensitivityK,
   ) {
-    final d = StrategyResolution.axisDp(metrics, effectiveQualifier);
-    double scale;
-    if (d <= AutoTransition.pointDp) {
-      scale = d * DimenCache.invBaseRatio;
-    } else {
-      scale = AutoTransition.pointDp * DimenCache.invBaseRatio +
-          AutoTransition.slope *
-              math.log(
-                  1 + (d - AutoTransition.pointDp) * DimenCache.invBaseRatio);
-    }
+    // Per-axis curve factors are hoisted onto the snapshot.
+    final scale = switch (effectiveQualifier) {
+      DpQualifier.width => metrics.autoWidthFactor,
+      DpQualifier.height => metrics.autoHeightFactor,
+      DpQualifier.smallWidth => metrics.autoScale,
+    };
     return StrategyResolution.applyAr(
         base * scale, metrics, applyAspectRatio, customSensitivityK);
   }

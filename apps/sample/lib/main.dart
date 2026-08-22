@@ -67,36 +67,38 @@ class _DemoScreenState extends State<DemoScreen> {
             ),
           ],
         ),
-        body: ListView(
-          padding: EdgeInsets.all(16.sdp),
-          children: [
-            _header(context),
-            SizedBox(height: 16.sdp),
-            _sectionTitle('1. Core extensions (sdp · sdpa · hdp · wdp)'),
-            _coreCards(),
-            SizedBox(height: 16.sdp),
-            _sectionTitle('2. Orientation inverters (Ph · Lw · Lh)'),
-            _inverterCards(),
-            SizedBox(height: 16.sdp),
-            _sectionTitle(
-                '3. Facilitators (Rotate · Mode · Qualifier · Screen + Plain)'),
-            _facilitatorCards(),
-            SizedBox(height: 16.sdp),
-            _sectionTitle('4. DimenScaled builder chain'),
-            const BuilderCard(),
-            SizedBox(height: 16.sdp),
-            _sectionTitle('5. Auto-resize (constraint fitting)'),
-            const AutoResizeCard(),
-            SizedBox(height: 16.sdp),
-            FilledButton.icon(
-              icon: const Icon(Icons.speed),
-              label: const Text('Run Performance Benchmark'),
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const BenchmarkScreen()),
+        body: AppDimensReactiveBuilder(
+          builder: (context) => ListView(
+            padding: EdgeInsets.all(16.sdp),
+            children: [
+              _header(context),
+              SizedBox(height: 16.sdp),
+              _sectionTitle('1. Core extensions (sdp · sdpa · hdp · wdp)'),
+              _coreCards(),
+              SizedBox(height: 16.sdp),
+              _sectionTitle('2. Orientation inverters (Ph · Lw · Lh)'),
+              _inverterCards(),
+              SizedBox(height: 16.sdp),
+              _sectionTitle(
+                  '3. Facilitators (Rotate · Mode · Qualifier · Screen + Plain)'),
+              _facilitatorCards(),
+              SizedBox(height: 16.sdp),
+              _sectionTitle('4. DimenScaled builder chain'),
+              const BuilderCard(),
+              SizedBox(height: 16.sdp),
+              _sectionTitle('5. Auto-resize (constraint fitting)'),
+              const AutoResizeCard(),
+              SizedBox(height: 16.sdp),
+              FilledButton.icon(
+                icon: const Icon(Icons.speed),
+                label: const Text('Run Performance Benchmark'),
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const BenchmarkScreen()),
+                ),
               ),
-            ),
-            SizedBox(height: 32.sdp),
-          ],
+              SizedBox(height: 32.sdp),
+            ],
+          ),
         ),
       ),
     );
@@ -301,6 +303,13 @@ class StrategyPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // EN: Adaptive — collapses to an icon-only trigger when the AppBar
+    // trailing slot gets too narrow (e.g. small web windows), so the scaled
+    // label never overflows the toolbar.
+    //
+    // PT: Adaptativo — colapsa para um gatilho só de ícone quando o slot
+    // trailing do AppBar fica estreito demais (ex.: janelas web pequenas),
+    // evitando que o rótulo escalado transborde a barra.
     return PopupMenuButton<DemoCalcStrategy>(
       initialValue: value,
       onSelected: onChanged,
@@ -308,18 +317,28 @@ class StrategyPicker extends StatelessWidget {
         for (final s in DemoCalcStrategy.values)
           PopupMenuItem(value: s, child: Text(s.labelEn)),
       ],
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12.wdp, vertical: 8.sdp),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.tune, size: 18.wsp),
-            SizedBox(width: 6.sdp),
-            Text(value.labelEn, style: TextStyle(fontSize: 13.ssp)),
-            const Icon(Icons.arrow_drop_down),
-          ],
-        ),
-      ),
+      child: LayoutBuilder(builder: (context, constraints) {
+        final wide = constraints.maxWidth >= 120.wdp;
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12.wdp, vertical: 8.sdp),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.tune, size: 18.wsp),
+              if (wide) ...[
+                SizedBox(width: 6.sdp),
+                Flexible(
+                  child: Text(value.labelEn,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 13.ssp)),
+                ),
+              ],
+              const Icon(Icons.arrow_drop_down),
+            ],
+          ),
+        );
+      }),
     );
   }
 }

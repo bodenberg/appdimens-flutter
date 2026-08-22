@@ -11,7 +11,7 @@ description: Use this skill for any Flutter responsive layout or scaling questio
 
 On release bumps, update version URLs in this file, `library-map.md`, and `reference.md` together.
 
-**Architecture in one paragraph:** every window configuration maps to an immutable `DimenMetrics` snapshot with eagerly precomputed factors. `AppDimensApp` / `AppDimensScopeBinder` republish the snapshot on rotation, resize, split-screen and font-scale changes. The hot path (`16.sdp`) is one static slot read + one multiply (~6–12 ns); dominant families bypass the cache hash exactly like the Kotlin engine.
+**Architecture in one paragraph:** every window configuration maps to an immutable `DimenMetrics` snapshot with eagerly precomputed factors. `AppDimensApp` / `AppDimensScopeBinder` republish the snapshot on rotation, resize, split-screen and font-scale changes — identical snapshots are never fired twice (deduped publication, no spurious rebuilds). The hot path (`16.sdp`) is one static slot read + one multiply (~6.6–8.7 ns audited); dominant getters carry monomorphic inline kernels and every satellite stem resolves at the same harness floor (~6.6–6.8 ns), while the cache hash is bypassed exactly like the Kotlin engine.
 
 **Authoritative GitHub docs (ref `main`):**
 - [README.md](https://github.com/bodenberg/appdimens-flutter/blob/main/README.md) — install, `AppDimensApp`, fast lane overview
@@ -142,7 +142,7 @@ Apply regardless of strategy or resolution mode:
 1. **Strategy isolation** — satellites depend only on `appdimens` and do not cross-import. One strategy per calculation path.
 2. **`AppDimensApp`** — required once at the root for fast-lane getters; `AppDimensScopeBinder` belongs in `MaterialApp.builder`. Facilitators (`sdpMode`, `sdpScreen`, `sspScreen`) read the published ui-mode/qualifier slots.
 3. **Config churn** — no explicit invalidation is required for correctness: every resolution is keyed by the immutable per-window `DimenMetrics` snapshot, so a rotated/resized window can never read a stale value. `DimenCache.invalidateOnConfigChange` exists as an eager memory-release hook only.
-4. **Hot paths** — the extension getters allocate nothing; prefer them over building chains per frame. Cache `DimenScaled`/`StrategyChain` instances outside `build` when the chain is static.
+4. **Hot paths** — the extension getters allocate nothing and carry monomorphic inline kernels; prefer them over building chains per frame. Cache `DimenScaled`/`StrategyChain` instances outside `build` when the chain is static.
 5. **Nested Plain facilitators** — use the `*Plain` pairs to avoid double-scaling (they pick between two already-resolved values).
 6. **Tests** — without a provider, getters resolve against the 300×533 baseline (`16.sdp == 16` exactly); use `AppDimensScope.withMetrics(DimenMetrics.from(cfg), () { … })` to simulate devices.
 

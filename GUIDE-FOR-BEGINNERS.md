@@ -108,7 +108,7 @@ The builder checks each rule by priority and scales the winner.
 ## 8. Is it fast?
 
 Yes. `16.sdp` compiles down to *one table read + one multiplication*
-(measured at ~6–12 ns — see [PERFORMANCE.md](PERFORMANCE.md)). There's no
+(measured at ~6.6–8.7 ns — see [PERFORMANCE.md](PERFORMANCE.md)). There's no
 per-call MediaQuery lookup, no allocation, no locks.
 
 ## 9. Testing your layout

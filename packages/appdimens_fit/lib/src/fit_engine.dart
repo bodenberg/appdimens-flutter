@@ -10,8 +10,6 @@
 /// PT: Fórmula: `base × min(minSide/300, maxSide/533)` (always fits).
 library;
 
-import 'dart:math' as math;
-
 import 'package:appdimens/appdimens.dart';
 
 /// Fit strategy kernels (family port parity).
@@ -24,9 +22,7 @@ abstract final class DimenFit {
     bool applyAspectRatio,
     double? customSensitivityK,
   ) {
-    final rMin = metrics.minDimensionDp / DesignScaleConstants.baseWidthDp;
-    final rMax = metrics.maxDimensionDp / DesignScaleConstants.baseHeightDp;
-    return StrategyResolution.applyAr(base * math.min(rMin, rMax), metrics,
+    return StrategyResolution.applyAr(base * metrics.fitScale, metrics,
         applyAspectRatio, customSensitivityK);
   }
 

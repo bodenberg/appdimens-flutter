@@ -28,7 +28,7 @@ The deprecated API advertised 13 strategies that did not exist, had
 never-matching qualifier branches, inert caches/configs and a per-call
 instance model measured at **microseconds** per call. Version 3.2 ports the
 audited Kotlin engine instead: bit-parity formulas, a snapshot fast lane
-(~6–12 ns), a real cache, and the full family grammar (`a/i/ia`, inverters,
+(~6.6–8.7 ns), a real cache, and the full family grammar (`a/i/ia`, inverters,
 facilitators, builders) shared with appdimens-dynamic and appdimens-kmp.
 
 ## Step-by-step

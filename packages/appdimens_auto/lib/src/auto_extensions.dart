@@ -21,7 +21,9 @@ import 'auto_engine.dart';
 
 extension AppDimensAutoDp on num {
   // ── asdp (smallest width) ────────────────────────────────────────────────────
-  double get asdp => _v(DpQualifier.smallWidth);
+
+  /// Monomorphic fast lane — hoisted per-snapshot axis factor.
+  double get asdp => toDouble() * AppDimensScope.metricsOrDefault.autoScale;
   double get asdpa => _v(DpQualifier.smallWidth, ar: true);
   double get asdpi => _v(DpQualifier.smallWidth, mw: true);
   double get asdpia => _v(DpQualifier.smallWidth, ar: true, mw: true);
@@ -58,7 +60,10 @@ extension AppDimensAutoDp on num {
   double get asdpPx => asdp * AppDimensScope.metricsOrDefault.density;
 
   // ── ahdp (height) ────────────────────────────────────────────────────────────
-  double get ahdp => _v(DpQualifier.height);
+
+  /// Monomorphic fast lane — hoisted per-snapshot axis factor.
+  double get ahdp =>
+      toDouble() * AppDimensScope.metricsOrDefault.autoHeightFactor;
   double get ahdpa => _v(DpQualifier.height, ar: true);
   double get ahdpi => _v(DpQualifier.height, mw: true);
   double get ahdpia => _v(DpQualifier.height, ar: true, mw: true);
@@ -76,7 +81,10 @@ extension AppDimensAutoDp on num {
   double get ahdpPx => ahdp * AppDimensScope.metricsOrDefault.density;
 
   // ── awdp (width) ─────────────────────────────────────────────────────────────
-  double get awdp => _v(DpQualifier.width);
+
+  /// Monomorphic fast lane — hoisted per-snapshot axis factor.
+  double get awdp =>
+      toDouble() * AppDimensScope.metricsOrDefault.autoWidthFactor;
   double get awdpa => _v(DpQualifier.width, ar: true);
   double get awdpi => _v(DpQualifier.width, mw: true);
   double get awdpia => _v(DpQualifier.width, ar: true, mw: true);

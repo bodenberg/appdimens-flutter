@@ -10,6 +10,7 @@ Important notes:
 - Suffix grammar is shared by every strategy: *(none)* / `a` / `i` / `ia`, inverters `Ph/Lh/Pw/Lw`, `…Px` physical-pixel twins, sp stems (`ssp/hsp/wsp`) and no-font-scale stems (`sem/hem/wem`).
 - Facilitators on every stem: `sdpRotate`, `sdpMode`, `sdpQualifier`, `sdpScreen` plus logic-only Plain pairs; conditional chains via `100.scaledDp.screen(...)` builders (priority: ui+qualifier → ui → qualifier → orientation).
 - Explicit-context mode for tests/isolates: `16.sdpOf(context)`, `16.toDynamicScaledDp(ctx, qualifier, …)`, facades `DimenSdp.sdp(ctx, v)`.
+- Performance: monomorphic inline kernels on the dominant getters + deduped scope publication (identical snapshots never fire twice). Audited medians: every stem ~6.6–6.8 ns/op, `sdp` 8.7 ns/op, naive rebuild-per-call 180.9 ns/op (~20–27× slower).
 
 ## Documentation
 
@@ -20,8 +21,8 @@ Important notes:
 - [DOCUMENTATION/API-CONVENTIONS.md](DOCUMENTATION/API-CONVENTIONS.md): Naming grammar, suffixes, inverters, facilitators, builders, resolution modes
 - [DOCUMENTATION/MATHEMATICS-AND-CALCULUS.md](DOCUMENTATION/MATHEMATICS-AND-CALCULUS.md): Formulas, constants, the `DimenMetrics` snapshot and per-strategy kernels
 - [PUBLISHING.md](PUBLISHING.md): How to publish the packages to pub.dev (order, dry-run, automation)
-- [PERFORMANCE.md](PERFORMANCE.md): Technical performance report (fast lane ≈ 6–12 ns/op)
-- [PERFORMANCE-COMPARATIVE.md](PERFORMANCE-COMPARATIVE.md): Comparative benchmark vs naive recompute and legacy models
+- [PERFORMANCE.md](PERFORMANCE.md): Technical performance report (fast lane ≈ 6.6–8.7 ns/op, all stems at the harness noise floor)
+- [PERFORMANCE-COMPARATIVE.md](PERFORMANCE-COMPARATIVE.md): Comparative benchmark vs naive recompute (~20–27× slower) and legacy models
 - [MIGRATION.md](MIGRATION.md): Replacing the deprecated 2.x `fx/dy` API
 
 ## Strategy guides

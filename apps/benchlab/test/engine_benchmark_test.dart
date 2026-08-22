@@ -24,9 +24,12 @@ void main() {
         final bases =
             List<double>.generate(64, (i) => ((i % 32) + 1).toDouble());
 
-        double bench(double Function(int index) body) {
-          for (var i = 0; i < 20000; i++) {
-            body(i & 63);
+        double bench(double Function(int index) body,
+            {bool warmup = true}) {
+          if (warmup) {
+            for (var i = 0; i < 20000; i++) {
+              body(i & 63);
+            }
           }
           final samples = <double>[];
           var sink = 0.0;
@@ -44,14 +47,22 @@ void main() {
         }
 
         final out = <String, double>{};
-        out['harness_baseline'] = bench((i) => bases[i] * 0.0);
+        out['harness_baseline'] = bench((i) => bases[i] * 0.0, warmup: false);
         out['sdp'] = bench((i) => bases[i].sdp);
         out['sdpa'] = bench((i) => bases[i].sdpa);
         out['hdp'] = bench((i) => bases[i].hdp);
         out['ssp'] = bench((i) => bases[i].ssp);
+        // Optimized monomorphic satellite stems.
+        out['psdp'] = bench((i) => bases[i].psdp);
         out['pwsdp'] = bench((i) => bases[i].pwsdp);
         out['fsdp'] = bench((i) => bases[i].fsdp);
         out['asdp'] = bench((i) => bases[i].asdp);
+        out['logsdp'] = bench((i) => bases[i].logsdp);
+        out['dgsdp'] = bench((i) => bases[i].dgsdp);
+        out['prsdp'] = bench((i) => bases[i].prsdp);
+        out['ftsdp'] = bench((i) => bases[i].ftsdp);
+        out['flsdp'] = bench((i) => bases[i].flsdp);
+        out['dsdp'] = bench((i) => bases[i].dsdp);
         out['legacy_model'] =
             bench((i) => LegacyBenchModel(bases[i]).resolve(392.0));
         // Honest naive: reads/rebuilds the configuration snapshot every call.

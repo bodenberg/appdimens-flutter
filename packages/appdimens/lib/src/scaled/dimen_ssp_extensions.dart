@@ -42,8 +42,10 @@ double _densityOf() => AppDimensScope.metricsOrDefault.density;
 extension AppDimensScaledSp on num {
   // ── ssp (smallest width) ────────────────────────────────────────────────
 
-  double get ssp => ScaledKernel.sw(toDouble(), false);
-  double get sspa => ScaledKernel.swAr(toDouble(), false);
+  /// Monomorphic inline kernels (bit-exact with ScaledKernel default paths).
+  double get ssp => toDouble() * AppDimensScope.metricsOrDefault.scale;
+  double get sspa =>
+      toDouble() * AppDimensScope.metricsOrDefault.defaultScaledAspectRatioMultiplier;
   double get sspi => ScaledKernel.sw(toDouble(), true);
   double get sspia => ScaledKernel.swAr(toDouble(), true);
 
@@ -88,7 +90,8 @@ extension AppDimensScaledSp on num {
 
   // ── hsp (height) ────────────────────────────────────────────────────────
 
-  double get hsp => ScaledKernel.h(toDouble(), false);
+  double get hsp =>
+      toDouble() * AppDimensScope.metricsOrDefault.screenHeightFactor;
   double get hspa => ScaledKernel.hAr(toDouble(), false);
   double get hspi => ScaledKernel.h(toDouble(), true);
   double get hspia => ScaledKernel.hAr(toDouble(), true);
@@ -115,7 +118,8 @@ extension AppDimensScaledSp on num {
 
   // ── wsp (width) ─────────────────────────────────────────────────────────
 
-  double get wsp => ScaledKernel.w(toDouble(), false);
+  double get wsp =>
+      toDouble() * AppDimensScope.metricsOrDefault.screenWidthFactor;
   double get wspa => ScaledKernel.wAr(toDouble(), false);
   double get wspi => ScaledKernel.w(toDouble(), true);
   double get wspia => ScaledKernel.wAr(toDouble(), true);

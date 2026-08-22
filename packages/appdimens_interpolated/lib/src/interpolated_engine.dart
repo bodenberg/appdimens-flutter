@@ -30,8 +30,14 @@ abstract final class DimenInterpolated {
         customSensitivityK == null) {
       return base * metrics.interpolatedScale;
     }
-    final d = StrategyResolution.axisDp(metrics, effectiveQualifier);
-    final linear = base * (d * DimenCache.invBaseRatio);
+    // `axisDp × 1/300` equals the hoisted per-axis factor bit-for-bit.
+    final axisNorm = switch (effectiveQualifier) {
+      DpQualifier.smallWidth => metrics.smallestWidthDp *
+          DimenCache.invBaseRatio,
+      DpQualifier.width => metrics.screenWidthFactor,
+      DpQualifier.height => metrics.screenHeightFactor,
+    };
+    final linear = base * axisNorm;
     return StrategyResolution.applyAr(
         base + (linear - base) * Interpolation.defaultBlend,
         metrics,

@@ -194,23 +194,26 @@ class _BenchmarkScreenState extends State<BenchmarkScreen> {
         ),
         body: Container(
           color: const Color(0xFF0D0F14),
-          child: ListView(
-            padding: EdgeInsets.all(16.sdp),
-            children: [
-              _controls(),
-              SizedBox(height: 12.sdp),
-              _status(),
-              _section(
-                  'Calculation Test ($_calcCalls calls)',
-                  _calcResult == null
-                      ? null
-                      : Text(_calcResult!.toString(),
-                          style: TextStyle(fontSize: 13.ssp))),
-              _section('Microbenchmark (per family)', _microTable()),
-              _section(
-                  'Comparison — fast lane vs naive recompute', _compareTable()),
-              _section('Macro scroll ($_macroItemCount items)', _macroInfo()),
-            ],
+          child: AppDimensReactiveBuilder(
+            builder: (context) => ListView(
+              padding: EdgeInsets.all(16.sdp),
+              children: [
+                _controls(),
+                SizedBox(height: 12.sdp),
+                _status(),
+                _section(
+                    'Calculation Test ($_calcCalls calls)',
+                    _calcResult == null
+                        ? null
+                        : Text(_calcResult!.toString(),
+                            style: TextStyle(fontSize: 13.ssp))),
+                _section('Microbenchmark (per family)', _microTable()),
+                _section('Comparison — fast lane vs naive recompute',
+                    _compareTable()),
+                _section(
+                    'Macro scroll ($_macroItemCount items)', _macroInfo()),
+              ],
+            ),
           ),
         ),
       ),

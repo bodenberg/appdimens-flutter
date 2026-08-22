@@ -23,7 +23,9 @@ import 'percent_engine.dart';
 extension AppDimensPercentDp on num {
   // ── psdp (smallest width) ───────────────────────────────────────────────
 
-  double get psdp => _v(DpQualifier.smallWidth);
+  /// EN: Monomorphic fast lane — `base × sw/300`, bit-exact with the engine.
+  /// PT: Faixa rápida monomórfica — `base × sw/300`, bit-exato com o engine.
+  double get psdp => toDouble() * AppDimensScope.metricsOrDefault.scale;
   double get psdpa => _v(DpQualifier.smallWidth, ar: true);
   double get psdpi => _v(DpQualifier.smallWidth, mw: true);
   double get psdpia => _v(DpQualifier.smallWidth, ar: true, mw: true);
@@ -64,7 +66,9 @@ extension AppDimensPercentDp on num {
 
   // ── phdp (height) ───────────────────────────────────────────────────────
 
-  double get phdp => _v(DpQualifier.height);
+  /// Monomorphic fast lane — `base × h/300`.
+  double get phdp =>
+      toDouble() * AppDimensScope.metricsOrDefault.screenHeightFactor;
   double get phdpa => _v(DpQualifier.height, ar: true);
   double get phdpi => _v(DpQualifier.height, mw: true);
   double get phdpia => _v(DpQualifier.height, ar: true, mw: true);
@@ -76,7 +80,9 @@ extension AppDimensPercentDp on num {
 
   // ── pwdp (width) ────────────────────────────────────────────────────────
 
-  double get pwdp => _v(DpQualifier.width);
+  /// Monomorphic fast lane — `base × w/300`.
+  double get pwdp =>
+      toDouble() * AppDimensScope.metricsOrDefault.screenWidthFactor;
   double get pwdpa => _v(DpQualifier.width, ar: true);
   double get pwdpi => _v(DpQualifier.width, mw: true);
   double get pwdpia => _v(DpQualifier.width, ar: true, mw: true);
@@ -97,18 +103,27 @@ extension AppDimensPercentDp on num {
 
   /// No-font-scale stem: pre-divides by the font scale so rendering cancels.
   double get psem {
-    final fs = AppDimensScope.metricsOrDefault.fontScale;
-    return fs > 0 ? psdp / fs : psdp;
+    // Monomorphic single-scope-read no-font-scale stem.
+    final m = AppDimensScope.metricsOrDefault;
+    final v = toDouble() * m.scale;
+    final fs = m.fontScale;
+    return fs > 0 ? v / fs : v;
   }
 
   double get phem {
-    final fs = AppDimensScope.metricsOrDefault.fontScale;
-    return fs > 0 ? phdp / fs : phdp;
+    // Monomorphic single-scope-read no-font-scale stem.
+    final m = AppDimensScope.metricsOrDefault;
+    final v = toDouble() * m.screenHeightFactor;
+    final fs = m.fontScale;
+    return fs > 0 ? v / fs : v;
   }
 
   double get pwem {
-    final fs = AppDimensScope.metricsOrDefault.fontScale;
-    return fs > 0 ? pwdp / fs : pwdp;
+    // Monomorphic single-scope-read no-font-scale stem.
+    final m = AppDimensScope.metricsOrDefault;
+    final v = toDouble() * m.screenWidthFactor;
+    final fs = m.fontScale;
+    return fs > 0 ? v / fs : v;
   }
 
   double get psspPx =>

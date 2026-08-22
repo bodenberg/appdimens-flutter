@@ -130,8 +130,8 @@ abstract final class StrategyResolution {
       case ValueType.spNoScale:
       case ValueType.spPxNoScale:
         final fs = m.fontScale;
-        final divided = fs > 0 ? v / fs : v;
-        return _unitConvert(divided, m, t);
+        if (fs <= 0) return _unitConvert(v, m, t);
+        return _unitConvert(v / fs, m, t);
     }
   }
 

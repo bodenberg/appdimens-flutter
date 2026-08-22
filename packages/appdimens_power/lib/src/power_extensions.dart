@@ -21,7 +21,12 @@ import 'power_engine.dart';
 
 extension AppDimensPowerDp on num {
   // ── pwsdp (smallest width) ────────────────────────────────────────────────────
-  double get pwsdp => _v(DpQualifier.smallWidth);
+
+  /// EN: Monomorphic fast lane — one snapshot read + one multiply
+  /// (bit-exact with the engine's default sw path).
+  /// PT: Faixa rápida monomórfica — uma leitura de snapshot + uma
+  /// multiplicação (bit-exato com o caminho sw padrão do engine).
+  double get pwsdp => toDouble() * AppDimensScope.metricsOrDefault.powerScale;
   double get pwsdpa => _v(DpQualifier.smallWidth, ar: true);
   double get pwsdpi => _v(DpQualifier.smallWidth, mw: true);
   double get pwsdpia => _v(DpQualifier.smallWidth, ar: true, mw: true);
@@ -58,7 +63,10 @@ extension AppDimensPowerDp on num {
   double get pwsdpPx => pwsdp * AppDimensScope.metricsOrDefault.density;
 
   // ── pwhdp (height) ────────────────────────────────────────────────────────────
-  double get pwhdp => _v(DpQualifier.height);
+
+  /// Monomorphic fast lane — `(base × h/300)^0.75` hoisted per snapshot.
+  double get pwhdp =>
+      toDouble() * AppDimensScope.metricsOrDefault.powerHeightFactor;
   double get pwhdpa => _v(DpQualifier.height, ar: true);
   double get pwhdpi => _v(DpQualifier.height, mw: true);
   double get pwhdpia => _v(DpQualifier.height, ar: true, mw: true);
@@ -76,7 +84,10 @@ extension AppDimensPowerDp on num {
   double get pwhdpPx => pwhdp * AppDimensScope.metricsOrDefault.density;
 
   // ── pwwdp (width) ─────────────────────────────────────────────────────────────
-  double get pwwdp => _v(DpQualifier.width);
+
+  /// Monomorphic fast lane — `(base × w/300)^0.75` hoisted per snapshot.
+  double get pwwdp =>
+      toDouble() * AppDimensScope.metricsOrDefault.powerWidthFactor;
   double get pwwdpa => _v(DpQualifier.width, ar: true);
   double get pwwdpi => _v(DpQualifier.width, mw: true);
   double get pwwdpia => _v(DpQualifier.width, ar: true, mw: true);
@@ -103,18 +114,27 @@ extension AppDimensPowerDp on num {
 
   /// No-font-scale stem: pre-divides by the font scale so rendering cancels.
   double get pwsem {
-    final fs = AppDimensScope.metricsOrDefault.fontScale;
-    return fs > 0 ? pwsdp / fs : pwsdp;
+    // Monomorphic single-scope-read no-font-scale stem.
+    final m = AppDimensScope.metricsOrDefault;
+    final v = toDouble() * m.powerScale;
+    final fs = m.fontScale;
+    return fs > 0 ? v / fs : v;
   }
 
   double get pwhem {
-    final fs = AppDimensScope.metricsOrDefault.fontScale;
-    return fs > 0 ? pwhdp / fs : pwhdp;
+    // Monomorphic single-scope-read no-font-scale stem.
+    final m = AppDimensScope.metricsOrDefault;
+    final v = toDouble() * m.powerHeightFactor;
+    final fs = m.fontScale;
+    return fs > 0 ? v / fs : v;
   }
 
   double get pwwem {
-    final fs = AppDimensScope.metricsOrDefault.fontScale;
-    return fs > 0 ? pwwdp / fs : pwwdp;
+    // Monomorphic single-scope-read no-font-scale stem.
+    final m = AppDimensScope.metricsOrDefault;
+    final v = toDouble() * m.powerWidthFactor;
+    final fs = m.fontScale;
+    return fs > 0 ? v / fs : v;
   }
 
   double get pwsspPx =>

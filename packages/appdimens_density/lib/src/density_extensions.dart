@@ -21,7 +21,8 @@ import 'density_engine.dart';
 
 extension AppDimensDensityDp on num {
   // ── dsdp (smallest width) ────────────────────────────────────────────────────
-  double get dsdp => _v(DpQualifier.smallWidth);
+  /// Monomorphic fast lane — density is axis-independent.
+  double get dsdp => toDouble() * AppDimensScope.metricsOrDefault.density;
   double get dsdpa => _v(DpQualifier.smallWidth, ar: true);
   double get dsdpi => _v(DpQualifier.smallWidth, mw: true);
   double get dsdpia => _v(DpQualifier.smallWidth, ar: true, mw: true);
@@ -58,7 +59,8 @@ extension AppDimensDensityDp on num {
   double get dsdpPx => dsdp * AppDimensScope.metricsOrDefault.density;
 
   // ── dhdp (height) ────────────────────────────────────────────────────────────
-  double get dhdp => _v(DpQualifier.height);
+  /// Monomorphic fast lane — density is axis-independent.
+  double get dhdp => toDouble() * AppDimensScope.metricsOrDefault.density;
   double get dhdpa => _v(DpQualifier.height, ar: true);
   double get dhdpi => _v(DpQualifier.height, mw: true);
   double get dhdpia => _v(DpQualifier.height, ar: true, mw: true);
@@ -76,7 +78,8 @@ extension AppDimensDensityDp on num {
   double get dhdpPx => dhdp * AppDimensScope.metricsOrDefault.density;
 
   // ── dwdp (width) ─────────────────────────────────────────────────────────────
-  double get dwdp => _v(DpQualifier.width);
+  /// Monomorphic fast lane — density is axis-independent.
+  double get dwdp => toDouble() * AppDimensScope.metricsOrDefault.density;
   double get dwdpa => _v(DpQualifier.width, ar: true);
   double get dwdpi => _v(DpQualifier.width, mw: true);
   double get dwdpia => _v(DpQualifier.width, ar: true, mw: true);
@@ -103,18 +106,27 @@ extension AppDimensDensityDp on num {
 
   /// No-font-scale stem: pre-divides by the font scale so rendering cancels.
   double get dsem {
-    final fs = AppDimensScope.metricsOrDefault.fontScale;
-    return fs > 0 ? dsdp / fs : dsdp;
+    // Monomorphic single-scope-read no-font-scale stem.
+    final m = AppDimensScope.metricsOrDefault;
+    final v = toDouble() * m.density;
+    final fs = m.fontScale;
+    return fs > 0 ? v / fs : v;
   }
 
   double get dhem {
-    final fs = AppDimensScope.metricsOrDefault.fontScale;
-    return fs > 0 ? dhdp / fs : dhdp;
+    // Monomorphic single-scope-read no-font-scale stem.
+    final m = AppDimensScope.metricsOrDefault;
+    final v = toDouble() * m.density;
+    final fs = m.fontScale;
+    return fs > 0 ? v / fs : v;
   }
 
   double get dwem {
-    final fs = AppDimensScope.metricsOrDefault.fontScale;
-    return fs > 0 ? dwdp / fs : dwdp;
+    // Monomorphic single-scope-read no-font-scale stem.
+    final m = AppDimensScope.metricsOrDefault;
+    final v = toDouble() * m.density;
+    final fs = m.fontScale;
+    return fs > 0 ? v / fs : v;
   }
 
   double get dsspPx =>

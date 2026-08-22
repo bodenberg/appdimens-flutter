@@ -17,9 +17,9 @@
 
 | Operation | AppDimens | Naive recompute | Legacy model* |
 |---|---:|---:|---:|
-| constant 16 dp | **11.4** | 68.8 | 9.7† |
-| sdpa (+AR) | **8.6** | — | — |
-| hdp / ssp | **6–10** | 68.8 | — |
+| constant 16 dp | **8.7** | 180.9 | 7.9† |
+| sdpa (+AR) | **6.7** | — | — |
+| hdp / ssp / satellites | **6.6–6.8** | 180.9 | — |
 
 † constant-folded by the JIT in this harness — an optimistic floor; real
 legacy implementations pay map lookups and allocations that the Kotlin
@@ -28,8 +28,8 @@ family measured at **3.3 µs/call** on device.
 ## Ratios (medians)
 
 ```text
-Fast lane vs naive rebuild-per-call   ≈ 5–8× faster
-Fast lane vs legacy SDPS (on-device, from the Kotlin report) ≈ 100–400× faster
+Fast lane vs naive rebuild-per-call   ≈ 20–27× faster
+Fast lane vs legacy SDPS (on-device, from the Kotlin report) ≈ 400–500× faster
 ```
 
 ## Resolution parity

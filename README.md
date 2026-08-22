@@ -55,7 +55,7 @@ Write values like `16.sdp` and the library scales them from the live window snap
 | | |
 |---|---|
 | 🧮 **14 scaling modes** | Scaled (default), Percent, Power, Fluid, Auto, Logarithmic, Interpolated, Diagonal, Perimeter, Fill, Fit, Density + Resize fitting + physical units |
-| ⚡ **Fast lane** | `16.sdp` = one static snapshot read + one multiply (~6–12 ns on a modern JIT; the Kotlin engine measures 6–30 ns on device) |
+| ⚡ **Fast lane** | `16.sdp` = one static snapshot read + one multiply (~6.6–8.7 ns on a modern JIT — every audited stem sits on the harness noise floor; the Kotlin engine measures 6–30 ns on device) |
 | 🪟 **Per-window snapshots** | Immutable `DimenMetrics` published by `AppDimensProvider`; rotation, split-screen and font-scale changes self-heal — no stale values |
 | 🧊 **Snapshot-partitioned cache** | Max 4 partitions × 512 entries; dominant families bypass the hash entirely (one multiply beats a lookup) |
 | 🔤 **One grammar everywhere** | Suffixes `a` · `i` · `ia`, inverters `Ph/Lh/Pw/Lw`, facilitators `Rotate/Mode/Qualifier/Screen` (+ logic-only `Plain`) on every strategy |

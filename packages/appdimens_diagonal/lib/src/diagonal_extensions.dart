@@ -21,7 +21,8 @@ import 'diagonal_engine.dart';
 
 extension AppDimensDiagonalDp on num {
   // ── dgsdp (smallest width) ────────────────────────────────────────────────────
-  double get dgsdp => _v(DpQualifier.smallWidth);
+  /// Monomorphic fast lane — `√(min²+max²)/611.6305` hoisted per snapshot.
+  double get dgsdp => toDouble() * AppDimensScope.metricsOrDefault.diagonalScale;
   double get dgsdpa => _v(DpQualifier.smallWidth, ar: true);
   double get dgsdpi => _v(DpQualifier.smallWidth, mw: true);
   double get dgsdpia => _v(DpQualifier.smallWidth, ar: true, mw: true);
@@ -58,7 +59,8 @@ extension AppDimensDiagonalDp on num {
   double get dgsdpPx => dgsdp * AppDimensScope.metricsOrDefault.density;
 
   // ── dghdp (height) ────────────────────────────────────────────────────────────
-  double get dghdp => _v(DpQualifier.height);
+  /// Monomorphic fast lane — diagonal is axis-independent.
+  double get dghdp => toDouble() * AppDimensScope.metricsOrDefault.diagonalScale;
   double get dghdpa => _v(DpQualifier.height, ar: true);
   double get dghdpi => _v(DpQualifier.height, mw: true);
   double get dghdpia => _v(DpQualifier.height, ar: true, mw: true);
@@ -76,7 +78,8 @@ extension AppDimensDiagonalDp on num {
   double get dghdpPx => dghdp * AppDimensScope.metricsOrDefault.density;
 
   // ── dgwdp (width) ─────────────────────────────────────────────────────────────
-  double get dgwdp => _v(DpQualifier.width);
+  /// Monomorphic fast lane — diagonal is axis-independent.
+  double get dgwdp => toDouble() * AppDimensScope.metricsOrDefault.diagonalScale;
   double get dgwdpa => _v(DpQualifier.width, ar: true);
   double get dgwdpi => _v(DpQualifier.width, mw: true);
   double get dgwdpia => _v(DpQualifier.width, ar: true, mw: true);

@@ -10,11 +10,8 @@
 /// PT: Fórmula: `base × (d/300)^0.75` — perceptual sub-linear growth.
 library;
 
-import 'dart:math' as math;
-
 import 'package:appdimens/appdimens.dart';
 
-import 'factors.dart';
 
 /// Power strategy kernels (family port parity).
 abstract final class DimenPower {
@@ -32,10 +29,15 @@ abstract final class DimenPower {
         customSensitivityK == null) {
       return base * metrics.powerScale;
     }
-    final d = StrategyResolution.axisDp(metrics, effectiveQualifier);
-    final p = math.pow(d * DimenCache.invBaseRatio, PowerFactors.exponent);
+    // Per-axis factors are hoisted onto the snapshot (bit-exact with the
+    // former per-call `pow`).
+    final p = switch (effectiveQualifier) {
+      DpQualifier.width => metrics.powerWidthFactor,
+      DpQualifier.height => metrics.powerHeightFactor,
+      DpQualifier.smallWidth => metrics.powerScale,
+    };
     return StrategyResolution.applyAr(
-        base * p.toDouble(), metrics, applyAspectRatio, customSensitivityK);
+        base * p, metrics, applyAspectRatio, customSensitivityK);
   }
 
   /// Starts the conditional [StrategyChain] for this strategy.

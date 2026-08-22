@@ -27,9 +27,12 @@ abstract final class DimenPercent {
     double? customSensitivityK,
   ) =>
       StrategyResolution.applyAr(
-        base *
-            (StrategyResolution.axisDp(metrics, effectiveQualifier) *
-                DimenCache.invBaseRatio),
+        base * switch (effectiveQualifier) {
+          DpQualifier.smallWidth => metrics.smallestWidthDp *
+              DimenCache.invBaseRatio,
+          DpQualifier.width => metrics.screenWidthFactor,
+          DpQualifier.height => metrics.screenHeightFactor,
+        },
         metrics,
         applyAspectRatio,
         customSensitivityK,

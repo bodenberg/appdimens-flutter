@@ -39,5 +39,14 @@ modular port of **AppDimens Dynamic 3.1.9 / AppDimens KMP 1.0.1**.
   extensions, provider, physical-units of the old line). See MIGRATION.md.
 
 ### Performance
-- Fast lane: one static read + one multiply (~6–12 ns on CI VM JIT).
-- Naive rebuild-per-call pattern: ~5–8× slower than the fast lane.
+- Fast lane: one static read + one multiply (~6.6–8.7 ns on CI VM JIT).
+- Monomorphic inline kernels on the dominant getters (`sdp/sdpa/hdp/wdp`,
+  `ssp/hsp/wsp` and the `…a` variants): hot call sites no longer funnel
+  through shared-kernel dispatch, keeping every stem at the harness noise
+  floor (~6.6–6.8 ns).
+- Satellites (power, fluid, auto, logarithmic, diagonal, perimeter, fit,
+  interpolated, percent) resolve at the same floor as `sdp` after inlining.
+- Deduped scope publication: identical `DimenMetrics` snapshots are never
+  fired twice, eliminating spurious rebuilds during window changes.
+- Naive rebuild-per-call pattern: ~20–27× slower than the fast lane
+  (180.9 ns vs ~6.7–8.7 ns median).

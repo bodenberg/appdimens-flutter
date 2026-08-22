@@ -7,6 +7,8 @@
 /// metrics scope.
 library;
 
+import 'package:flutter/foundation.dart';
+
 import '../common/dp_qualifier.dart';
 import '../common/inverter.dart';
 import '../common/ui_mode_type.dart';
@@ -118,14 +120,42 @@ class SnapshotCache {
 /// publishes each window snapshot here so `num.sdp`-style getters resolve
 /// through one static read + one multiply (the fast lane).
 ///
+/// Every publication fires [notifier], so widgets that must track live
+/// window changes (resize, rotation, split-screen) can subscribe through
+/// `AppDimensReactiveBuilder` — the analog of Compose readers recomposing
+/// on `LocalDimenMetrics.current` changes.
+///
 /// PT: Escopo global de resolução — o análogo Flutter do `metricsScope` /
 /// `LocalDimenMetrics` do KMP. O `AppDimensProvider` publica cada snapshot de
 /// janela aqui para que getters como `num.sdp` resolvam com uma leitura
 /// estática e uma multiplicação (a faixa rápida).
+///
+/// Cada publicação dispara [notifier], então widgets que precisam acompanhar
+/// mudanças ao vivo da janela (resize, rotação, split-screen) podem assinar
+/// via `AppDimensReactiveBuilder` — o análogo dos leitores Compose que
+/// recompostam quando `LocalDimenMetrics.current` muda.
 abstract final class AppDimensScope {
   static DimenMetrics? _slot;
   static AppDimensContextLike? _contextSlot;
   static UiModeType? _uiModeType;
+
+  /// Fired once per publication cycle; reactive widgets listen to this.
+  static final MetricsChangeNotifier notifier = MetricsChangeNotifier();
+
+  // Last (metrics, uiMode) pair the notifier was fired for — identical
+  // republications (e.g. a binder rebuilding on unrelated MediaQuery
+  // changes) must not trigger spurious reactive rebuilds.
+  static DimenMetrics? _firedFor;
+  static UiModeType? _firedUiMode;
+
+  /// EN: Fires [notifier] only when the visible snapshot actually changed.
+  /// PT: Dispara o [notifier] apenas quando o snapshot visível mudou de fato.
+  static void fireIfChanged(DimenMetrics metrics, UiModeType uiModeType) {
+    if (_firedFor == metrics && _firedUiMode == uiModeType) return;
+    _firedFor = metrics;
+    _firedUiMode = uiModeType;
+    notifier.fire();
+  }
 
   /// Currently published snapshot, or `null` before any publication.
   static DimenMetrics? get metrics => _slot;
@@ -148,6 +178,9 @@ abstract final class AppDimensScope {
     _slot = null;
     _contextSlot = null;
     _uiModeType = null;
+    _firedFor = null;
+    _firedUiMode = null;
+    notifier.reset();
   }
 
   /// The effective ui-mode type: published value, else `undefined`.
@@ -172,6 +205,14 @@ abstract final class AppDimensScope {
   /// The effective snapshot: explicit slot, else the engine fallback.
   static DimenMetrics get metricsOrDefault =>
       _slot ?? DimenCache.fallbackMetrics;
+}
+
+/// Internal listenable fired by [AppDimensScope] on each publication.
+class MetricsChangeNotifier extends ChangeNotifier {
+  void fire() => notifyListeners();
+  void reset() {
+    if (hasListeners) notifyListeners();
+  }
 }
 
 /// EN: Snapshot-partitioned memoization shared by code APIs, widgets and every

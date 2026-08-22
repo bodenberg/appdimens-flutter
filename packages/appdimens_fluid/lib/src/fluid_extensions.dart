@@ -17,11 +17,28 @@ library;
 
 import 'package:appdimens/appdimens.dart';
 
+import 'factors.dart';
 import 'fluid_engine.dart';
 
 extension AppDimensFluidDp on num {
   // ── fsdp (smallest width) ────────────────────────────────────────────────────
-  double get fsdp => _v(DpQualifier.smallWidth);
+  /// EN: Monomorphic fast lane — inlines the clamp/lerp with the exact
+  /// engine op order (`minV + (maxV − minV) × t`), reading the axis straight
+  /// from the snapshot. Bit-exact, no dispatch.
+  /// PT: Faixa rápida monomórfica — embute o clamp/lerp com a ordem exata de
+  /// operações do engine, lendo o eixo direto do snapshot. Bit-exato.
+  double get fsdp {
+    final m = AppDimensScope.metricsOrDefault;
+    final b = toDouble();
+    final d = m.smallestWidthDp;
+    final minV = b * FluidRange.minScale;
+    final maxV = b * FluidRange.maxScale;
+    if (d <= FluidRange.minWidth) return minV;
+    if (d >= FluidRange.maxWidth) return maxV;
+    final t =
+        (d - FluidRange.minWidth) / (FluidRange.maxWidth - FluidRange.minWidth);
+    return minV + (maxV - minV) * t;
+  }
   double get fsdpa => _v(DpQualifier.smallWidth, ar: true);
   double get fsdpi => _v(DpQualifier.smallWidth, mw: true);
   double get fsdpia => _v(DpQualifier.smallWidth, ar: true, mw: true);
@@ -58,7 +75,19 @@ extension AppDimensFluidDp on num {
   double get fsdpPx => fsdp * AppDimensScope.metricsOrDefault.density;
 
   // ── fhdp (height) ────────────────────────────────────────────────────────────
-  double get fhdp => _v(DpQualifier.height);
+  /// Monomorphic fast lane — height-axis fluid clamp/lerp, engine op order.
+  double get fhdp {
+    final m = AppDimensScope.metricsOrDefault;
+    final b = toDouble();
+    final d = m.screenHeightDp.toDouble();
+    final minV = b * FluidRange.minScale;
+    final maxV = b * FluidRange.maxScale;
+    if (d <= FluidRange.minWidth) return minV;
+    if (d >= FluidRange.maxWidth) return maxV;
+    final t =
+        (d - FluidRange.minWidth) / (FluidRange.maxWidth - FluidRange.minWidth);
+    return minV + (maxV - minV) * t;
+  }
   double get fhdpa => _v(DpQualifier.height, ar: true);
   double get fhdpi => _v(DpQualifier.height, mw: true);
   double get fhdpia => _v(DpQualifier.height, ar: true, mw: true);
@@ -76,7 +105,19 @@ extension AppDimensFluidDp on num {
   double get fhdpPx => fhdp * AppDimensScope.metricsOrDefault.density;
 
   // ── fwdp (width) ─────────────────────────────────────────────────────────────
-  double get fwdp => _v(DpQualifier.width);
+  /// Monomorphic fast lane — width-axis fluid clamp/lerp, engine op order.
+  double get fwdp {
+    final m = AppDimensScope.metricsOrDefault;
+    final b = toDouble();
+    final d = m.screenWidthDp.toDouble();
+    final minV = b * FluidRange.minScale;
+    final maxV = b * FluidRange.maxScale;
+    if (d <= FluidRange.minWidth) return minV;
+    if (d >= FluidRange.maxWidth) return maxV;
+    final t =
+        (d - FluidRange.minWidth) / (FluidRange.maxWidth - FluidRange.minWidth);
+    return minV + (maxV - minV) * t;
+  }
   double get fwdpa => _v(DpQualifier.width, ar: true);
   double get fwdpi => _v(DpQualifier.width, mw: true);
   double get fwdpia => _v(DpQualifier.width, ar: true, mw: true);

@@ -21,7 +21,8 @@ import 'perimeter_engine.dart';
 
 extension AppDimensPerimeterDp on num {
   // ── prsdp (smallest width) ────────────────────────────────────────────────────
-  double get prsdp => _v(DpQualifier.smallWidth);
+  /// Monomorphic fast lane — `(min+max)/833` hoisted per snapshot.
+  double get prsdp => toDouble() * AppDimensScope.metricsOrDefault.perimeterScale;
   double get prsdpa => _v(DpQualifier.smallWidth, ar: true);
   double get prsdpi => _v(DpQualifier.smallWidth, mw: true);
   double get prsdpia => _v(DpQualifier.smallWidth, ar: true, mw: true);
@@ -58,7 +59,8 @@ extension AppDimensPerimeterDp on num {
   double get prsdpPx => prsdp * AppDimensScope.metricsOrDefault.density;
 
   // ── prhdp (height) ────────────────────────────────────────────────────────────
-  double get prhdp => _v(DpQualifier.height);
+  /// Monomorphic fast lane — perimeter is axis-independent.
+  double get prhdp => toDouble() * AppDimensScope.metricsOrDefault.perimeterScale;
   double get prhdpa => _v(DpQualifier.height, ar: true);
   double get prhdpi => _v(DpQualifier.height, mw: true);
   double get prhdpia => _v(DpQualifier.height, ar: true, mw: true);
@@ -76,7 +78,8 @@ extension AppDimensPerimeterDp on num {
   double get prhdpPx => prhdp * AppDimensScope.metricsOrDefault.density;
 
   // ── prwdp (width) ─────────────────────────────────────────────────────────────
-  double get prwdp => _v(DpQualifier.width);
+  /// Monomorphic fast lane — perimeter is axis-independent.
+  double get prwdp => toDouble() * AppDimensScope.metricsOrDefault.perimeterScale;
   double get prwdpa => _v(DpQualifier.width, ar: true);
   double get prwdpi => _v(DpQualifier.width, mw: true);
   double get prwdpia => _v(DpQualifier.width, ar: true, mw: true);
