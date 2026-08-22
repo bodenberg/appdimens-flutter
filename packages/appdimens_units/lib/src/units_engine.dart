@@ -4,6 +4,8 @@
 /// Library: AppDimens
 ///
 /// Physical units module — mm / cm / inch ↔ dp / px / sp conversions.
+library;
+
 import 'dart:math' as math;
 
 import 'package:appdimens/appdimens.dart';

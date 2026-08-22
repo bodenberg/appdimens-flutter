@@ -4,6 +4,8 @@
 /// Library: AppDimens
 ///
 /// Scaled strategy — primary `num` extension surface (sdp · hdp · wdp).
+library;
+
 import '../common/dp_qualifier.dart';
 import '../common/inverter.dart';
 import '../common/orientation.dart';

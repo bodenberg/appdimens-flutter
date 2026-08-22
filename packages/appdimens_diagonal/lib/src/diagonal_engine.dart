@@ -8,6 +8,8 @@
 /// EN: Formula: `base × √(min² + max²) / 611.6305` (qualifier-independent).
 ///
 /// PT: Fórmula: `base × √(min² + max²) / 611.6305` (qualifier-independent).
+library;
+
 import 'package:appdimens/appdimens.dart';
 
 /// Diagonal strategy kernels (family port parity).

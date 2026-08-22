@@ -8,6 +8,8 @@
 /// EN: Formula: `base × (minSide + maxSide) / 833` (qualifier-independent).
 ///
 /// PT: Fórmula: `base × (minSide + maxSide) / 833` (qualifier-independent).
+library;
+
 import 'package:appdimens/appdimens.dart';
 
 /// Perimeter strategy kernels (family port parity).

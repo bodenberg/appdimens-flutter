@@ -4,6 +4,8 @@
 /// Library: AppDimens
 ///
 /// Resize strategy — constraint-based auto-fit (largest size that still fits).
+library;
+
 import 'package:appdimens/appdimens.dart';
 
 /// EN: Resize helpers mirroring `DimenResize` in Kotlin. The resize strategy

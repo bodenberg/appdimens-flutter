@@ -8,6 +8,8 @@
 /// EN: Formula: `d ≤ 480 : d/300`; else `480/300 + 0.4·ln(1 + (d−480)/300)`.
 ///
 /// PT: Fórmula: `d ≤ 480 : d/300`; else `480/300 + 0.4·ln(1 + (d−480)/300)`.
+library;
+
 import 'dart:math' as math;
 
 import 'package:appdimens/appdimens.dart';

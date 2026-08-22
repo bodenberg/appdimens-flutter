@@ -54,7 +54,7 @@ void main() {
     });
 
     test('fluid plateaus at both ends', () {
-      final small = FakeAppDimensContext(
+      const small = FakeAppDimensContext(
         configuration: ScreenConfiguration(
           screenWidthDp: 300,
           screenHeightDp: 600,

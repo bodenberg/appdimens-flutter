@@ -4,6 +4,8 @@
 /// Library: AppDimens
 ///
 /// Strategy-agnostic screen plumbing shared by every strategy module.
+library;
+
 import 'dart:math' as math;
 
 import '../common/dp_qualifier.dart';
