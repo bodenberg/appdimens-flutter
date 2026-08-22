@@ -8,11 +8,20 @@ Constraint-based auto-fit: builds a step table and binary-searches the largest c
 
 ## Installation
 
+```bash
+flutter pub add appdimens_resize      # Flutter apps
+dart pub add appdimens_resize         # pure-Dart packages
+```
+
+Or manually in `pubspec.yaml`:
+
 ```yaml
 dependencies:
   appdimens_resize: ^3.2.0
 ```
 
+> 📦 Package page: [pub.dev/packages/appdimens_resize](https://pub.dev/packages/appdimens_resize)
+>
 > Prefer one dependency for everything? Use [`appdimens_bom`](https://pub.dev/packages/appdimens_bom).
 
 ## Usage

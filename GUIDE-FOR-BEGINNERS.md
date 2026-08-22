@@ -82,13 +82,20 @@ Container(
 
 Each strategy lives in its own package — add only what you use:
 
+```bash
+flutter pub add appdimens_flutter appdimens_auto    # Flutter apps
+dart pub add appdimens_flutter appdimens_auto       # pure-Dart packages
+```
+
+Or manually in `pubspec.yaml`:
+
 ```yaml
 dependencies:
   appdimens_flutter: ^3.2.0
   appdimens_auto: ^3.2.0
 ```
 
-…or take `appdimens_bom` to get everything.
+…or take [`appdimens_bom`](https://pub.dev/packages/appdimens_bom) to get everything (`flutter pub add appdimens_bom`).
 
 ## 7. Conditional sizes without spaghetti
 

@@ -8,11 +8,20 @@ Percentage strategy: the linear Scaled law under the `psdp/phdp/pwdp` stems plus
 
 ## Installation
 
+```bash
+flutter pub add appdimens_percent      # Flutter apps
+dart pub add appdimens_percent         # pure-Dart packages
+```
+
+Or manually in `pubspec.yaml`:
+
 ```yaml
 dependencies:
   appdimens_percent: ^3.2.0
 ```
 
+> 📦 Package page: [pub.dev/packages/appdimens_percent](https://pub.dev/packages/appdimens_percent)
+>
 > Prefer one dependency for everything? Use [`appdimens_bom`](https://pub.dev/packages/appdimens_bom).
 
 ## Usage

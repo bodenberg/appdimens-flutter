@@ -8,11 +8,20 @@ CSS `contain` semantics: uses the smaller axis ratio so elements always fit insi
 
 ## Installation
 
+```bash
+flutter pub add appdimens_fit      # Flutter apps
+dart pub add appdimens_fit         # pure-Dart packages
+```
+
+Or manually in `pubspec.yaml`:
+
 ```yaml
 dependencies:
   appdimens_fit: ^3.2.0
 ```
 
+> 📦 Package page: [pub.dev/packages/appdimens_fit](https://pub.dev/packages/appdimens_fit)
+>
 > Prefer one dependency for everything? Use [`appdimens_bom`](https://pub.dev/packages/appdimens_bom).
 
 ## Usage

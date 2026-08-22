@@ -7,7 +7,7 @@ description: Use this skill for any Flutter responsive layout or scaling questio
 
 **Library (3.2.0):** `appdimens_flutter` (scaled + core), `appdimens_<strategy>`, BOM `appdimens_bom`. See [MODULES.md](../DOCUMENTATION/MODULES.md).
 
-**Install:** `appdimens_flutter: ^3.2.0` plus the strategy satellites you need (or `appdimens_bom: ^3.2.0` for everything).
+**Install:** `flutter pub add appdimens_flutter` (or `dart pub add appdimens_flutter` in pure-Dart packages) plus the strategy satellites you need — or `flutter pub add appdimens_bom` for everything. Package pages: [appdimens_flutter](https://pub.dev/packages/appdimens_flutter) · [appdimens_bom](https://pub.dev/packages/appdimens_bom).
 
 On release bumps, update version URLs in this file, `library-map.md`, and `reference.md` together.
 

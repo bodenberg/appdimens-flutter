@@ -8,11 +8,20 @@ Sub-linear perceptual growth: `base × (d/300)^0.75`. Sizes grow on large screen
 
 ## Installation
 
+```bash
+flutter pub add appdimens_power      # Flutter apps
+dart pub add appdimens_power         # pure-Dart packages
+```
+
+Or manually in `pubspec.yaml`:
+
 ```yaml
 dependencies:
   appdimens_power: ^3.2.0
 ```
 
+> 📦 Package page: [pub.dev/packages/appdimens_power](https://pub.dev/packages/appdimens_power)
+>
 > Prefer one dependency for everything? Use [`appdimens_bom`](https://pub.dev/packages/appdimens_bom).
 
 ## Usage

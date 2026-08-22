@@ -4,6 +4,8 @@
 
 Important notes:
 - Principal package: `appdimens_flutter` (common + core + scaled); one opt-in satellite per strategy (`appdimens_percent`, `appdimens_power`, …) and an all-in-one meta-package `appdimens_bom`. Satellites depend only on `appdimens_flutter`.
+- Install: `flutter pub add appdimens_flutter` (or `dart pub add appdimens_flutter`) / everything at once with `flutter pub add appdimens_bom`. Family pages: https://pub.dev/packages/appdimens_flutter · https://pub.dev/packages/appdimens_bom
+- The principal artifact is named `appdimens_flutter` because pub.dev's naming policy blocked the bare name `appdimens` (too similar to existing `app_dimen`).
 - Current version: **3.2.0** — Dart ≥ 3.6, Flutter ≥ 3.27, pure Dart engine (no platform channels).
 - Wrap the app once with `AppDimensApp(child: MaterialApp(...))` (or `AppDimensScopeBinder` inside `MaterialApp.builder`) so `16.sdp`-style getters resolve through the global fast lane; without a provider they resolve against the deterministic 300×533 reference.
 - The recommended default strategy is **Scaled** (`sdp` / `hdp` / `wdp` / `ssp`, optionally `sdpa` for aspect-ratio tuning); the `a` suffix adds aspect-ratio awareness; `i` / `ia` are internal multi-window flags and should not be surfaced to users.

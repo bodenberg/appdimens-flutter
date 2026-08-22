@@ -8,11 +8,20 @@ Half-perimeter ratio `(min+max)/833` — orientation-stable growth based on both
 
 ## Installation
 
+```bash
+flutter pub add appdimens_perimeter      # Flutter apps
+dart pub add appdimens_perimeter         # pure-Dart packages
+```
+
+Or manually in `pubspec.yaml`:
+
 ```yaml
 dependencies:
   appdimens_perimeter: ^3.2.0
 ```
 
+> 📦 Package page: [pub.dev/packages/appdimens_perimeter](https://pub.dev/packages/appdimens_perimeter)
+>
 > Prefer one dependency for everything? Use [`appdimens_bom`](https://pub.dev/packages/appdimens_bom).
 
 ## Usage

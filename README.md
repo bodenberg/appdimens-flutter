@@ -68,6 +68,36 @@ Write values like `16.sdp` and the library scales them from the live window snap
 
 ### Installation
 
+All 15 packages are published on **pub.dev**. Add the principal artifact with:
+
+```bash
+flutter pub add appdimens_flutter      # Flutter apps
+dart pub add appdimens_flutter         # pure-Dart packages
+```
+
+Optional strategy satellites — install only what you use:
+
+```bash
+flutter pub add appdimens_percent        # literal % of screen axes (spaceW/spaceH)
+flutter pub add appdimens_power          # sub-linear growth for large screens
+flutter pub add appdimens_fluid          # clamped band ±20%
+flutter pub add appdimens_auto           # phone/tablet knee at 480 dp
+flutter pub add appdimens_logarithmic    # strong ±0.4·ln damping
+flutter pub add appdimens_interpolated   # fixed 50% blend
+flutter pub add appdimens_diagonal       # orientation-stable diagonal ratio
+flutter pub add appdimens_perimeter      # half-perimeter ratio
+flutter pub add appdimens_density        # dpi/160 physical alignment
+flutter pub add appdimens_fill           # cover-like growth
+flutter pub add appdimens_fit            # contain-like growth
+flutter pub add appdimens_resize         # constraint auto-fit widgets
+flutter pub add appdimens_units          # mm/cm/inch helpers
+
+# or everything at once:
+flutter pub add appdimens_bom
+```
+
+Equivalent `pubspec.yaml`:
+
 ```yaml
 dependencies:
   appdimens_flutter: ^3.2.0            # principal artifact (core + scaled)
@@ -78,7 +108,18 @@ dependencies:
   appdimens_bom: ^3.2.0
 ```
 
-> While the packages live in this monorepo, use path dependencies or publish them to pub.dev as `appdimens_*`.
+### Packages on pub.dev
+
+| Package | Purpose |
+|---|---|
+| [appdimens_flutter](https://pub.dev/packages/appdimens_flutter) | Principal artifact: core engine, cache, Scaled (`sdp/hdp/wdp/ssp`) |
+| [appdimens_bom](https://pub.dev/packages/appdimens_bom) | All-in-one meta-package (whole family, one version) |
+| [appdimens_percent](https://pub.dev/packages/appdimens_percent) · [appdimens_power](https://pub.dev/packages/appdimens_power) · [appdimens_fluid](https://pub.dev/packages/appdimens_fluid) · [appdimens_auto](https://pub.dev/packages/appdimens_auto) | Percent · Power · Fluid · Auto |
+| [appdimens_logarithmic](https://pub.dev/packages/appdimens_logarithmic) · [appdimens_interpolated](https://pub.dev/packages/appdimens_interpolated) · [appdimens_diagonal](https://pub.dev/packages/appdimens_diagonal) · [appdimens_perimeter](https://pub.dev/packages/appdimens_perimeter) | Logarithmic · Interpolated · Diagonal · Perimeter |
+| [appdimens_density](https://pub.dev/packages/appdimens_density) · [appdimens_fill](https://pub.dev/packages/appdimens_fill) · [appdimens_fit](https://pub.dev/packages/appdimens_fit) | Density · Fill · Fit |
+| [appdimens_resize](https://pub.dev/packages/appdimens_resize) · [appdimens_units](https://pub.dev/packages/appdimens_units) | Constraint auto-fit · mm/cm/inch units |
+
+> The principal artifact is `appdimens_flutter` — the bare name `appdimens` was blocked by the pub.dev naming-similarity policy (`app_dimen`).
 
 ### Wrap your app once
 

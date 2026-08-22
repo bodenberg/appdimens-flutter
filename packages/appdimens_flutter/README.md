@@ -8,17 +8,26 @@ The principal artifact: core engine, immutable window snapshots, snapshot-partit
 
 ## Installation
 
+```bash
+flutter pub add appdimens_flutter      # Flutter apps
+dart pub add appdimens_flutter         # pure-Dart packages
+```
+
+Or manually in `pubspec.yaml`:
+
 ```yaml
 dependencies:
   appdimens_flutter: ^3.2.0
 ```
 
+> 📦 Package page: [pub.dev/packages/appdimens_flutter](https://pub.dev/packages/appdimens_flutter)
+>
 > Prefer one dependency for everything? Use [`appdimens_bom`](https://pub.dev/packages/appdimens_bom).
 
 ## Usage
 
 ```dart
-import 'package:appdimens_flutter/appdimens_flutter.dart';
+import 'package:appdimens_flutter/appdimens.dart';
 final pad  = 16.sdp;    // smallest-width curve
 final h    = 48.hdp;    // height curve
 final size = 100.wdp;   // width curve

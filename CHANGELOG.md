@@ -38,6 +38,15 @@ modular port of **AppDimens Dynamic 3.1.9 / AppDimens KMP 1.0.1**.
 - Deprecated `fx`/`dy` builder API (`AppDimens.fixed/dynamic/fluid`,
   extensions, provider, physical-units of the old line). See MIGRATION.md.
 
+### Changed
+- **Principal artifact published as `appdimens_flutter`** — the bare name
+  `appdimens` was rejected by pub.dev's naming-similarity policy (conflicts
+  with the existing `app_dimen` package). Import path:
+  `package:appdimens_flutter/appdimens.dart`. Satellite names are unchanged.
+- Published to pub.dev as the 15-package family `^3.2.0`
+  ([appdimens_flutter](https://pub.dev/packages/appdimens_flutter),
+  [appdimens_bom](https://pub.dev/packages/appdimens_bom), …).
+
 ### Performance
 - Fast lane: one static read + one multiply (~6.6–8.7 ns on CI VM JIT).
 - Monomorphic inline kernels on the dominant getters (`sdp/sdpa/hdp/wdp`,

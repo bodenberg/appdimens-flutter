@@ -8,11 +8,20 @@ Linear on phones, logarithmically damped beyond the 480 dp transition — the pr
 
 ## Installation
 
+```bash
+flutter pub add appdimens_auto      # Flutter apps
+dart pub add appdimens_auto         # pure-Dart packages
+```
+
+Or manually in `pubspec.yaml`:
+
 ```yaml
 dependencies:
   appdimens_auto: ^3.2.0
 ```
 
+> 📦 Package page: [pub.dev/packages/appdimens_auto](https://pub.dev/packages/appdimens_auto)
+>
 > Prefer one dependency for everything? Use [`appdimens_bom`](https://pub.dev/packages/appdimens_bom).
 
 ## Usage

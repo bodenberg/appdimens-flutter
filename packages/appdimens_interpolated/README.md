@@ -8,11 +8,20 @@ Fixed 50 % blend between the raw value and the fully-scaled value — exactly ha
 
 ## Installation
 
+```bash
+flutter pub add appdimens_interpolated      # Flutter apps
+dart pub add appdimens_interpolated         # pure-Dart packages
+```
+
+Or manually in `pubspec.yaml`:
+
 ```yaml
 dependencies:
   appdimens_interpolated: ^3.2.0
 ```
 
+> 📦 Package page: [pub.dev/packages/appdimens_interpolated](https://pub.dev/packages/appdimens_interpolated)
+>
 > Prefer one dependency for everything? Use [`appdimens_bom`](https://pub.dev/packages/appdimens_bom).
 
 ## Usage

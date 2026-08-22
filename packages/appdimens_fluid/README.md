@@ -8,11 +8,20 @@ CSS-clamp-like strategy: plateaus at `b×0.8` below 320 dp and `b×1.2` above 76
 
 ## Installation
 
+```bash
+flutter pub add appdimens_fluid      # Flutter apps
+dart pub add appdimens_fluid         # pure-Dart packages
+```
+
+Or manually in `pubspec.yaml`:
+
 ```yaml
 dependencies:
   appdimens_fluid: ^3.2.0
 ```
 
+> 📦 Package page: [pub.dev/packages/appdimens_fluid](https://pub.dev/packages/appdimens_fluid)
+>
 > Prefer one dependency for everything? Use [`appdimens_bom`](https://pub.dev/packages/appdimens_bom).
 
 ## Usage

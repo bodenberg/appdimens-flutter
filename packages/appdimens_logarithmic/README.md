@@ -8,11 +8,20 @@ Symmetric ±0.4·ln damping around the 300 dp baseline — the most conservative
 
 ## Installation
 
+```bash
+flutter pub add appdimens_logarithmic      # Flutter apps
+dart pub add appdimens_logarithmic         # pure-Dart packages
+```
+
+Or manually in `pubspec.yaml`:
+
 ```yaml
 dependencies:
   appdimens_logarithmic: ^3.2.0
 ```
 
+> 📦 Package page: [pub.dev/packages/appdimens_logarithmic](https://pub.dev/packages/appdimens_logarithmic)
+>
 > Prefer one dependency for everything? Use [`appdimens_bom`](https://pub.dev/packages/appdimens_bom).
 
 ## Usage

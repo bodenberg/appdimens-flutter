@@ -8,11 +8,20 @@ CSS `cover` semantics for dimensioning: uses the larger axis ratio so elements a
 
 ## Installation
 
+```bash
+flutter pub add appdimens_fill      # Flutter apps
+dart pub add appdimens_fill         # pure-Dart packages
+```
+
+Or manually in `pubspec.yaml`:
+
 ```yaml
 dependencies:
   appdimens_fill: ^3.2.0
 ```
 
+> 📦 Package page: [pub.dev/packages/appdimens_fill](https://pub.dev/packages/appdimens_fill)
+>
 > Prefer one dependency for everything? Use [`appdimens_bom`](https://pub.dev/packages/appdimens_bom).
 
 ## Usage

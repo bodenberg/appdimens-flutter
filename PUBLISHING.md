@@ -5,6 +5,22 @@ prepared: versioned intra-workspace constraints (`^3.2.0`), per-package
 README/CHANGELOG/LICENSE, and `publish_to: none` on the apps (never
 published).
 
+## Status (2026-08-22)
+
+- **Live on pub.dev:** appdimens_flutter, percent, power, fluid, interpolated,
+  diagonal, perimeter, density, resize, units, auto, logarithmic.
+- **Pending** (blocked by pub.dev's *daily* new-package rate limit — 12/day):
+  `appdimens_fill`, `appdimens_fit`, `appdimens_bom`. Retry after the window
+  resets:
+
+```bash
+for p in appdimens_fill appdimens_fit appdimens_bom; do \
+  (cd "packages/$p" && dart pub publish --force); done
+```
+
+> The principal artifact is named `appdimens_flutter`: pub.dev rejected the
+> bare name `appdimens` as too similar to the existing `app_dimen` package.
+
 ## 0. One-time setup
 
 1. Log in with a Google account: `dart pub login` (browser flow).

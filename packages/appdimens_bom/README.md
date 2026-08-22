@@ -7,10 +7,19 @@ Kotlin family.
 
 ## Installation
 
+```bash
+flutter pub add appdimens_bom     # Flutter apps
+dart pub add appdimens_bom        # pure-Dart packages
+```
+
+Or manually in `pubspec.yaml`:
+
 ```yaml
 dependencies:
   appdimens_bom: ^3.2.0
 ```
+
+> 📦 Package page: [pub.dev/packages/appdimens_bom](https://pub.dev/packages/appdimens_bom)
 
 ## Usage
 

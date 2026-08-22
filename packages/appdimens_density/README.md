@@ -8,11 +8,20 @@ Anchors sizes to the physical pixel density (`dpi/160`) instead of the window si
 
 ## Installation
 
+```bash
+flutter pub add appdimens_density      # Flutter apps
+dart pub add appdimens_density         # pure-Dart packages
+```
+
+Or manually in `pubspec.yaml`:
+
 ```yaml
 dependencies:
   appdimens_density: ^3.2.0
 ```
 
+> 📦 Package page: [pub.dev/packages/appdimens_density](https://pub.dev/packages/appdimens_density)
+>
 > Prefer one dependency for everything? Use [`appdimens_bom`](https://pub.dev/packages/appdimens_bom).
 
 ## Usage

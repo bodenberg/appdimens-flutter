@@ -8,11 +8,20 @@ Scales by the window diagonal against the design baseline (√(300²+533²)) —
 
 ## Installation
 
+```bash
+flutter pub add appdimens_diagonal      # Flutter apps
+dart pub add appdimens_diagonal         # pure-Dart packages
+```
+
+Or manually in `pubspec.yaml`:
+
 ```yaml
 dependencies:
   appdimens_diagonal: ^3.2.0
 ```
 
+> 📦 Package page: [pub.dev/packages/appdimens_diagonal](https://pub.dev/packages/appdimens_diagonal)
+>
 > Prefer one dependency for everything? Use [`appdimens_bom`](https://pub.dev/packages/appdimens_bom).
 
 ## Usage

@@ -20,17 +20,26 @@ HEADER = """# {title}
 
 ## Installation
 
+```bash
+flutter pub add {pkg}      # Flutter apps
+dart pub add {pkg}         # pure-Dart packages
+```
+
+Or manually in `pubspec.yaml`:
+
 ```yaml
 dependencies:
   {pkg}: ^{ver}
 ```
 
+> 📦 Package page: [pub.dev/packages/{pkg}](https://pub.dev/packages/{pkg})
+>
 > Prefer one dependency for everything? Use [`appdimens_bom`](https://pub.dev/packages/appdimens_bom).
 
 ## Usage
 
 ```dart
-import 'package:{pkg}/{pkg}.dart';
+import 'package:{pkg}/{entry}.dart';
 {usage}
 ```
 
@@ -73,6 +82,7 @@ final box = 100.scaledDp
         doc="scaled",
         stems=("| `sdp` / `hdp` / `wdp` | smallest width / height / width | `ssp/hsp/wsp` | `sem/hem/wem` |\n"),
         pkg="appdimens_flutter",
+        entry="appdimens",
     ),
     "appdimens_percent": dict(
         title="AppDimens Percent",
@@ -195,10 +205,19 @@ Kotlin family.
 
 ## Installation
 
+```bash
+flutter pub add appdimens_bom     # Flutter apps
+dart pub add appdimens_bom        # pure-Dart packages
+```
+
+Or manually in `pubspec.yaml`:
+
 ```yaml
 dependencies:
   appdimens_bom: ^{ver}
 ```
+
+> 📦 Package page: [pub.dev/packages/appdimens_bom](https://pub.dev/packages/appdimens_bom)
 
 ## Usage
 
@@ -229,6 +248,7 @@ for pkg, cfg in PACKAGES.items():
         title=cfg["title"],
         blurb=cfg["blurb"],
         pkg=pkg,
+        entry=cfg.get("entry", pkg),
         ver=VER,
         usage=cfg["usage"],
         doc=cfg["doc"],

@@ -8,11 +8,20 @@ Physical units: mm/cm/inch → dp/px/sp conversions with optional calibrated ppi
 
 ## Installation
 
+```bash
+flutter pub add appdimens_units      # Flutter apps
+dart pub add appdimens_units         # pure-Dart packages
+```
+
+Or manually in `pubspec.yaml`:
+
 ```yaml
 dependencies:
   appdimens_units: ^3.2.0
 ```
 
+> 📦 Package page: [pub.dev/packages/appdimens_units](https://pub.dev/packages/appdimens_units)
+>
 > Prefer one dependency for everything? Use [`appdimens_bom`](https://pub.dev/packages/appdimens_bom).
 
 ## Usage
