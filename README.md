@@ -199,6 +199,7 @@ Full graph and dependency rules: [DOCUMENTATION/MODULES.md](DOCUMENTATION/MODULE
 | [GUIDE-FOR-BEGINNERS.md](GUIDE-FOR-BEGINNERS.md) | Plain-language walkthrough |
 | [PERFORMANCE.md](PERFORMANCE.md) / [PERFORMANCE-COMPARATIVE.md](PERFORMANCE-COMPARATIVE.md) | Measured numbers and competitor comparison |
 | [MIGRATION.md](MIGRATION.md) | Replacing the deprecated 2.x Flutter API |
+| [LLMS.txt](LLMS.txt) · [skills/](skills/) | AI-agent resources (LLM index + agent workflow skill) |
 
 **Recommendation order for most apps:** **Scaled** (with or without `a`) → then **percent** → then **auto**; explore the rest when you have a clear need (fluid, fit, diagonal…).
 

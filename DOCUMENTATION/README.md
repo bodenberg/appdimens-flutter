@@ -35,6 +35,8 @@ Every dp stem has sp twins (`ssp`, `hsp`, `wsp` with the strategy prefix, e.g.
 | [API-CONVENTIONS.md](API-CONVENTIONS.md) | Suffix grammar, inverters, facilitators, builders, Px twins, Flutter adaptations |
 | [MATHEMATICS-AND-CALCULUS.md](MATHEMATICS-AND-CALCULUS.md) | Formal formulas, hardcoded constants, precomputation matrix, precision policy |
 | [MODULES.md](MODULES.md) | Package graph and dependency rules |
+| [../LLMS.txt](../LLMS.txt) | LLM-oriented library index |
+| [../skills/SKILL.md](../skills/SKILL.md) | AI-agent workflow skill (with [library-map](../skills/library-map.md) / [reference](../skills/reference.md)) |
 
 ## Decision flowchart
 
