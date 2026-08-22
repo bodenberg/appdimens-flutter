@@ -13,12 +13,32 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-      - run: flutter pub get && flutter analyze . && flutter test packages apps
+          cache: true
+
+      - name: Resolve workspace dependencies
+        run: flutter pub get
+
+      - name: Analyze (whole workspace)
+        run: flutter analyze
+
+      - name: Test every package / app
+        run: |
+          status=0
+          for dir in packages/* apps/*; do
+            if [ -f "$dir/pubspec.yaml" ] && [ -d "$dir/test" ]; then
+              echo "::group::test ${dir}"
+              ( cd "$dir" && flutter pub get && flutter test --reporter=github ) || status=1
+              echo "::endgroup::"
+            fi
+          done
+          exit $status
 
       - name: Dry-run all packages
         strategy:

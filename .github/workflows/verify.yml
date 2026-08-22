@@ -1,0 +1,74 @@
+name: verify
+
+# Self-contained CI for the AppDimens Flutter workspace.
+# This intentionally does NOT use `workflow_run` or cross-workflow
+# artifact/log downloads — those are the usual cause of
+# "The log was not found. It may have been deleted based on retention settings."
+on:
+  push:
+    branches: ["**"]
+  pull_request: {}
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            name: verify-linux
+          - os: macos-latest
+            name: verify-macos
+          - os: windows-latest
+            name: verify-windows
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Verify Flutter version
+        run: flutter --version
+
+      - name: Resolve workspace dependencies
+        run: flutter pub get
+
+      - name: Analyze (whole workspace)
+        run: flutter analyze
+
+      - name: Test every package / app
+        run: |
+          status=0
+          for dir in packages/* apps/*; do
+            if [ -f "$dir/pubspec.yaml" ]; then
+              echo "::group::test ${dir}"
+              (
+                cd "$dir"
+                flutter pub get
+                if [ -d test ]; then
+                  flutter test --reporter=github
+                else
+                  echo "no test/ directory — skipped"
+                fi
+              ) || status=1
+              echo "::endgroup::"
+            fi
+          done
+          exit $status

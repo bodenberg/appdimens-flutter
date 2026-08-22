@@ -1,0 +1,43 @@
+name: CodeQL
+
+# CodeQL has NO support for Dart/Flutter, so we scope analysis to the only
+# supported language that actually ships code in this repo: the Python
+# helper scripts under scripts/. We use build-mode: none so CodeQL never
+# attempts to autobuild Java/C++ (which previously failed with
+# "Could not detect a suitable build command for the source checkout").
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "27 4 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: CodeQL (python)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ["python"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: none
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
