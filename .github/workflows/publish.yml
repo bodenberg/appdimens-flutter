@@ -41,24 +41,25 @@ jobs:
           exit $status
 
       - name: Dry-run all packages
-        strategy:
-          fail-fast: true
-          matrix:
-            package:
-              [appdimens_flutter, appdimens_auto, appdimens_bom, appdimens_density,
-               appdimens_diagonal, appdimens_fill, appdimens_fit,
-               appdimens_fluid, appdimens_interpolated,
-               appdimens_logarithmic, appdimens_percent, appdimens_perimeter,
-               appdimens_power, appdimens_resize, appdimens_units]
         run: |
-          cd "packages/${{ matrix.package }}"
-          flutter pub publish --dry-run
+          status=0
+          for p in appdimens_flutter appdimens_auto appdimens_bom appdimens_density \
+                   appdimens_diagonal appdimens_fill appdimens_fit \
+                   appdimens_fluid appdimens_interpolated \
+                   appdimens_logarithmic appdimens_percent appdimens_perimeter \
+                   appdimens_power appdimens_resize appdimens_units; do
+            echo "::group::dry-run ${p}"
+            ( cd "packages/$p" && flutter pub publish --dry-run ) || status=1
+            echo "::endgroup::"
+          done
+          exit $status
 
       - name: Publish core → satellites → BOM
         if: ${{ inputs.dry_run != true }}
         env:
           PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
         run: |
+          set -e
           CONFIG_HOME="$HOME/.config"
           mkdir -p "$CONFIG_HOME/dart"
           echo "$PUB_CREDENTIALS" > "$CONFIG_HOME/dart/pub-credentials.json"
@@ -68,7 +69,5 @@ jobs:
                    appdimens_perimeter appdimens_density appdimens_fill \
                    appdimens_fit appdimens_resize appdimens_units \
                    appdimens_bom; do
-            cd "packages/$p"
-            dart pub publish --force
-            cd - > /dev/null
+            ( cd "packages/$p" && dart pub publish --force )
           done
