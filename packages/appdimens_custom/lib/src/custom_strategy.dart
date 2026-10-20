@@ -86,6 +86,7 @@ class ScalingStrategy {
   ///   minFactor: 0.85, maxFactor: 1.6,
   ///   rules: [ScalingRule.on({DeviceClass.tablet}, ScalingPatch(curve: ScalingCurve.logarithmic(0.4)))],
   /// );
+  /// // Free-form: curve: ScalingCurve.expression('pow(ratio, 0.8)'), formula: 'max(scaled, base)'
   /// ```
   factory ScalingStrategy.define(
     String id, {
@@ -103,6 +104,7 @@ class ScalingStrategy {
     FontScalePolicy? fontScale,
     bool? ignoreMultiWindow,
     ValueTransform? transform,
+    String? formula,
     List<ScalingRule> rules = const [],
     bool register = true,
   }) {
@@ -122,6 +124,7 @@ class ScalingStrategy {
       fontScale: fontScale,
       ignoreMultiWindow: ignoreMultiWindow,
       transform: transform,
+      formula: formula == null ? null : ScalingFormula(formula),
     ))
         .copyWith(rules: [...parent.rules, ...rules]);
     final s = ScalingStrategy(id, cfg);

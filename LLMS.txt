@@ -43,7 +43,7 @@ Important notes:
 - [Density](DOCUMENTATION/density.md): Physical-density alignment (`dpi/160`)
 - [Resize](DOCUMENTATION/resize.md): Constraint-based auto-fit (`AutoResizeText`, `AutoResizeSquare`, `ResizeBound`)
 - [Physical units](DOCUMENTATION/physical-units.md): Real-world mm / cm / inch helpers
-- [Custom strategies](DOCUMENTATION/custom.md): your own scaling — `ScalingStrategy.define('brand', curve: ScalingCurve.power(0.8), rules: [...])`, JSON shared with every AppDimens platform, presets; `16.cdpWith(brand)`, `context.cdp(16)`, `ScalingStrategyScope`
+- [Custom strategies](DOCUMENTATION/custom.md): your own scaling — `ScalingStrategy.define('brand', curve: ScalingCurve.power(0.8), rules: [...])`, JSON shared with every AppDimens platform, free-form text formulas (`ScalingCurve.expression('…')`, `formula: '…'`), presets; `16.cdpWith(brand)`, `context.cdp(16)`, `ScalingStrategyScope`
 
 ## Example code
 

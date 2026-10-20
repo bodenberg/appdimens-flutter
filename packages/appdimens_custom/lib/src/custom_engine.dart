@@ -10,7 +10,7 @@
 /// factor:
 ///   ratio  = axis(window) / axis(reference)
 ///   factor = clamp(curve(ratio) × multiplier × AR, minFactor, maxFactor)
-///   dp     = transform(clampValue(base × factor, minValue, maxValue))
+///   dp     = formula(clampValue(base × factor, minValue, maxValue))
 /// The JSON format is shared with every AppDimens platform
 /// (`custom-strategy.schema.json`).
 ///
@@ -20,6 +20,10 @@ library;
 
 import 'dart:convert';
 import 'dart:math' as math;
+
+import 'custom_expression.dart';
+
+export 'custom_expression.dart';
 
 /// EN Screen measure a strategy scales against. PT Medida usada pela estratégia.
 enum ScalingAxis {
@@ -188,6 +192,10 @@ sealed class ScalingCurve {
   factory ScalingCurve.breakpoints(List<Breakpoint> points) =
       BreakpointsScalingCurve;
 
+  /// Free formula written as text (JSON-serializable, same result on every
+  /// platform), e.g. `ScalingCurve.expression('pow(ratio, 0.8)')`.
+  factory ScalingCurve.expression(String source) = ExpressionScalingCurve;
+
   /// Free pure formula (not JSON-serializable).
   factory ScalingCurve.custom(CurveFunction function) = CustomScalingCurve;
 
@@ -335,6 +343,34 @@ class BreakpointsScalingCurve extends ScalingCurve {
   int get hashCode => Object.hashAll(points);
 }
 
+class ExpressionScalingCurve extends ScalingCurve {
+  final ScalingExpression expression;
+
+  ExpressionScalingCurve(String source)
+      : expression = ScalingExpression.parse(source, allowed: curveVariables);
+
+  /// EN Evaluates with the full strategy context (used by [resolveScaling]).
+  double evaluateWith(double ratio, double axisDp, double refDp,
+          ReferenceScreen reference, ScreenSnapshot screen) =>
+      expression.evaluate(
+          expressionVariables(screen, ratio, axisDp, refDp, reference));
+
+  @override
+  double evaluate(double ratio, double axisDp, ScreenSnapshot screen) =>
+      evaluateWith(ratio, axisDp, ratio != 0 ? axisDp / ratio : double.nan,
+          ReferenceScreen.standard, screen);
+
+  @override
+  bool operator ==(Object other) =>
+      other is ExpressionScalingCurve && other.expression == expression;
+
+  @override
+  int get hashCode => expression.hashCode;
+
+  @override
+  String toString() => 'expression(${expression.source})';
+}
+
 class CustomScalingCurve extends ScalingCurve {
   final CurveFunction function;
   const CustomScalingCurve(this.function);
@@ -438,6 +474,9 @@ class ScalingPatch {
   final bool? ignoreMultiWindow;
   final ValueTransform? transform;
 
+  /// EN Per-value text formula (JSON-serializable); replaces [transform].
+  final ScalingFormula? formula;
+
   const ScalingPatch({
     this.reference,
     this.axis,
@@ -452,10 +491,14 @@ class ScalingPatch {
     this.fontScale,
     this.ignoreMultiWindow,
     this.transform,
+    this.formula,
   });
 
   bool get isValueDependent =>
-      minValue != null || maxValue != null || transform != null;
+      minValue != null ||
+      maxValue != null ||
+      transform != null ||
+      formula != null;
 }
 
 /// EN `when` [condition] matches, apply [patch]; later rules win.
@@ -485,6 +528,9 @@ class ScalingConfig {
   final FontScalePolicy fontScale;
   final bool ignoreMultiWindow;
   final ValueTransform? transform;
+
+  /// EN Per-value text formula; takes the place of [transform].
+  final ScalingFormula? formula;
   final List<ScalingRule> rules;
 
   ScalingConfig({
@@ -500,15 +546,18 @@ class ScalingConfig {
     this.sensitivity,
     this.fontScale = FontScalePolicy.follow,
     this.ignoreMultiWindow = false,
-    this.transform,
+    ValueTransform? transform,
+    this.formula,
     List<ScalingRule> rules = const [],
-  })  : reference = reference ?? ReferenceScreen.standard,
+  })  : transform = formula != null ? null : transform,
+        reference = reference ?? ReferenceScreen.standard,
         rules = List.unmodifiable(rules);
 
   bool get isValueDependent =>
       minValue != null ||
       maxValue != null ||
       transform != null ||
+      formula != null ||
       rules.any((r) => r.patch.isValueDependent);
 
   ScalingConfig apply(ScalingPatch p) => ScalingConfig(
@@ -524,7 +573,10 @@ class ScalingConfig {
         sensitivity: p.sensitivity ?? sensitivity,
         fontScale: p.fontScale ?? fontScale,
         ignoreMultiWindow: p.ignoreMultiWindow ?? ignoreMultiWindow,
-        transform: p.transform ?? transform,
+        transform: p.formula != null ? null : p.transform ?? transform,
+        formula: p.transform != null && p.formula == null
+            ? null
+            : p.formula ?? formula,
         rules: rules,
       );
 
@@ -543,6 +595,7 @@ class ScalingConfig {
         fontScale: fontScale,
         ignoreMultiWindow: ignoreMultiWindow,
         transform: transform,
+        formula: formula,
         rules: rules ?? this.rules,
       );
 
@@ -601,8 +654,16 @@ class ResolvedScaling {
       if (max != null && magnitude > max) magnitude = max;
       out = out < 0 ? -magnitude : magnitude;
     }
-    final t = config.transform;
-    if (t != null) out = t(base, out, screen);
+    final f = config.formula;
+    if (f != null) {
+      final ratio = referenceDp > 0 ? axisDp / referenceDp : 1.0;
+      out = f.expression.evaluate(expressionVariables(
+          screen, ratio, axisDp, referenceDp, config.reference,
+          base: base, scaled: out, factor: factor));
+    } else {
+      final t = config.transform;
+      if (t != null) out = t(base, out, screen);
+    }
     return out;
   }
 
@@ -658,7 +719,10 @@ ResolvedScaling resolveScaling(ScalingConfig base, ScreenSnapshot screen) {
         screen, cfg, 1, List.unmodifiable(applied), axisDp, refDp, 1, 1);
   }
   final ratio = refDp > 0 ? axisDp / refDp : 1.0;
-  final curveFactor = cfg.curve.evaluate(ratio, axisDp, screen);
+  final curve = cfg.curve;
+  final curveFactor = curve is ExpressionScalingCurve
+      ? curve.evaluateWith(ratio, axisDp, refDp, cfg.reference, screen)
+      : curve.evaluate(ratio, axisDp, screen);
   var factor = curveFactor * cfg.multiplier;
   var arMul = 1.0;
   if (cfg.aspectRatio) {
@@ -718,9 +782,25 @@ abstract final class ScalingStrategyJson {
                   _req((pts[i] as Map)['factor'], '$path.points[$i].factor')),
           ]);
         }(),
+      'expression' => () {
+          final src = v['expression'];
+          if (src is! String) {
+            throw FormatException('$path.expression is required');
+          }
+          return _parseAt(
+              () => ScalingCurve.expression(src), '$path.expression');
+        }(),
       _ => throw FormatException(
-          "$path.type '$type' is not one of linear, power, logarithmic, interpolated, constant, breakpoints"),
+          "$path.type '$type' is not one of linear, power, logarithmic, interpolated, constant, breakpoints, expression"),
     };
+  }
+
+  static T _parseAt<T>(T Function() create, String path) {
+    try {
+      return create();
+    } on FormatException catch (e) {
+      throw FormatException('$path: ${e.message}');
+    }
   }
 
   static FontScalePolicy readFontScale(Object? v, String path) {
@@ -771,6 +851,12 @@ abstract final class ScalingStrategyJson {
           ? readFontScale(v['fontScale'], '$path.fontScale')
           : null,
       ignoreMultiWindow: v['ignoreMultiWindow'] as bool?,
+      formula: switch (v['formula']) {
+        null => null,
+        final String src =>
+          _parseAt(() => ScalingFormula(src), '$path.formula'),
+        _ => throw FormatException('$path.formula must be a string'),
+      },
     );
   }
 
@@ -823,7 +909,8 @@ abstract final class ScalingStrategyJson {
     // Explicit `null` at the root clears inherited bounds.
     final clearFactor = v.containsKey('clamp') && v['clamp'] == null;
     final clearValue = v.containsKey('valueClamp') && v['valueClamp'] == null;
-    if (clearFactor || clearValue) {
+    final clearFormula = v.containsKey('formula') && v['formula'] == null;
+    if (clearFactor || clearValue || clearFormula) {
       cfg = ScalingConfig(
           reference: cfg.reference,
           axis: cfg.axis,
@@ -838,6 +925,7 @@ abstract final class ScalingStrategyJson {
           fontScale: cfg.fontScale,
           ignoreMultiWindow: cfg.ignoreMultiWindow,
           transform: cfg.transform,
+          formula: clearFormula ? null : cfg.formula,
           rules: cfg.rules);
     }
     final rawRules = v['rules'];
@@ -954,6 +1042,10 @@ abstract final class ScalingStrategyJson {
               for (final p in points) {'at': p.at, 'factor': p.factor}
             ],
           },
+        ExpressionScalingCurve(:final expression) => {
+            'type': 'expression',
+            'expression': expression.source
+          },
         CustomScalingCurve() =>
           throw StateError('Custom curve functions cannot be encoded to JSON'),
       };
@@ -1003,6 +1095,7 @@ abstract final class ScalingStrategyJson {
     if (p.ignoreMultiWindow != null && (!defaults || p.ignoreMultiWindow!)) {
       o['ignoreMultiWindow'] = p.ignoreMultiWindow;
     }
+    if (p.formula != null) o['formula'] = p.formula!.source;
     return o;
   }
 
@@ -1043,6 +1136,7 @@ abstract final class ScalingStrategyJson {
               fontScale: c.fontScale,
               ignoreMultiWindow: c.ignoreMultiWindow,
               transform: c.transform,
+              formula: c.formula,
             ),
             defaults: true),
         if (c.rules.isNotEmpty)

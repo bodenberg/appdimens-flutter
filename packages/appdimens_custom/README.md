@@ -6,7 +6,8 @@
 
 **Your own scaling strategies.** A strategy combines:
 - a reference frame and an axis;
-- a curve: linear, power, logarithmic, interpolated, constant, breakpoints, or a function;
+- a curve: linear, power, logarithmic, interpolated, constant, breakpoints, a free-form text expression (`ScalingCurve.expression('pow(ratio, 0.8) * (tablet ? 0.9 : 1)')`), or a function;
+- an optional per-value text formula (`formula: 'max(scaled, base)'`);
 - factor and value bounds, plus a font-scale policy;
 - rules per device class, screen range, orientation and multi-window.
 

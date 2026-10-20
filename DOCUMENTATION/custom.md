@@ -10,7 +10,7 @@ When none of the built-in curves fits, or one growth law must be shared by sever
 ```
 ratio  = axis(window) / axis(reference)
 factor = clamp( curve(ratio) × multiplier × AR , minFactor, maxFactor )
-dp     = transform( clampValue( base × factor , minValue, maxValue ) )
+dp     = formula( clampValue( base × factor , minValue, maxValue ) )
 ```
 
 Rules override any field per **device class** (`phone`, `tablet`, `desktop`, `tv`, `watch`, `car`, `vr`), **screen range** (smallest width, width, height, aspect ratio), **orientation** and **multi-window**.
@@ -80,16 +80,49 @@ The `context.*` helpers subscribe the widget to `MediaQuery` size and text scale
 |---|---|---|---|
 | Reference frame | `reference: ReferenceScreen(width: 360, height: 640)` | `"reference": {"width": 360, "height": 640}` | 300 × 533 |
 | Axis | `axis: ScalingAxis.height` | `"axis": "height"` | `smallestWidth` |
-| Curve | `ScalingCurve.linear` · `.power(e)` · `.logarithmic(k)` · `.interpolated(t)` · `.constant(f)` · `.breakpoints([Breakpoint(360, 1), …])` · `.custom((ratio, screen) => …)` | `"curve": {"type": "power", "exponent": 0.8}` … | `linear` |
+| Curve | `ScalingCurve.linear` · `.power(e)` · `.logarithmic(k)` · `.interpolated(t)` · `.constant(f)` · `.breakpoints([Breakpoint(360, 1), …])` · `.expression('…')` (free-form text, see below) · `.custom((ratio, screen) => …)` | `"curve": {"type": "power", "exponent": 0.8}` … | `linear` |
 | Multiplier | `multiplier: 0.9` | `"multiplier": 0.9` | 1 |
 | Factor bounds | `minFactor` / `maxFactor` | `"clamp": {"min", "max"}` | none |
 | Value bounds (dp, magnitude) | `minValue` / `maxValue` | `"valueClamp": {"min", "max"}` | none |
 | Aspect ratio | `aspectRatio: true, sensitivity: 0.004` | `"aspectRatio": {"enabled": true, "sensitivity": 0.004}` | off, k = 0.08/30 |
 | Font scale | `FontScalePolicy.follow` · `.ignore` · `.clamp(1.3)` | `"follow"` · `"ignore"` · `{"max": 1.3}` | follow |
 | Multi-window | `ignoreMultiWindow: true` | `"ignoreMultiWindow": true` | false |
-| Per-value hook | `transform: (base, scaled, screen) => …` | — | none |
+| Per-value formula | `formula: 'max(scaled, base)'` | `"formula": "max(scaled, base)"` | none |
+| Per-value hook (code) | `transform: (base, scaled, screen) => …` | — | none |
 | Rules | `rules: [ScalingRule(...)]` | `"rules": [{"when": {…}, "set": {…}}]` | none |
 | Parent | `extend: BuiltInStrategies.power` / `power.extend('x', …)` | `"extends": "power"` | — |
+
+## Free-form formulas (no limits from the built-in curves)
+
+You are not limited to the built-in curves. Write the formula yourself, as **text** that also works in JSON and gives the same result on every AppDimens platform:
+
+- **Curve expression** returns the **factor** from the screen. It is computed once per window, like any curve, and stays on the one-multiply fast path.
+  `"curve": {"type": "expression", "expression": "pow(ratio, 0.8) * (tablet ? 0.9 : 1)"}`
+- **Formula** returns the **final value** for each input. It can use `base`, `scaled` and `factor`, and replaces or post-processes the result. The strategy then becomes value-dependent, so results are cached per window.
+  `"formula": "base * pow(sw / 360, 0.7) + 2"` · `"formula": "max(scaled, base)"`
+
+| | |
+|---|---|
+| Operators | `+ - * / % ^` (`^` = power, right-associative; `%` keeps the dividend's sign), `== != < <= > >=`, `&& \|\| !`, `cond ? a : b`, `( )` |
+| Functions | `min(a, b, …)` `max(a, b, …)` `clamp(x, lo, hi)` `pow` `sqrt` `ln`/`log` `log10` `log2` `exp` `abs` `sign` `floor` `ceil` `round` (half up) `lerp(a, b, t)` `step(edge, x)` `smoothstep(e0, e1, x)` |
+| Screen variables | `sw` `width` `height` `shortSide` `longSide` `diagonal` `perimeter` `aspectRatio` `density` `fontScale`; flags (1/0): `landscape` `portrait` `multiWindow` `phone` `tablet` `desktop` `tv` `watch` `car` `vr`; constants `pi` `e`, `true` / `false` |
+| Curve variables | screen variables + `ratio` (axis / reference), `axis` (dp), `ref` (reference dp), `refWidth`, `refHeight` |
+| Formula variables | curve variables + `base` (input), `scaled` (base × factor after `valueClamp`), `factor` |
+
+Expressions are parsed when the strategy is created. Unknown variables or functions, wrong arity and syntax errors fail early with the position and the JSON path (e.g. `brand.rules[0].set.curve.expression`). A non-finite factor (for example, a division by zero) throws when the strategy resolves. Rules can swap expressions per device like any other field, and `"formula": null` clears an inherited formula.
+
+For anything the language cannot express, use a code-only function: `ScalingCurve.custom((ratio, screen) => …)` (factor) or `transform: (base, scaled, screen) => …` (value). Both have full access to your code, but they cannot be serialized to JSON.
+
+```dart
+final hud = ScalingStrategy.define('hud',
+    curve: ScalingCurve.expression(
+        'clamp(pow(shortSide / 360, 0.85) * (1 + 0.05 * log(aspectRatio / 1.78)), 0.8, 2)'),
+    formula: 'round(scaled)', // whole dp only
+    rules: [
+      ScalingRule.on({DeviceClass.tv},
+          ScalingPatch(curve: ScalingCurve.expression('height / 540'))),
+    ]);
+```
 
 How rules apply:
 - Ranges are `min <= value < max`.
@@ -129,7 +162,7 @@ You can override this with `ScalingStrategies.deviceClassResolver = (metrics, ui
 ## Performance and parity
 
 - The factor is memoized per snapshot and UI mode, so `16.cdpWith(brand)` is one multiply.
-- Value bounds and `transform` add a few operations per call.
+- Value bounds, `formula` and `transform` add a few operations per call.
 - Keep `ScalingCurve.custom` and `transform` pure.
 - `packages/appdimens_custom/test/custom-strategy-fixture.json`, generated by the Kotlin reference engine, runs in CI with a relative tolerance of 1e-4.
 - Built-in parity is also checked against `DimenMetrics.powerScale` / `logarithmicScale` / ….

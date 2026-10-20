@@ -8,7 +8,7 @@ Dynamic family.
 
 ### Added
 - **`appdimens_custom`: custom scaling strategies**, a port of Android `appdimens-dynamic-custom`.
-  - **Config format:** the same JSON as every AppDimens platform. It covers reference frame, axis, curves (linear, power, logarithmic, interpolated, constant, breakpoints, function), factor/value bounds, aspect ratio, font-scale policy, and rules per device class / screen range / orientation / multi-window.
+  - **Config format:** the same JSON as every AppDimens platform. It covers reference frame, axis, curves (linear, power, logarithmic, interpolated, constant, breakpoints, free-form text expression, function), a per-value text formula, factor/value bounds, aspect ratio, font-scale policy, and rules per device class / screen range / orientation / multi-window.
   - **Composition:** `extend` from built-ins and presets.
   - **APIs:** `ScalingStrategy.define`, `ScalingStrategies.loadJson`, `16.cdp` / `16.cdpWith(s)` / `14.csp`, `context.cdp(16)`, `ScalingStrategyScope`, `ScalingStrategyBuilder`, `explain()`.
   - **Packaging:** re-exported by `appdimens_bom` and demoed in `apps/sample`.

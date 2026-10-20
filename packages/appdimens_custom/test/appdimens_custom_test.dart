@@ -198,6 +198,101 @@ void main() {
     });
   });
 
+  group('free-form expressions', () {
+    double ev(String src, [ScreenSnapshot? screen]) =>
+        ScalingExpression.parse(src).evaluate(expressionVariables(
+            screen ?? _phone, 1.5, 411, 300, ReferenceScreen.standard,
+            base: 16, scaled: 20, factor: 1.25));
+
+    test('operators, functions and variables', () {
+      const cases = {
+        '1 + 2 * 3': 7.0,
+        '(1 + 2) * 3': 9.0,
+        '2 ^ 3 ^ 2': 512.0,
+        '-2 ^ 2': -4.0,
+        '-7 % 3': -1.0,
+        '1 < 2 && 2 <= 2 && !(3 == 4) && 3 != 4': 1.0,
+        '0 || 5': 1.0,
+        '0 ? 2 : 1 ? 3 : 4': 3.0,
+        'true && !false': 1.0,
+        '1.5e3': 1500.0,
+        'min(3, 1, 2) + max(3, 1, 2)': 4.0,
+        'clamp(5, 0, 2)': 2.0,
+        'round(2.5) + round(-2.5)': 1.0,
+        'smoothstep(0, 10, 5)': 0.5,
+        'step(1, 1) + lerp(10, 20, 0.5)': 16.0,
+        'sw': 411.0,
+        'phone && portrait && !landscape && !tablet': 1.0,
+        'base + scaled + ratio': 37.5,
+      };
+      cases.forEach((src, expected) =>
+          expect(ev(src), closeTo(expected, 1e-9), reason: src));
+    });
+
+    test('parse errors are descriptive', () {
+      const cases = {
+        'sw +': 'unexpected end',
+        'foo * 2': "unknown variable 'foo'",
+        'wave(1)': "unknown function 'wave'",
+        'clamp(1, 2)': "'clamp' takes 3",
+        '(1 + 2': "expected ')'",
+        '1 ? 2': "expected ':'",
+        '': 'empty',
+      };
+      cases.forEach((src, message) => expect(
+          () => ScalingExpression.parse(src),
+          throwsA(isA<FormatException>()
+              .having((e) => e.message, 'message', contains(message)))));
+      expect(() => ScalingCurve.expression('base'), throwsFormatException);
+    });
+
+    test('curve is factor-only, formula is value-dependent', () {
+      final curve = ScalingStrategy.define('e',
+          curve: ScalingCurve.expression('pow(ratio, 0.75)'), register: false);
+      expect(curve.isValueDependent, isFalse);
+      expect(curve.resolveScreen(_tablet).factor,
+          closeTo(BuiltInStrategies.power.resolveScreen(_tablet).factor, 1e-9));
+      final free = ScalingStrategy.define('f',
+          formula: 'base * pow(sw / 360, 0.7) + 2', register: false);
+      expect(free.isValueDependent, isTrue);
+      expect(free.resolveScreen(_tablet).scale(16),
+          closeTo(16 * math.pow(800 / 360, 0.7) + 2, 1e-9));
+      final bad = ScalingStrategy.define('b',
+          curve: ScalingCurve.expression('1 / (sw - sw)'), register: false);
+      expect(() => bad.resolveScreen(_phone), throwsStateError);
+    });
+
+    test('JSON round trip, null clears, errors carry the path', () {
+      final loaded = ScalingStrategies.loadJson(jsonEncode([
+        {
+          'id': 'a',
+          'curve': {
+            'type': 'expression',
+            'expression': 'ratio * (tablet ? 0.9 : 1)'
+          },
+          'formula': 'max(scaled, 12)',
+        },
+        {'id': 'b', 'extends': 'a', 'formula': null},
+      ]));
+      final a = loaded['a']!;
+      final back = ScalingStrategy('a',
+          ScalingStrategyJson.parse(a.toJson(), (_) => null).configs['a']!);
+      expect(back.resolveScreen(_tablet).scale(4),
+          closeTo(a.resolveScreen(_tablet).scale(4), 1e-9));
+      expect(a.resolveScreen(_phone).scale(1), 12);
+      expect(loaded['b']!.isValueDependent, isFalse);
+      expect(
+          () => ScalingStrategyJson.parse(
+              '{"id":"x","curve":{"type":"expression","expression":"base"}}',
+              (_) => null),
+          throwsA(isA<FormatException>().having(
+              (e) => e.message,
+              'message',
+              allOf(contains('x.curve.expression'),
+                  contains("unknown variable 'base'")))));
+    });
+  });
+
   group('Flutter binding', () {
     test('num extensions follow the scope snapshot and the default', () {
       final m = _metrics(411, 891);

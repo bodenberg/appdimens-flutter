@@ -141,7 +141,7 @@ Use only when requirements or QA justify leaving scaled. **Before recommending a
 Read [DOCUMENTATION/custom.md](../DOCUMENTATION/custom.md) first.
 1. Start from a built-in or preset: `BuiltInStrategies.power.extend('x', …)`, `CustomPresets.tabletFriendly`, or JSON `"extends"`.
 2. Keep one source: an asset JSON loaded with `ScalingStrategies.loadJson`, or one `strategies.dart`. Reuse the ids from `appdimens.config.json` (`customStrategies`) when present.
-3. Express device or screen differences as `ScalingRule`s, never as `if`s at call sites.
+3. Express device or screen differences as `ScalingRule`s, never as `if`s at call sites. When no curve fits, write the law as text (`ScalingCurve.expression('…')` or `formula: '…'`); prefer that over Dart functions when it lives in JSON or is shared with other platforms.
 4. In widgets, use `context.cdp(v)` / `context.csp(v)` under a `ScalingStrategyScope`, or `16.cdpWith(s)`. For `fontSize`, use `csp` / `cspWith`.
 5. Verify with `context.explainScaling()` / `s.explain()` on a phone and a tablet.
 
