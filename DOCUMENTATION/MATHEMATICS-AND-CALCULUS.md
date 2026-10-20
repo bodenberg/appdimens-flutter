@@ -117,6 +117,20 @@ smallest width and no custom flags are set, Power / Interpolated /
 Logarithmic / Diagonal / Perimeter return `base · <memoized snapshot factor>`
 directly — one field read + one multiply, no `pow`/`sqrt`/`ln` per call.
 
+### Custom strategies
+
+A custom strategy (`appdimens_custom`) evaluates once per snapshot and UI mode:
+
+```text
+r      = A(window) / A(reference)          A ∈ {sw, w, h, min, max, √(w²+h²), w+h}
+F      = clamp( c(r) · m · (1 + k·ln(AR/1.78))^[ar] , Fmin, Fmax )      (crossed bounds → Fmax)
+out    = T( clamp_|·|( b · F , Vmin, Vmax ) )
+c(r)   ∈ { r, r^e, 1 + k·ln r, 1 + (r−1)·t, f, piecewise-linear over A(window) }
+spDp   = out · φ(fontScale),  φ ∈ { follow: s, ignore: 1, clamp(M): min(s, M) }
+```
+
+Matching rules patch the config before evaluation, in declaration order, with ranges `[min, max)`. With reference 300×533 and axis `sw`, the curves `r`, `r^0.75`, `1+0.4·ln r` and `1+(r−1)·0.5` reproduce Scaled, Power, Logarithmic and Interpolated. The tests check this against the memoized `DimenMetrics` factors.
+
 ## 6. Inverters (`effectiveQualifier`)
 
 | Inverter | Condition → swap |

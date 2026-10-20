@@ -21,5 +21,6 @@ workspace:
   - packages/appdimens_power
   - packages/appdimens_resize
   - packages/appdimens_units
+  - packages/appdimens_custom
   - apps/sample
   - apps/benchlab

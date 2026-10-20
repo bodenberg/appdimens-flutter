@@ -1,6 +1,6 @@
 ---
 name: appdimens-flutter-workflow
-description: Use this skill for any Flutter responsive layout or scaling question — including making apps look right on tablets, foldables, desktop windows, or different screen sizes — and whenever the user mentions appdimens, sdp, hdp, wdp, ssp, sem, DimenMetrics, DimenCache, AutoResize, responsive dp/sp, or scaling strategies. Also trigger when the user wants to add the AppDimens Flutter dependency, choose between the fast-lane getters and explicit-context APIs, implement constraint-based resize, or convert plain dp/sp values to scaled equivalents. When in doubt, use this skill — it covers the full lifecycle: install, strategy selection, implementation under the provider, and resize.
+description: Use this skill for any Flutter responsive layout or scaling question — including making apps look right on tablets, foldables, desktop windows, or different screen sizes — and whenever the user mentions appdimens, sdp, hdp, wdp, ssp, sem, DimenMetrics, DimenCache, AutoResize, responsive dp/sp, or scaling strategies. Also trigger when the user wants to add the AppDimens Flutter dependency, choose between the fast-lane getters and explicit-context APIs, implement constraint-based resize, or convert plain dp/sp values to scaled equivalents. When in doubt, use this skill — it covers the full lifecycle: install, strategy selection, implementation under the provider, and resize. Also use it for custom scaling strategies (appdimens_custom: ScalingStrategy.define, cdp/csp, per-device rules, scaling JSON shared across platforms).
 ---
 
 # AppDimens Flutter — project workflow
@@ -132,8 +132,18 @@ Use only when requirements or QA justify leaving scaled. **Before recommending a
 | **Density** | `appdimens_density` | DPI/160 alignment | Games, AR, physical calibration | Want screen-shape-aware curves |
 | **Physical units** | `appdimens_units` | mm / cm / in helpers | Real-world sizing (rulers, print-like UI) | Most Material layout — use scaled instead |
 | **Resize** | `appdimens_resize` | *(not a global curve)* Largest discrete step in [min,max] fitting constraints | Auto-fit text or boxes inside known max | Whole-screen proportional layout |
+| **Custom** | `appdimens_custom` | Your own factor: reference, axis, curve, bounds, font policy, rules per device class / screen range | No built-in passes QA; one law shared across apps/platforms; TV / watch / car rules | A built-in already fits (less to maintain) |
 
 ---
+
+### Custom strategy workflow
+
+Read [DOCUMENTATION/custom.md](../DOCUMENTATION/custom.md) first.
+1. Start from a built-in or preset: `BuiltInStrategies.power.extend('x', …)`, `CustomPresets.tabletFriendly`, or JSON `"extends"`.
+2. Keep one source: an asset JSON loaded with `ScalingStrategies.loadJson`, or one `strategies.dart`. Reuse the ids from `appdimens.config.json` (`customStrategies`) when present.
+3. Express device or screen differences as `ScalingRule`s, never as `if`s at call sites.
+4. In widgets, use `context.cdp(v)` / `context.csp(v)` under a `ScalingStrategyScope`, or `16.cdpWith(s)`. For `fontSize`, use `csp` / `cspWith`.
+5. Verify with `context.explainScaling()` / `s.explain()` on a phone and a tablet.
 
 ## Phase 2 — Implementation Rules
 

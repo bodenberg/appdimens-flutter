@@ -11,7 +11,7 @@ ORDER=(appdimens_flutter appdimens_percent appdimens_power appdimens_fluid \
        appdimens_auto appdimens_logarithmic appdimens_interpolated \
        appdimens_diagonal appdimens_perimeter appdimens_density \
        appdimens_fill appdimens_fit appdimens_resize appdimens_units \
-       appdimens_bom)
+       appdimens_custom appdimens_bom)
 
 MODE="${1:-check}"
 EXTRA=()

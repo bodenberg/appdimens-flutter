@@ -3,7 +3,7 @@
 > AppDimens Flutter is a multi-platform library for responsive `dp`-class dimensioning in Flutter (Android · iOS · Web · Windows · macOS · Linux). It is the Flutter port of the AppDimens family and ships 14 scaling strategies (Scaled, Percent, Power, Fluid, Auto, Diagonal, Fill, Fit, Interpolated, Logarithmic, Perimeter, Density, Resize, Physical units) over an immutable per-window `DimenMetrics` snapshot, a snapshot-partitioned `DimenCache` with fast-lane resolution, and constraint-based resize widgets.
 
 Important notes:
-- Principal package: `appdimens_flutter` (common + core + scaled); one opt-in satellite per strategy (`appdimens_percent`, `appdimens_power`, …) and an all-in-one meta-package `appdimens_bom`. Satellites depend only on `appdimens_flutter`.
+- Principal package: `appdimens_flutter` (common + core + scaled); one opt-in satellite per strategy (`appdimens_percent`, `appdimens_power`, …, plus `appdimens_custom` for user-defined strategies) and an all-in-one meta-package `appdimens_bom`. Satellites depend only on `appdimens_flutter`.
 - Install: `flutter pub add appdimens_flutter` (or `dart pub add appdimens_flutter`) / everything at once with `flutter pub add appdimens_bom`. Family pages: https://pub.dev/packages/appdimens_flutter · https://pub.dev/packages/appdimens_bom
 - The principal artifact is named `appdimens_flutter` because pub.dev's naming policy blocked the bare name `appdimens` (too similar to existing `app_dimen`).
 - Current version: **3.2.0** — Dart ≥ 3.6, Flutter ≥ 3.27, pure Dart engine (no platform channels).
@@ -43,11 +43,13 @@ Important notes:
 - [Density](DOCUMENTATION/density.md): Physical-density alignment (`dpi/160`)
 - [Resize](DOCUMENTATION/resize.md): Constraint-based auto-fit (`AutoResizeText`, `AutoResizeSquare`, `ResizeBound`)
 - [Physical units](DOCUMENTATION/physical-units.md): Real-world mm / cm / inch helpers
+- [Custom strategies](DOCUMENTATION/custom.md): your own scaling — `ScalingStrategy.define('brand', curve: ScalingCurve.power(0.8), rules: [...])`, JSON shared with every AppDimens platform, presets; `16.cdpWith(brand)`, `context.cdp(16)`, `ScalingStrategyScope`
 
 ## Example code
 
 - [Sample app](apps/sample/lib/main.dart): Strategy-routing demo, facilitators, builder chains, auto-resize
 - [Strategy routing](apps/sample/lib/demo_routing.dart): DemoCalc-style dispatch across all 12 curves
+- [Custom strategy card](apps/sample/lib/custom_strategy_card.dart): `ScalingStrategy.define`, presets, `ScalingStrategyScope`, `explain()`
 - [Benchmark dashboard](apps/sample/lib/benchmark_screen.dart): In-app calculation/micro/macro/compare phases
 - [BenchLab](apps/benchlab/lib/main.dart): Competitor benchmark with parity tables and report export
 

@@ -37,6 +37,7 @@ Regenerate package metadata with [`scripts/generate_package_docs.py`](https://gi
 | density | [DOCUMENTATION/density.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/density.md) |
 | resize | [DOCUMENTATION/resize.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/resize.md) |
 | units (physical) | [DOCUMENTATION/physical-units.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/physical-units.md) |
+| custom (user-defined) | [DOCUMENTATION/custom.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/custom.md) |
 
 **Formal math:** [MATHEMATICS-AND-CALCULUS.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/MATHEMATICS-AND-CALCULUS.md)
 **Migration from the deprecated 2.x API:** [MIGRATION.md](https://github.com/bodenberg/appdimens-flutter/blob/main/MIGRATION.md)
@@ -55,3 +56,8 @@ Maps to package families: auto, diagonal, fill, fit, fluid, interpolated, logari
 ## What this reference intentionally skips
 
 Per the skill: **do not** expand on **`ignoreMultiWindows`** or **`*i` / `*ia`** suffix workflows when guiding users — those are omitted from the interactive workflow.
+
+
+## Custom strategies (`appdimens_custom`)
+
+`ScalingStrategy.define(id, reference:, axis:, curve:, minFactor:, maxFactor:, minValue:, maxValue:, aspectRatio:, fontScale:, rules: [ScalingRule.on({DeviceClass.tablet}, ScalingPatch(...))])` · `ScalingStrategies.loadJson(json)` / `defaultStrategy` · `16.cdp`, `16.cdpWith(s)`, `14.csp`, `context.cdp(16)`, `ScalingStrategyScope`, `s.explain()` — [custom.md](../DOCUMENTATION/custom.md)
