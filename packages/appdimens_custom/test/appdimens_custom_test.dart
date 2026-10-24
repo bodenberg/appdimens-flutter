@@ -365,26 +365,25 @@ void main() {
     });
 
     test('code formula has no limits', () {
-      final s = scalingFormulaFn((base, screen) =>
-          base * math.pow(screen.smallestWidthDp / 360, 0.8).toDouble() +
-          (screen.isLandscape ? 2 : 0));
+      final s = scalingFormulaOf(
+          (s) => s.base * s.pow(s.sw / 360, 0.8) + (s.landscape ? 2 : 0));
       expect(s.resolveScreen(_phone).scale(16),
           closeTo(16 * math.pow(411 / 360, 0.8), 1e-9));
       expect(s.resolveScreen(_tablet).scale(16),
           closeTo(16 * math.pow(800 / 360, 0.8) + 2, 1e-9));
       expect(s.isValueDependent, isTrue);
       expect(s.id, startsWith('formula#'));
-      expect(scalingFormulaFn((b, _) => b).id, isNot(s.id));
+      expect(scalingFormulaOf((s) => s.base).id, isNot(s.id));
       expect(() => s.toJson(), throwsStateError);
-      final named = scalingFormulaFn((base, _) => base * 3, id: 'hud');
+      final named = scalingFormulaOf((s) => s.base * 3, id: 'hud');
       expect(ScalingStrategies.get('hud'), same(named));
       expect(named.resolveScreen(_phone).explain('hud'),
           contains('then transform'));
     });
 
     test('programmable factor is screen-only and multiplies every value', () {
-      final product = customScaleStrategy(
-          (screen) => (screen.widthDp / 360).clamp(0.85, 1.80).toDouble());
+      final product =
+          customScaleStrategy((s) => s.clamp(s.width / 360, 0.85, 1.80));
       expect(product.isValueDependent, isFalse);
       expect(product.resolveScreen(_phone).factor, closeTo(411 / 360, 1e-12));
       expect(product.resolveScreen(_tablet).factor, 1.8); // 1280 / 360 clamped
@@ -398,6 +397,51 @@ void main() {
           () => customScaleStrategy((_) => double.nan).resolveScreen(_phone),
           throwsA(isA<StateError>().having(
               (e) => e.message, 'message', contains('non-finite'))));
+    });
+
+    test('code scope matches the text language', () {
+      final pairs = <(ScalingStrategy, String)>[
+        (
+          scalingFormulaOf((s) => s.base * s.pow(s.sw / 360, 0.8)),
+          'base * pow(sw / 360, 0.8)'
+        ),
+        (scalingFormulaOf((s) => s.base * s.ratio), 'base * ratio'),
+        (
+          scalingFormulaOf((s) =>
+              s.base * (s.tablet ? 0.9 : 1) * s.clamp(s.width / 360, 0.85, 1.6)),
+          'base * (tablet ? 0.9 : 1) * clamp(width / 360, 0.85, 1.6)'
+        ),
+        (
+          scalingFormulaOf((s) => s.round(s.base * s.lerp(1, s.aspectRatio, 0.1))),
+          'round(base * lerp(1, aspectRatio, 0.1))'
+        ),
+        (
+          scalingFormulaOf((s) =>
+              s.base * s.smoothstep(300, 900, s.longSide) + s.sqrt(s.diagonal)),
+          'base * smoothstep(300, 900, longSide) + sqrt(diagonal)'
+        ),
+      ];
+      for (final (code, text) in pairs) {
+        final fromText = scalingFormula(text);
+        for (final screen in [_phone, _tablet]) {
+          for (final base in [1.0, 16.0, 48.0]) {
+            expect(code.resolveScreen(screen).scale(base),
+                closeTo(fromText.resolveScreen(screen).scale(base), 1e-4),
+                reason: text);
+          }
+        }
+      }
+      final tvScreen = ScreenSnapshot(
+          widthDp: 960,
+          heightDp: 540,
+          smallestWidthDp: 540,
+          density: 2,
+          isLandscape: true,
+          device: DeviceClass.tv);
+      final factor =
+          customScaleStrategy((s) => s.tv ? s.height / 540 : s.ratio);
+      expect(factor.resolveScreen(tvScreen).factor, 1);
+      expect(factor.resolveScreen(_phone).factor, closeTo(411 / 300, 1e-12));
     });
 
     test('text formula errors are reported early', () {

@@ -28,20 +28,19 @@ dependencies:
 
 ## Usage
 
-The simplest way is to write the formula: `base` is the value you pass, and the result is the scaled value.
+The simplest way is to write the math as ordinary Dart on one line; the scope (`s`) autocompletes `base`, `sw`, `width`, `tablet`, `pow`, `clamp`…
 
 ```dart
 import 'package:appdimens_custom/appdimens_custom.dart';
 
-Padding(padding: EdgeInsets.all(16.cdpFormula('base * pow(sw / 360, 0.8)')));  // inline
-final hud = scalingFormula('base * (tablet ? 0.9 : 1) * clamp(sw / 360, 0.85, 1.6)');
+final product = customScaleStrategy((s) => s.clamp(s.width / 360, 0.85, 1.80));   // factor, once per window
+final hud = scalingFormulaOf((s) => s.base * s.pow(s.sw / 360, 0.8));              // final value
 SizedBox(width: 48.cdpWith(hud));
-final fancy = scalingFormulaFn((base, screen) => base * screen.smallestWidthDp / 360);  // plain Dart
-final product = customScaleStrategy(
-    (screen) => (screen.widthDp / 360).clamp(0.85, 1.80).toDouble());  // programmable factor (once per window)
+final remote = scalingFormula('base * pow(sw / 360, 0.8)');   // same as text, for JSON / remote config
+Padding(padding: EdgeInsets.all(16.cdpFormula('base * pow(sw / 360, 0.8)')));     // text, inline
 ```
 
-Formulas shaped `base * (…)` (no `base` inside the parentheses) cost one multiply per value. For rules, bounds and a font-scale policy, use the full configuration:
+Text formulas shaped `base * (…)` (no `base` inside the parentheses) cost one multiply per value. For rules, bounds and a font-scale policy, use the full configuration:
 
 ```dart
 final brand = ScalingStrategy.define('brand',

@@ -11,6 +11,7 @@ import 'package:appdimens_flutter/appdimens.dart';
 import 'package:flutter/foundation.dart';
 
 import 'custom_engine.dart';
+import 'custom_scope.dart';
 
 /// EN Device class for a core snapshot + UI mode (Flutter has no desk mode:
 /// desktop platforms map to [DeviceClass.desktop]). Override with
@@ -233,12 +234,9 @@ class ScalingStrategy {
 
 ScalingStrategy _spec(String id, ScalingConfig c) => ScalingStrategy(id, c);
 
-/// EN The simplest custom strategy, in code: `(base, screen) → dp`. Must be
-/// pure. PT A estratégia custom mais simples, em código.
-typedef FormulaFunction = double Function(double base, ScreenSnapshot screen);
-
-/// EN One-liner strategy from a text formula — the formula **is** the final
-/// value:
+/// EN One-liner strategy from a **text** formula, for JSON, remote config or a
+/// formula that comes from outside the code. Same names as the code form
+/// ([scalingFormulaOf]); the formula **is** the final value:
 /// ```dart
 /// final hud = scalingFormula('base * pow(sw / 360, 0.8)');
 /// SizedBox(width: 48.cdpWith(hud)); // or straight: 48.cdpFormula('base * …')
@@ -266,54 +264,54 @@ ScalingStrategy scalingFormula(String formula, {String? id, bool? register}) {
   return reg ? ScalingStrategies.register(strategy) : strategy;
 }
 
-/// EN One-liner strategy from a code formula — plain Dart, no limits:
+/// EN One-liner strategy from a **code** formula — the result **is** the
+/// final value. Typed Dart with autocomplete, no strings, no limits:
 /// ```dart
-/// final hud = scalingFormulaFn((base, screen) =>
-///     base * math.pow(screen.smallestWidthDp / 360, 0.8).toDouble());
+/// final hud = scalingFormulaOf((s) => s.base * s.pow(s.sw / 360, 0.8));
+/// final card = scalingFormulaOf((s) => s.tablet ? s.base * 1.2 : s.base * s.ratio);
 /// ```
-/// Not JSON-serializable (use [scalingFormula] for that). Without an [id] a
-/// unique one (`formula#N`) is generated; with an [id] it is registered unless
+/// The function gets a [FormulaScope]: `base`, the window (`sw`, `width`,
+/// `height`, `ratio`, `tablet`, `landscape`, …) and `pow`, `clamp`, `min`,
+/// `max`, `lerp`… Must be pure. Declare it once (e.g. a top-level `final`).
+/// Not JSON-serializable: the text form [scalingFormula] is. Without an [id] a
+/// unique `formula#N` id is generated; with an [id] it is registered unless
 /// `register: false`.
-/// PT Estratégia em uma linha a partir de uma fórmula em código. Não
-/// serializa em JSON.
-ScalingStrategy scalingFormulaFn(FormulaFunction formula,
+/// PT Estratégia em uma linha a partir de uma fórmula em **código** — o
+/// resultado **é** o valor final. Dart tipado com autocomplete, sem strings.
+ScalingStrategy scalingFormulaOf(double Function(FormulaScope s) formula,
     {String? id, bool? register}) {
   final reg = register ?? id != null;
   final strategy = ScalingStrategy(
       id ?? 'formula#${++ScalingStrategies._lambdaIds}',
-      ScalingConfig(transform: (base, _, screen) => formula(base, screen)));
+      ScalingConfig(
+          transform: (base, _, screen) => formula(FormulaScope(screen, base))));
   return reg ? ScalingStrategies.register(strategy) : strategy;
 }
 
-/// EN Programmable factor: you get the window and return the **factor** that
-/// multiplies every value. Plain Dart, so any function, branch or helper of
-/// your code works. Must be pure.
-/// PT Fator programável: você recebe a janela e devolve o **fator**.
-typedef ScreenFactor = double Function(ScreenSnapshot screen);
-
-/// EN Strategy from a programmable factor — the most flexible form, in code:
+/// EN Strategy from a programmable **factor** — you return the number that
+/// multiplies every value:
 /// ```dart
-/// final product = customScaleStrategy(
-///     (screen) => (screen.widthDp / 360).clamp(0.85, 1.80).toDouble());
+/// final product = customScaleStrategy((s) => s.clamp(s.width / 360, 0.85, 1.80));
+/// final living = customScaleStrategy((s) => s.tv ? s.height / 540 : s.ratio);
 /// Padding(padding: EdgeInsets.all(16.cdpWith(product))); // 16 × factor
 /// ```
-/// The factor depends only on the window, so it runs once per window and
-/// every value then costs one multiply. A non-finite factor throws a
-/// [StateError] when the window resolves. Without an [id] a unique `scale#N`
-/// id is generated; with an [id] it is registered unless `register: false`.
-/// Not JSON-serializable: for JSON, use a text curve
+/// The function gets a [ScreenScope] (the window, with autocomplete) and can
+/// use any Dart code of yours. The factor depends only on the window, so it
+/// runs once per window and every value then costs one multiply. A non-finite
+/// factor throws a [StateError] when the window resolves. Without an [id] a
+/// unique `scale#N` id is generated; with an [id] it is registered unless
+/// `register: false`. Not JSON-serializable: for JSON, use a text curve
 /// (`ScalingCurve.expression('clamp(width / 360, 0.85, 1.8)')`).
 ///
-/// PT Estratégia a partir de um fator programável, escrita em código. O fator
-/// depende só da janela: roda uma vez por janela e cada valor custa uma
-/// multiplicação.
-ScalingStrategy customScaleStrategy(ScreenFactor factor,
+/// PT Estratégia a partir de um **fator** programável — você devolve o número
+/// que multiplica todo valor. Roda uma vez por janela.
+ScalingStrategy customScaleStrategy(double Function(ScreenScope s) factor,
     {String? id, bool? register}) {
   final reg = register ?? id != null;
   final strategy = ScalingStrategy(
       id ?? 'scale#${++ScalingStrategies._lambdaIds}',
       ScalingConfig(
-          curve: ScalingCurve.custom((_, screen) => factor(screen))));
+          curve: ScalingCurve.custom((_, screen) => factor(ScreenScope(screen)))));
   return reg ? ScalingStrategies.register(strategy) : strategy;
 }
 

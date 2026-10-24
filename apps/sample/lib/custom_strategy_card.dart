@@ -32,8 +32,13 @@ final ScalingStrategy demoFormula =
 
 /// EN Programmable factor in plain Dart: runs once per window, then one
 /// multiply per value. PT Fator programável em Dart puro.
-final ScalingStrategy demoProduct = customScaleStrategy(
-    (screen) => (screen.widthDp / 360).clamp(0.85, 1.80).toDouble());
+final ScalingStrategy demoProduct =
+    customScaleStrategy((s) => s.clamp(s.width / 360, 0.85, 1.80));
+
+/// EN Typed code formula (autocompleted scope); the text form is for JSON.
+/// PT Fórmula em código tipada; a forma em texto é para JSON.
+final ScalingStrategy demoCode =
+    scalingFormulaOf((s) => s.base * s.pow(s.sw / 360, 0.8));
 
 class CustomStrategyCard extends StatelessWidget {
   const CustomStrategyCard({super.key});
@@ -60,6 +65,7 @@ class CustomStrategyCard extends StatelessWidget {
                     ('gameHud', CustomPresets.gameHud),
                     ('formula', demoFormula),
                     ('factor', demoProduct),
+                    ('code', demoCode),
                     // EN Inline: the formula is the value (shared per text).
                     // PT Inline: a fórmula é o valor.
                     (

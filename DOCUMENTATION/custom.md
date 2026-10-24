@@ -7,58 +7,62 @@ When none of the built-in curves fits, or one growth law must be shared by sever
 
 ## Quick start: just write the formula
 
-The easiest way is to write the formula yourself. You get the value you pass (`base`, for example 16) and the screen, and you return the scaled value. There is nothing to configure.
+The easiest way is to write the math yourself, as ordinary Dart on one line. The function gets a scope with everything you can use (`base`, `sw`, `width`, `tablet`, `pow`, `clamp`…), the IDE autocompletes it, and a typo is a compile error. There is nothing to configure.
 
 ```dart
-import 'dart:math' as math;
-
 import 'package:appdimens_custom/appdimens_custom.dart';
 
-// 1. Inline: the formula is the value
-Padding(padding: EdgeInsets.all(16.cdpFormula('base * pow(sw / 360, 0.8)')));
-Text('Title', style: TextStyle(fontSize: 20.cspFormula('base * min(sw / 360, 1.3)')));
-context.cdpFormula(16, 'base * (sw / 360)');   // also subscribes to MediaQuery
+// 1. Formula: the result is the final value (`base` = the value you pass, e.g. 16)
+final hud = scalingFormulaOf((s) => s.base * s.pow(s.sw / 360, 0.8));
+final card = scalingFormulaOf((s) => s.tablet ? s.base * 1.2 : s.base * s.ratio);
 
-// 2. Named, to reuse it everywhere
-final hud = scalingFormula('base * (tablet ? 0.9 : 1) * clamp(sw / 360, 0.85, 1.6)');
-SizedBox(width: 48.cdpWith(hud));
+// 2. Factor: the result multiplies every value
+final product = customScaleStrategy((s) => s.clamp(s.width / 360, 0.85, 1.80));
+final living = customScaleStrategy((s) => s.tv ? s.height / 540 : s.ratio);
 
-// 3. In code, with no limits (not JSON-serializable)
-final fancy = scalingFormulaFn((base, screen) =>
-    base * math.pow(screen.smallestWidthDp / 360, 0.8).toDouble());
-
-// 4. Programmable factor: return the factor that multiplies every value
-final product = customScaleStrategy((screen) {
-  final width = screen.widthDp;
-  return (width / 360).clamp(0.85, 1.80).toDouble();
-});
-Padding(padding: EdgeInsets.all(16.cdpWith(product)));   // 16 × factor
+Padding(padding: EdgeInsets.all(16.cdpWith(product)));          // 16 × factor
+Text('Score', style: TextStyle(fontSize: 18.cspWith(hud)));     // text follows the TextScaler
 ```
+
+Declare each strategy once (for example as a top-level `final`), then use it anywhere: `16.cdpWith(s)`, `context.cdp(16, s)`, `ScalingStrategyScope(strategy: s, …)`. Pass `id:` to name and register one.
+
+### What you can use in the function
+
+| Name | Meaning |
+|---|---|
+| `base` | the value you pass (`16` in `16.cdpWith(hud)`), only in `scalingFormulaOf` (`FormulaScope`) |
+| `sw` · `width` · `height` | smallest width · window width · window height (dp) |
+| `shortSide` · `longSide` · `diagonal` · `perimeter` · `aspectRatio` | other window measures |
+| `ratio` | `sw / 300`, the ratio `sdp` uses (`base * ratio` is the same as `sdp`) |
+| `phone` `tablet` `desktop` `tv` `watch` `car` `vr` · `landscape` `portrait` `multiWindow` | `bool` |
+| `density` · `fontScale` · `device` · `screen` | screen density · user font scale · `DeviceClass` · the whole `ScreenSnapshot` |
+| `pow` `sqrt` `ln` `log10` `exp` `abs` `round` `min` `max` `clamp` `lerp` `smoothstep` | math, no import needed |
+
+Anything else from Dart or your own code also works (`switch`, your helpers). Strategies must be pure: they must not read mutable state, because results are memoized per window. A non-finite factor throws a `StateError` when the window resolves.
 
 | Form | You return | Cost per value | JSON |
 |---|---|---|---|
-| `16.cdpFormula('…')` / `scalingFormula('…')` | the final value (`base` = input) | one multiply when shaped `base * (…)`, otherwise the formula is evaluated | yes |
-| `scalingFormulaFn((base, screen) => …)` | the final value | your function, per value | no |
-| `customScaleStrategy((screen) => …)` | the **factor** (any Dart: `if`, `switch`, helpers, `clamp`…) | one multiply (the function runs once per window) | no |
+| `customScaleStrategy((s) => …)` | the **factor** | one multiply (runs once per window) | no |
+| `scalingFormulaOf((s) => …)` | the final value | your function, per value | no |
+| `scalingFormula('…')` / `16.cdpFormula('…')` | the final value, as text | one multiply when shaped `base * (…)`, otherwise the formula is evaluated | yes |
 
-In the functions, `screen` is a `ScreenSnapshot`: `widthDp`, `heightDp`, `smallestWidthDp`, `minDp`, `maxDp`, `aspectRatio`, `density`, `fontScale`, `isLandscape`, `isMultiWindow`, `device` (`DeviceClass.phone`, `tablet`, `tv`…). Functions must be pure (they must not read mutable state), because results are memoized per window. A non-finite factor throws a `StateError` when the window resolves.
+### Text formulas (for JSON and remote config)
 
-`cdpFormula` / `cdpPxFormula` / `cspFormula` / `cspPxFormula` take the formula text. `cdpWith('…')` still takes a strategy **id**. `ScalingStrategies.formula('…')` returns the shared strategy for a text; `scalingFormula('…', id: 'hud')` builds a named one and registers it.
+When the formula has to live outside the code, in a JSON file, a remote config or an A/B test, write the same thing as text. It uses the same names (flags are 1/0):
 
-| You write | Means |
-|---|---|
-| `base` | the value you pass (`16` in `16.cdpFormula(…)`) |
-| `sw` · `width` · `height` | smallest width · window width · window height (dp) |
-| `shortSide` · `longSide` · `diagonal` · `aspectRatio` | other window measures |
-| `ratio` | `sw / 300`, the ratio `sdp` uses (so `base * ratio` = `sdp`) |
-| `phone` `tablet` `desktop` `tv` `watch` `car` `vr` · `landscape` `portrait` `multiWindow` | 1 when true, 0 when false |
-| `density` · `fontScale` | screen density · user font scale |
+```dart
+final remote = scalingFormula('base * pow(sw / 360, 0.8)');
+Padding(padding: EdgeInsets.all(16.cdpFormula('base * (tablet ? 0.9 : 1) * clamp(sw / 360, 0.85, 1.6)')));  // inline
+context.cdpFormula(16, 'base * (sw / 360)');   // also subscribes to MediaQuery
+```
 
-You can use `+ - * / ^`, `cond ? a : b`, `min` `max` `clamp` `pow` `sqrt` `log` `round` `lerp` `smoothstep`, and more (see [Free-form formulas](#free-form-formulas-no-limits-from-the-built-in-curves)). Typos fail right away with the position, for example `unknown variable 'sww'`.
+`cdpFormula` / `cdpPxFormula` / `cspFormula` / `cspPxFormula` take the formula text (`cdpWith('…')` still takes a strategy **id**). `ScalingStrategies.formula('…')` returns the shared strategy for a text; `scalingFormula('…', id: 'hud')` builds a named one and registers it.
 
-**Fast path.** When the formula has the shape `base * (…)` and the `(…)` part does not read `base`, it costs one multiply per value: the `(…)` part is computed once per window. Any other shape also works and is evaluated per value. `base * sw / 360` is evaluated as written, `(base * sw) / 360`. Write `base * (sw / 360)` for the fast path.
+Text is checked when the strategy is created: an unknown name throws a `FormatException` right away with its position and the list of valid names (e.g. `unknown variable 'sww' (allowed: aspectRatio, base, …)`). The same text works in the strategies JSON (`{"id": "hud", "formula": "base * pow(sw / 360, 0.8)"}`) and gives the same numbers on every AppDimens platform. Operators and functions are listed in [Free-form formulas](#free-form-formulas-no-limits-from-the-built-in-curves).
 
-The same text works in the strategies JSON (`{"id": "hud", "formula": "base * pow(sw / 360, 0.8)"}`) and gives the same numbers on every AppDimens platform. If you need more structure (rules per device, factor bounds, font-scale policy), use the full configuration below.
+**Fast path.** A text formula shaped `base * (…)`, where the `(…)` part does not read `base`, costs one multiply per value, because the `(…)` part is computed once per window. `base * sw / 360` is evaluated as written, `(base * sw) / 360`, so write `base * (sw / 360)` to get the fast path. In code, prefer `customScaleStrategy` for the same effect.
+
+For rules per device, factor bounds or a font-scale policy, use the full configuration below.
 
 ## What it computes
 

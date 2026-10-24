@@ -11,4 +11,5 @@ library;
 export 'package:appdimens_flutter/appdimens.dart' show DimenMetrics, UiModeType;
 export 'src/custom_engine.dart';
 export 'src/custom_extensions.dart';
+export 'src/custom_scope.dart';
 export 'src/custom_strategy.dart';

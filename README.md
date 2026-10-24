@@ -209,18 +209,17 @@ AutoResizeSquare(min: 40, max: 120, child: Icon(Icons.aspect_ratio)),
 
 ### Custom strategies (your own scaling)
 
-The simplest way is to write the formula. `base` is the value you pass, and the result is the scaled value:
+The simplest way is to write the math as ordinary Dart on one line. The IDE autocompletes `base`, `sw`, `width`, `tablet`, `pow`, `clamp`…, and typos fail at compile time:
 
 ```dart
 import 'package:appdimens_custom/appdimens_custom.dart';
 
-Padding(padding: EdgeInsets.all(16.cdpFormula('base * pow(sw / 360, 0.8)')));  // inline
-final hud = scalingFormula('base * (tablet ? 0.9 : 1) * clamp(sw / 360, 0.85, 1.6)');
-Text('Score', style: TextStyle(fontSize: 18.cspWith(hud)));
-final fancy = scalingFormulaFn((base, screen) => base * screen.smallestWidthDp / 360);  // plain Dart
-final product = customScaleStrategy(
-    (screen) => (screen.widthDp / 360).clamp(0.85, 1.80).toDouble());  // programmable factor
+final product = customScaleStrategy((s) => s.clamp(s.width / 360, 0.85, 1.80));   // factor × every value
+final hud = scalingFormulaOf((s) => s.base * s.pow(s.sw / 360, 0.8));              // final value (base = 16)
 Padding(padding: EdgeInsets.all(16.cdpWith(product)));
+Text('Score', style: TextStyle(fontSize: 18.cspWith(hud)));
+final remote = scalingFormula('base * pow(sw / 360, 0.8)');   // same thing as text, for JSON / remote config
+16.cdpFormula('base * pow(sw / 360, 0.8)');                   // text, inline
 ```
 
 For rules per device, factor bounds or a font-scale policy, use the full configuration:
