@@ -293,6 +293,138 @@ void main() {
     });
   });
 
+  group('scaling formula', () {
+    test('text formula is the final value', () {
+      final s = scalingFormula('base * pow(sw / 360, 0.8)');
+      expect(s.resolveScreen(_phone).scale(16),
+          16 * math.pow(411 / 360, 0.8).toDouble());
+      expect(scalingFormula('base + 2').resolveScreen(_phone).scale(16), 18);
+      expect(scalingFormula('base * ratio').resolveScreen(_phone).scale(16),
+          closeTo(16 * 411 / 300, 1e-9)); // ratio = sw / 300, like sdp
+      expect(
+          scalingFormula('base * (tablet ? 0.9 : 1)')
+              .resolveScreen(_tablet)
+              .scale(16),
+          closeTo(16 * 0.9, 1e-12));
+    });
+
+    test('proportional formula: fast path matches the slow path bit for bit',
+        () {
+      for (final src in [
+        'base',
+        'base * pow(sw / 360, 0.8)',
+        '(sw / 360) * base',
+        'base * (tablet ? 0.9 : 1.1)',
+      ]) {
+        final fast = scalingFormula(src);
+        expect(fast.isValueDependent, isFalse, reason: src);
+        // Same text, but not proportional (`+ 0` forces the per-value path).
+        final slow = scalingFormula('$src + 0');
+        expect(slow.isValueDependent, isTrue, reason: src);
+        for (final screen in [_phone, _tablet]) {
+          for (final base in [1.0, 16.0, 48.0, -8.0, 0.5]) {
+            expect(fast.resolveScreen(screen).scale(base),
+                slow.resolveScreen(screen).scale(base),
+                reason: '$src x $base');
+          }
+        }
+      }
+      // Reads the value inside E → not proportional.
+      expect(scalingFormula('base * min(base, 20)').isValueDependent, isTrue);
+      expect(scalingFormula('max(base * sw / 360, base)').isValueDependent,
+          isTrue);
+      // `(base * sw) / 360` is evaluated as written (per value).
+      expect(scalingFormula('base * sw / 360').isValueDependent, isTrue);
+    });
+
+    test('proportional formula inside define and JSON is screen-only too', () {
+      final defined = ScalingStrategy.define('p',
+          formula: 'base * (sw / 360)', register: false);
+      expect(defined.isValueDependent, isFalse);
+      final json = ScalingStrategies.loadJson(
+          '{"strategies":[{"id":"j","formula":"base * 1.1"}]}')['j']!;
+      expect(json.isValueDependent, isFalse);
+      expect(json.resolveScreen(_phone).scale(16), closeTo(16 * 1.1, 1e-12));
+      expect(
+          ScalingStrategy.define('v', formula: 'round(scaled)', register: false)
+              .isValueDependent,
+          isTrue);
+      expect(defined.resolveScreen(_phone).explain('p'),
+          contains('then formula(base * (sw / 360))'));
+    });
+
+    test('text formula is shared per text unless an id is given', () {
+      expect(scalingFormula('base * 2'), same(scalingFormula('base * 2')));
+      expect(ScalingStrategies.formula('base * 2'),
+          same(scalingFormula('base * 2')));
+      expect(scalingFormula('base * 2').id, 'formula:base * 2');
+      expect(ScalingStrategies.get('formula:base * 2'), isNull);
+      final named = scalingFormula('base * 2', id: 'double');
+      expect(named, isNot(same(scalingFormula('base * 2'))));
+      expect(ScalingStrategies.get('double'), same(named)); // id registers
+    });
+
+    test('code formula has no limits', () {
+      final s = scalingFormulaFn((base, screen) =>
+          base * math.pow(screen.smallestWidthDp / 360, 0.8).toDouble() +
+          (screen.isLandscape ? 2 : 0));
+      expect(s.resolveScreen(_phone).scale(16),
+          closeTo(16 * math.pow(411 / 360, 0.8), 1e-9));
+      expect(s.resolveScreen(_tablet).scale(16),
+          closeTo(16 * math.pow(800 / 360, 0.8) + 2, 1e-9));
+      expect(s.isValueDependent, isTrue);
+      expect(s.id, startsWith('formula#'));
+      expect(scalingFormulaFn((b, _) => b).id, isNot(s.id));
+      expect(() => s.toJson(), throwsStateError);
+      final named = scalingFormulaFn((base, _) => base * 3, id: 'hud');
+      expect(ScalingStrategies.get('hud'), same(named));
+      expect(named.resolveScreen(_phone).explain('hud'),
+          contains('then transform'));
+    });
+
+    test('programmable factor is screen-only and multiplies every value', () {
+      final product = customScaleStrategy(
+          (screen) => (screen.widthDp / 360).clamp(0.85, 1.80).toDouble());
+      expect(product.isValueDependent, isFalse);
+      expect(product.resolveScreen(_phone).factor, closeTo(411 / 360, 1e-12));
+      expect(product.resolveScreen(_tablet).factor, 1.8); // 1280 / 360 clamped
+      expect(product.resolveScreen(_phone).scale(16),
+          closeTo(16 * 411 / 360, 1e-9));
+      expect(product.id, startsWith('scale#'));
+      final named = customScaleStrategy((_) => 1.25, id: 'product');
+      expect(ScalingStrategies.get('product'), same(named));
+      expect(named.resolveScreen(_phone).scale(16), 20);
+      expect(
+          () => customScaleStrategy((_) => double.nan).resolveScreen(_phone),
+          throwsA(isA<StateError>().having(
+              (e) => e.message, 'message', contains('non-finite'))));
+    });
+
+    test('text formula errors are reported early', () {
+      expect(
+          () => scalingFormula('base * sww'),
+          throwsA(isA<FormatException>().having((e) => e.message, 'message',
+              contains("unknown variable 'sww'"))));
+    });
+
+    test('font scale is followed for text', () {
+      final big = ScreenSnapshot(
+          widthDp: 411, heightDp: 891, smallestWidthDp: 411, fontScale: 1.5);
+      expect(scalingFormula('base * 2').resolveScreen(big).scaleSpDp(16),
+          closeTo(16 * 2 * 1.5, 1e-9));
+    });
+
+    test('num and context helpers take the formula text', () {
+      AppDimensScope.publish(_metrics(411, 891));
+      expect(16.cdpFormula('base * (sw / 360)'),
+          scalingFormula('base * (sw / 360)').dp(16));
+      expect(16.cdpFormula('base * (sw / 360)'), closeTo(16 * 411 / 360, 1e-9));
+      expect(14.cspFormula('base * 2'), scalingFormula('base * 2').sp(14));
+      expect(8.cdpPxFormula('base'), scalingFormula('base').px(8));
+      expect(8.cspPxFormula('base'), scalingFormula('base').spPx(8));
+    });
+  });
+
   group('Flutter binding', () {
     test('num extensions follow the scope snapshot and the default', () {
       final m = _metrics(411, 891);

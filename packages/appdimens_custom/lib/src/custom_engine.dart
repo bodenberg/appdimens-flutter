@@ -494,11 +494,12 @@ class ScalingPatch {
     this.formula,
   });
 
+  /// EN A proportional text formula (`base * E`) is screen-only.
   bool get isValueDependent =>
       minValue != null ||
       maxValue != null ||
       transform != null ||
-      formula != null;
+      (formula != null && !formula!.isProportional);
 }
 
 /// EN `when` [condition] matches, apply [patch]; later rules win.
@@ -553,11 +554,13 @@ class ScalingConfig {
         reference = reference ?? ReferenceScreen.standard,
         rules = List.unmodifiable(rules);
 
+  /// EN True when some path depends on the value itself (not only on the
+  /// screen). A proportional text formula (`base * E`) is screen-only.
   bool get isValueDependent =>
       minValue != null ||
       maxValue != null ||
       transform != null ||
-      formula != null ||
+      (formula != null && !formula!.isProportional) ||
       rules.any((r) => r.patch.isValueDependent);
 
   ScalingConfig apply(ScalingPatch p) => ScalingConfig(
@@ -634,6 +637,12 @@ class ResolvedScaling {
   final List<String> appliedRules;
   final double axisDp, referenceDp, curveFactor, aspectRatioMultiplier;
 
+  /// EN `E` of a proportional formula (`base * E`), evaluated once for this
+  /// window; NaN when the formula (if any) needs the value. `base * E` then
+  /// costs one multiply, like a curve.
+  /// PT `E` de uma fórmula proporcional, calculado uma vez por janela.
+  final double _formulaCoefficient;
+
   const ResolvedScaling._(
       this.screen,
       this.config,
@@ -642,7 +651,8 @@ class ResolvedScaling {
       this.axisDp,
       this.referenceDp,
       this.curveFactor,
-      this.aspectRatioMultiplier);
+      this.aspectRatioMultiplier,
+      this._formulaCoefficient);
 
   /// EN `base` dp → scaled dp.
   double scale(double base) {
@@ -655,7 +665,9 @@ class ResolvedScaling {
       out = out < 0 ? -magnitude : magnitude;
     }
     final f = config.formula;
-    if (f != null) {
+    if (f != null && f.isProportional) {
+      out = base * _formulaCoefficient;
+    } else if (f != null) {
       final ratio = referenceDp > 0 ? axisDp / referenceDp : 1.0;
       out = f.expression.evaluate(expressionVariables(
           screen, ratio, axisDp, referenceDp, config.reference,
@@ -696,6 +708,11 @@ class ResolvedScaling {
           ' clamp[${c.minFactor == null ? '-' : f(c.minFactor!)}, ${c.maxFactor == null ? '-' : f(c.maxFactor!)}]');
     }
     b.write(' => factor ${f(factor)}');
+    if (c.formula != null) {
+      b.write(' then ${c.formula}');
+    } else if (c.transform != null) {
+      b.write(' then transform');
+    }
     if (appliedRules.isNotEmpty) b.write(' rules=[${appliedRules.join(', ')}]');
     return b.toString();
   }
@@ -714,11 +731,14 @@ ResolvedScaling resolveScaling(ScalingConfig base, ScreenSnapshot screen) {
   }
   final axisDp = screen.read(cfg.axis);
   final refDp = cfg.reference.read(cfg.axis);
-  if (cfg.ignoreMultiWindow && screen.isMultiWindow) {
-    return ResolvedScaling._(
-        screen, cfg, 1, List.unmodifiable(applied), axisDp, refDp, 1, 1);
-  }
   final ratio = refDp > 0 ? axisDp / refDp : 1.0;
+  final coefficient = cfg.formula?.expression.baseCoefficient?.evaluate(
+          expressionVariables(screen, ratio, axisDp, refDp, cfg.reference)) ??
+      double.nan;
+  if (cfg.ignoreMultiWindow && screen.isMultiWindow) {
+    return ResolvedScaling._(screen, cfg, 1, List.unmodifiable(applied),
+        axisDp, refDp, 1, 1, coefficient);
+  }
   final curve = cfg.curve;
   final curveFactor = curve is ExpressionScalingCurve
       ? curve.evaluateWith(ratio, axisDp, refDp, cfg.reference, screen)
@@ -736,7 +756,7 @@ ResolvedScaling resolveScaling(ScalingConfig base, ScreenSnapshot screen) {
     throw StateError('custom strategy produced a non-finite factor ($factor)');
   }
   return ResolvedScaling._(screen, cfg, factor, List.unmodifiable(applied),
-      axisDp, refDp, curveFactor, arMul);
+      axisDp, refDp, curveFactor, arMul, coefficient);
 }
 
 // ── JSON ──────────────────────────────────────────────────────────────────────

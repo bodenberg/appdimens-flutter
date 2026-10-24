@@ -25,6 +25,16 @@ final ScalingStrategy demoBrand = ScalingStrategy.define(
   ],
 );
 
+/// EN The simplest form: the formula you write is the value (`base` = the
+/// value you pass). PT A forma mais simples: a fórmula é o valor.
+final ScalingStrategy demoFormula =
+    scalingFormula('base * (tablet ? 0.9 : 1) * clamp(sw / 360, 0.85, 1.6)');
+
+/// EN Programmable factor in plain Dart: runs once per window, then one
+/// multiply per value. PT Fator programável em Dart puro.
+final ScalingStrategy demoProduct = customScaleStrategy(
+    (screen) => (screen.widthDp / 360).clamp(0.85, 1.80).toDouble());
+
 class CustomStrategyCard extends StatelessWidget {
   const CustomStrategyCard({super.key});
 
@@ -43,11 +53,19 @@ class CustomStrategyCard extends StatelessWidget {
                 Text(context.explainScaling(),
                     style: TextStyle(fontSize: context.csp(11))),
                 SizedBox(height: context.cdp(8)),
-                Row(children: [
-                  for (final s in [
-                    demoBrand,
-                    CustomPresets.tabletFriendly,
-                    CustomPresets.gameHud,
+                Wrap(children: [
+                  for (final (label, s) in [
+                    (demoBrand.id, demoBrand),
+                    ('tabletFriendly', CustomPresets.tabletFriendly),
+                    ('gameHud', CustomPresets.gameHud),
+                    ('formula', demoFormula),
+                    ('factor', demoProduct),
+                    // EN Inline: the formula is the value (shared per text).
+                    // PT Inline: a fórmula é o valor.
+                    (
+                      'inline',
+                      ScalingStrategies.formula('base * pow(sw / 360, 0.8)')
+                    ),
                   ])
                     Padding(
                       padding: EdgeInsets.only(right: 8.cdpWith(s)),
@@ -56,7 +74,7 @@ class CustomStrategyCard extends StatelessWidget {
                             width: 48.cdpWith(s),
                             height: 48.cdpWith(s),
                             color: const Color(0xFF6A1B9A)),
-                        Text(s.id, style: const TextStyle(fontSize: 10)),
+                        Text(label, style: const TextStyle(fontSize: 10)),
                       ]),
                     ),
                 ]),

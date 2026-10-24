@@ -5,6 +5,61 @@ See [MODULES.md](MODULES.md) · [Mathematics](MATHEMATICS-AND-CALCULUS.md#custom
 
 When none of the built-in curves fits, or one growth law must be shared by several apps and platforms, define **your own** strategy. The configuration is identical on every AppDimens platform (Android, KMP, iOS, React Native, Web, Games, .NET) and can be loaded from JSON.
 
+## Quick start: just write the formula
+
+The easiest way is to write the formula yourself. You get the value you pass (`base`, for example 16) and the screen, and you return the scaled value. There is nothing to configure.
+
+```dart
+import 'dart:math' as math;
+
+import 'package:appdimens_custom/appdimens_custom.dart';
+
+// 1. Inline: the formula is the value
+Padding(padding: EdgeInsets.all(16.cdpFormula('base * pow(sw / 360, 0.8)')));
+Text('Title', style: TextStyle(fontSize: 20.cspFormula('base * min(sw / 360, 1.3)')));
+context.cdpFormula(16, 'base * (sw / 360)');   // also subscribes to MediaQuery
+
+// 2. Named, to reuse it everywhere
+final hud = scalingFormula('base * (tablet ? 0.9 : 1) * clamp(sw / 360, 0.85, 1.6)');
+SizedBox(width: 48.cdpWith(hud));
+
+// 3. In code, with no limits (not JSON-serializable)
+final fancy = scalingFormulaFn((base, screen) =>
+    base * math.pow(screen.smallestWidthDp / 360, 0.8).toDouble());
+
+// 4. Programmable factor: return the factor that multiplies every value
+final product = customScaleStrategy((screen) {
+  final width = screen.widthDp;
+  return (width / 360).clamp(0.85, 1.80).toDouble();
+});
+Padding(padding: EdgeInsets.all(16.cdpWith(product)));   // 16 × factor
+```
+
+| Form | You return | Cost per value | JSON |
+|---|---|---|---|
+| `16.cdpFormula('…')` / `scalingFormula('…')` | the final value (`base` = input) | one multiply when shaped `base * (…)`, otherwise the formula is evaluated | yes |
+| `scalingFormulaFn((base, screen) => …)` | the final value | your function, per value | no |
+| `customScaleStrategy((screen) => …)` | the **factor** (any Dart: `if`, `switch`, helpers, `clamp`…) | one multiply (the function runs once per window) | no |
+
+In the functions, `screen` is a `ScreenSnapshot`: `widthDp`, `heightDp`, `smallestWidthDp`, `minDp`, `maxDp`, `aspectRatio`, `density`, `fontScale`, `isLandscape`, `isMultiWindow`, `device` (`DeviceClass.phone`, `tablet`, `tv`…). Functions must be pure (they must not read mutable state), because results are memoized per window. A non-finite factor throws a `StateError` when the window resolves.
+
+`cdpFormula` / `cdpPxFormula` / `cspFormula` / `cspPxFormula` take the formula text. `cdpWith('…')` still takes a strategy **id**. `ScalingStrategies.formula('…')` returns the shared strategy for a text; `scalingFormula('…', id: 'hud')` builds a named one and registers it.
+
+| You write | Means |
+|---|---|
+| `base` | the value you pass (`16` in `16.cdpFormula(…)`) |
+| `sw` · `width` · `height` | smallest width · window width · window height (dp) |
+| `shortSide` · `longSide` · `diagonal` · `aspectRatio` | other window measures |
+| `ratio` | `sw / 300`, the ratio `sdp` uses (so `base * ratio` = `sdp`) |
+| `phone` `tablet` `desktop` `tv` `watch` `car` `vr` · `landscape` `portrait` `multiWindow` | 1 when true, 0 when false |
+| `density` · `fontScale` | screen density · user font scale |
+
+You can use `+ - * / ^`, `cond ? a : b`, `min` `max` `clamp` `pow` `sqrt` `log` `round` `lerp` `smoothstep`, and more (see [Free-form formulas](#free-form-formulas-no-limits-from-the-built-in-curves)). Typos fail right away with the position, for example `unknown variable 'sww'`.
+
+**Fast path.** When the formula has the shape `base * (…)` and the `(…)` part does not read `base`, it costs one multiply per value: the `(…)` part is computed once per window. Any other shape also works and is evaluated per value. `base * sw / 360` is evaluated as written, `(base * sw) / 360`. Write `base * (sw / 360)` for the fast path.
+
+The same text works in the strategies JSON (`{"id": "hud", "formula": "base * pow(sw / 360, 0.8)"}`) and gives the same numbers on every AppDimens platform. If you need more structure (rules per device, factor bounds, font-scale policy), use the full configuration below.
+
 ## What it computes
 
 ```

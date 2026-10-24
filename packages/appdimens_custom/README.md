@@ -28,9 +28,22 @@ dependencies:
 
 ## Usage
 
+The simplest way is to write the formula: `base` is the value you pass, and the result is the scaled value.
+
 ```dart
 import 'package:appdimens_custom/appdimens_custom.dart';
 
+Padding(padding: EdgeInsets.all(16.cdpFormula('base * pow(sw / 360, 0.8)')));  // inline
+final hud = scalingFormula('base * (tablet ? 0.9 : 1) * clamp(sw / 360, 0.85, 1.6)');
+SizedBox(width: 48.cdpWith(hud));
+final fancy = scalingFormulaFn((base, screen) => base * screen.smallestWidthDp / 360);  // plain Dart
+final product = customScaleStrategy(
+    (screen) => (screen.widthDp / 360).clamp(0.85, 1.80).toDouble());  // programmable factor (once per window)
+```
+
+Formulas shaped `base * (…)` (no `base` inside the parentheses) cost one multiply per value. For rules, bounds and a font-scale policy, use the full configuration:
+
+```dart
 final brand = ScalingStrategy.define('brand',
     reference: ReferenceScreen(width: 360, height: 640),
     curve: ScalingCurve.power(0.8),
@@ -67,6 +80,7 @@ debugPrint(brand.explain()); // factor breakdown + applied rules
 | `14.csp` / `14.cspWith(s)` / `context.csp(14)` / `s.sp(14)` | `fontSize`; Flutter applies its TextScaler, and the strategy policy is pre-compensated |
 | `s.spDp(14)` | final text size in dp |
 | `16.cdpPx` / `s.px(16)` / `s.spPx(14)` | physical pixels |
+| `16.cdpFormula('…')` / `14.cspFormula('…')` / `cdpPxFormula` / `cspPxFormula` / `context.cdpFormula(16, '…')` | same, with a text formula (shared per text) |
 
 Guide: [DOCUMENTATION/custom.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/custom.md) · Schema: [custom-strategy.schema.json](https://github.com/bodenberg/appdimens-skills/blob/main/schemas/custom-strategy.schema.json)
 

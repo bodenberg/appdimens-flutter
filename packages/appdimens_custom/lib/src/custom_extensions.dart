@@ -39,6 +39,26 @@ extension AppDimensCustom on num {
 
   /// EN Explicit strategy · text physical px.
   double cspPxWith(Object strategy) => _pick(strategy).spPx(this);
+
+  // EN Inline formulas — the formula **is** the value, shared per text (see
+  // scalingFormula); write `base * (…)` for the one-multiply fast path.
+  // PT Fórmulas inline — a fórmula **é** o valor.
+
+  /// EN Text formula · dp: `16.cdpFormula('base * pow(sw / 360, 0.8)')`.
+  double cdpFormula(String formula) =>
+      ScalingStrategies.formula(formula).dp(this);
+
+  /// EN Text formula · physical px.
+  double cdpPxFormula(String formula) =>
+      ScalingStrategies.formula(formula).px(this);
+
+  /// EN Text formula · `fontSize`: `14.cspFormula('base * min(sw / 360, 2)')`.
+  double cspFormula(String formula) =>
+      ScalingStrategies.formula(formula).sp(this);
+
+  /// EN Text formula · text physical px.
+  double cspPxFormula(String formula) =>
+      ScalingStrategies.formula(formula).spPx(this);
 }
 
 ScalingStrategy _pick(Object strategy) => switch (strategy) {
@@ -90,6 +110,18 @@ extension AppDimensCustomContext on BuildContext {
 
   /// EN `fontSize` with the scoped strategy (or [strategy]).
   double csp(num value, [Object? strategy]) => _strategy(strategy).sp(value);
+
+  /// EN dp with a text formula: `context.cdpFormula(16, 'base * (sw / 360)')`
+  double cdpFormula(num value, String formula) =>
+      _strategy(ScalingStrategies.formula(formula)).dp(value);
+
+  /// EN physical px with a text formula.
+  double cdpPxFormula(num value, String formula) =>
+      _strategy(ScalingStrategies.formula(formula)).px(value);
+
+  /// EN `fontSize` with a text formula.
+  double cspFormula(num value, String formula) =>
+      _strategy(ScalingStrategies.formula(formula)).sp(value);
 
   /// EN Debug breakdown of the scoped strategy (or [strategy]).
   String explainScaling([Object? strategy]) => _strategy(strategy).explain();

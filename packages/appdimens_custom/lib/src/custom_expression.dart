@@ -55,6 +55,36 @@ class ScalingExpression {
   /// Evaluates with a name → value lookup.
   double evaluate(double Function(String name) vars) => _root.eval(vars);
 
+  /// EN Non-null when the whole formula is `base`, `base * E` or `E * base`
+  /// and `E` reads no value variable (`base`, `scaled`, `factor`). Such a
+  /// formula is a pure screen factor, so strategies evaluate `E` once per
+  /// window (same result, bit for bit).
+  /// PT Não nulo quando a fórmula é `base`, `base * E` ou `E * base` e `E` não
+  /// lê variáveis de valor: vira um fator só da tela, calculado uma vez por
+  /// janela (mesmo resultado).
+  late final ScalingExpression? baseCoefficient = _baseCoefficient();
+
+  ScalingExpression? _baseCoefficient() {
+    final r = _root;
+    final _Node? coefficient;
+    if (r is _Var && r.name == 'base') {
+      coefficient = _Num(1);
+    } else if (r is _Binary && r.op == '*' && _isBase(r.a) &&
+        !r.b.reads(_valueVariables)) {
+      coefficient = r.b;
+    } else if (r is _Binary && r.op == '*' && _isBase(r.b) &&
+        !r.a.reads(_valueVariables)) {
+      coefficient = r.a;
+    } else {
+      coefficient = null;
+    }
+    return coefficient == null ? null : ScalingExpression._(source, coefficient);
+  }
+
+  static const Set<String> _valueVariables = {'base', 'scaled', 'factor'};
+
+  static bool _isBase(_Node n) => n is _Var && n.name == 'base';
+
   @override
   bool operator ==(Object other) =>
       other is ScalingExpression && other.source == source;
@@ -112,6 +142,9 @@ double Function(String) expressionVariables(ScreenSnapshot screen, double ratio,
 
 sealed class _Node {
   double eval(double Function(String) v);
+
+  /// EN True when this subtree reads any of [names].
+  bool reads(Set<String> names);
 }
 
 class _Num extends _Node {
@@ -119,6 +152,8 @@ class _Num extends _Node {
   _Num(this.value);
   @override
   double eval(double Function(String) v) => value;
+  @override
+  bool reads(Set<String> names) => false;
 }
 
 class _Var extends _Node {
@@ -126,12 +161,16 @@ class _Var extends _Node {
   _Var(this.name);
   @override
   double eval(double Function(String) v) => v(name);
+  @override
+  bool reads(Set<String> names) => names.contains(name);
 }
 
 class _Unary extends _Node {
   final String op;
   final _Node a;
   _Unary(this.op, this.a);
+  @override
+  bool reads(Set<String> names) => a.reads(names);
   @override
   double eval(double Function(String) v) {
     final x = a.eval(v);
@@ -143,6 +182,8 @@ class _Binary extends _Node {
   final String op;
   final _Node a, b;
   _Binary(this.op, this.a, this.b);
+  @override
+  bool reads(Set<String> names) => a.reads(names) || b.reads(names);
   @override
   double eval(double Function(String) v) {
     if (op == '&&') return a.eval(v) != 0 && b.eval(v) != 0 ? 1 : 0;
@@ -171,12 +212,17 @@ class _Ternary extends _Node {
   @override
   double eval(double Function(String) v) =>
       c.eval(v) != 0 ? a.eval(v) : b.eval(v);
+  @override
+  bool reads(Set<String> names) =>
+      c.reads(names) || a.reads(names) || b.reads(names);
 }
 
 class _Call extends _Node {
   final String name;
   final List<_Node> args;
   _Call(this.name, this.args);
+  @override
+  bool reads(Set<String> names) => args.any((a) => a.reads(names));
   @override
   double eval(double Function(String) v) {
     final x = [for (final a in args) a.eval(v)];
@@ -432,6 +478,10 @@ class ScalingFormula {
       : expression = ScalingExpression.parse(source, allowed: formulaVariables);
 
   String get source => expression.source;
+
+  /// EN True when the formula is `base × (screen-only E)`: it depends on the
+  /// screen only, like a curve. PT Verdadeiro quando a fórmula é `base × E`.
+  bool get isProportional => expression.baseCoefficient != null;
 
   @override
   bool operator ==(Object other) =>

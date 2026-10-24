@@ -138,7 +138,7 @@ Use only when requirements or QA justify leaving scaled. **Before recommending a
 
 ### Custom strategy workflow
 
-Read [DOCUMENTATION/custom.md](../DOCUMENTATION/custom.md) first.
+Read [DOCUMENTATION/custom.md](../DOCUMENTATION/custom.md) first. If the user just wants to write the math, use the simplest form: `16.cdpFormula('base * pow(sw / 360, 0.8)')`, `final hud = scalingFormula('…')` or `scalingFormulaFn((base, screen) => …)` (code, not JSON). A programmable **factor** in plain Dart: `customScaleStrategy((screen) => (screen.widthDp / 360).clamp(0.85, 1.8).toDouble())`, which runs once per window (one multiply per value). Text formulas shaped `base * (…)` (no `base` inside the parentheses) cost one multiply per value.
 1. Start from a built-in or preset: `BuiltInStrategies.power.extend('x', …)`, `CustomPresets.tabletFriendly`, or JSON `"extends"`.
 2. Keep one source: an asset JSON loaded with `ScalingStrategies.loadJson`, or one `strategies.dart`. Reuse the ids from `appdimens.config.json` (`customStrategies`) when present.
 3. Express device or screen differences as `ScalingRule`s, never as `if`s at call sites. When no curve fits, write the law as text (`ScalingCurve.expression('…')` or `formula: '…'`); prefer that over Dart functions when it lives in JSON or is shared with other platforms.

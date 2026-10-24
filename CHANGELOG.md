@@ -10,6 +10,7 @@ Dynamic family.
 - **`appdimens_custom`: custom scaling strategies**, a port of Android `appdimens-dynamic-custom`.
   - **Config format:** the same JSON as every AppDimens platform. It covers reference frame, axis, curves (linear, power, logarithmic, interpolated, constant, breakpoints, free-form text expression, function), a per-value text formula, factor/value bounds, aspect ratio, font-scale policy, and rules per device class / screen range / orientation / multi-window.
   - **Composition:** `extend` from built-ins and presets.
+  - **Simplest form:** write the formula — `16.cdpFormula('base * pow(sw / 360, 0.8)')` (also `cdpPxFormula`, `cspFormula`, `cspPxFormula`, `context.cdpFormula(16, '…')`), `scalingFormula('…')` (shared per text, or named with `id:`), `ScalingStrategies.formula('…')`, `scalingFormulaFn((base, screen) => …)` (code, not JSON), and the programmable factor `customScaleStrategy((screen) => …)` (runs once per window). Formulas shaped `base * (…)` are screen-only: the `(…)` part is computed once per window. `explain()` shows the formula.
   - **APIs:** `ScalingStrategy.define`, `ScalingStrategies.loadJson`, `16.cdp` / `16.cdpWith(s)` / `14.csp`, `context.cdp(16)`, `ScalingStrategyScope`, `ScalingStrategyBuilder`, `explain()`.
   - **Packaging:** re-exported by `appdimens_bom` and demoed in `apps/sample`.
   - **Tests:** a cross-platform parity fixture shared with the Kotlin reference engine.

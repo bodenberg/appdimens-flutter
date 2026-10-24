@@ -233,6 +233,95 @@ class ScalingStrategy {
 
 ScalingStrategy _spec(String id, ScalingConfig c) => ScalingStrategy(id, c);
 
+/// EN The simplest custom strategy, in code: `(base, screen) → dp`. Must be
+/// pure. PT A estratégia custom mais simples, em código.
+typedef FormulaFunction = double Function(double base, ScreenSnapshot screen);
+
+/// EN One-liner strategy from a text formula — the formula **is** the final
+/// value:
+/// ```dart
+/// final hud = scalingFormula('base * pow(sw / 360, 0.8)');
+/// SizedBox(width: 48.cdpWith(hud)); // or straight: 48.cdpFormula('base * …')
+/// ```
+/// Variables: `base` (the value you pass, e.g. 16), `sw`, `width`, `height`,
+/// `shortSide`, `longSide`, `diagonal`, `aspectRatio`, `density`, `fontScale`,
+/// the device flags (`tablet`, `tv`, `landscape`, …) and `ratio` (`sw / 300`,
+/// the same ratio `sdp` uses). Same language and same numbers on every
+/// AppDimens platform; see `DOCUMENTATION/custom.md`.
+///
+/// Writing it as `base * (…)` keeps it on the one-multiply fast path (the
+/// `(…)` part is computed once per window). Any other shape still works.
+///
+/// Without an [id] the strategy is shared per formula text (calling this again
+/// with the same text returns the same instance), so it is cheap to call in
+/// `build`. With an [id] it is a new strategy, registered unless
+/// `register: false`. Parse errors throw a [FormatException] right away.
+///
+/// PT Estratégia em uma linha a partir de uma fórmula em texto — a fórmula
+/// **é** o valor final. Escrever como `base * (…)` mantém o caminho rápido.
+ScalingStrategy scalingFormula(String formula, {String? id, bool? register}) {
+  final reg = register ?? id != null;
+  if (id == null && !reg) return ScalingStrategies.formula(formula);
+  final strategy = _formulaStrategy(id ?? _formulaId(formula), formula);
+  return reg ? ScalingStrategies.register(strategy) : strategy;
+}
+
+/// EN One-liner strategy from a code formula — plain Dart, no limits:
+/// ```dart
+/// final hud = scalingFormulaFn((base, screen) =>
+///     base * math.pow(screen.smallestWidthDp / 360, 0.8).toDouble());
+/// ```
+/// Not JSON-serializable (use [scalingFormula] for that). Without an [id] a
+/// unique one (`formula#N`) is generated; with an [id] it is registered unless
+/// `register: false`.
+/// PT Estratégia em uma linha a partir de uma fórmula em código. Não
+/// serializa em JSON.
+ScalingStrategy scalingFormulaFn(FormulaFunction formula,
+    {String? id, bool? register}) {
+  final reg = register ?? id != null;
+  final strategy = ScalingStrategy(
+      id ?? 'formula#${++ScalingStrategies._lambdaIds}',
+      ScalingConfig(transform: (base, _, screen) => formula(base, screen)));
+  return reg ? ScalingStrategies.register(strategy) : strategy;
+}
+
+/// EN Programmable factor: you get the window and return the **factor** that
+/// multiplies every value. Plain Dart, so any function, branch or helper of
+/// your code works. Must be pure.
+/// PT Fator programável: você recebe a janela e devolve o **fator**.
+typedef ScreenFactor = double Function(ScreenSnapshot screen);
+
+/// EN Strategy from a programmable factor — the most flexible form, in code:
+/// ```dart
+/// final product = customScaleStrategy(
+///     (screen) => (screen.widthDp / 360).clamp(0.85, 1.80).toDouble());
+/// Padding(padding: EdgeInsets.all(16.cdpWith(product))); // 16 × factor
+/// ```
+/// The factor depends only on the window, so it runs once per window and
+/// every value then costs one multiply. A non-finite factor throws a
+/// [StateError] when the window resolves. Without an [id] a unique `scale#N`
+/// id is generated; with an [id] it is registered unless `register: false`.
+/// Not JSON-serializable: for JSON, use a text curve
+/// (`ScalingCurve.expression('clamp(width / 360, 0.85, 1.8)')`).
+///
+/// PT Estratégia a partir de um fator programável, escrita em código. O fator
+/// depende só da janela: roda uma vez por janela e cada valor custa uma
+/// multiplicação.
+ScalingStrategy customScaleStrategy(ScreenFactor factor,
+    {String? id, bool? register}) {
+  final reg = register ?? id != null;
+  final strategy = ScalingStrategy(
+      id ?? 'scale#${++ScalingStrategies._lambdaIds}',
+      ScalingConfig(
+          curve: ScalingCurve.custom((_, screen) => factor(screen))));
+  return reg ? ScalingStrategies.register(strategy) : strategy;
+}
+
+ScalingStrategy _formulaStrategy(String id, String formula) =>
+    ScalingStrategy(id, ScalingConfig(formula: ScalingFormula(formula)));
+
+String _formulaId(String formula) => 'formula:$formula';
+
 /// EN The built-in strategies as custom configs — parents for `extend` / `"extends"`.
 abstract final class BuiltInStrategies {
   static final ScalingStrategy scaled = _spec('scaled', ScalingConfig());
@@ -318,7 +407,13 @@ abstract final class CustomPresets {
 abstract final class ScalingStrategies {
   static final Map<String, ScalingStrategy> _byId = {};
   static final Map<String, ScalingStrategy> _derived = {};
+  static final Map<String, ScalingStrategy> _formulas = {};
+  static int _lambdaIds = 0;
   static ScalingStrategy? _default;
+
+  /// EN Bound for distinct inline formula texts; past it, strategies are built
+  /// per call (still correct).
+  static const int _maxSharedFormulas = 256;
 
   /// EN Replaces the device-class detection (`null` = [defaultDeviceClass]).
   static DeviceClass Function(DimenMetrics metrics, UiModeType uiMode)?
@@ -367,6 +462,18 @@ abstract final class ScalingStrategies {
     return out;
   }
 
+  /// EN Strategy whose value is the text [formula]
+  /// (`'base * pow(sw / 360, 0.8)'`), shared per text and not registered
+  /// (id `formula:<text>`). Same as [scalingFormula] without an id.
+  /// PT Estratégia cujo valor é a [formula] em texto, compartilhada por texto.
+  static ScalingStrategy formula(String formula) {
+    final hit = _formulas[formula];
+    if (hit != null) return hit;
+    final strategy = _formulaStrategy(_formulaId(formula), formula);
+    if (_formulas.length >= _maxSharedFormulas) return strategy;
+    return _formulas[formula] = strategy;
+  }
+
   /// EN Encodes strategies as a document.
   static Map<String, Object?> exportJson(
           [Iterable<ScalingStrategy>? strategies]) =>
@@ -380,6 +487,7 @@ abstract final class ScalingStrategies {
   static void resetForTest() {
     _byId.clear();
     _derived.clear();
+    _formulas.clear();
     _default = null;
     deviceClassResolver = null;
   }

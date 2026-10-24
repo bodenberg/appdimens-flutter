@@ -43,13 +43,13 @@ Important notes:
 - [Density](DOCUMENTATION/density.md): Physical-density alignment (`dpi/160`)
 - [Resize](DOCUMENTATION/resize.md): Constraint-based auto-fit (`AutoResizeText`, `AutoResizeSquare`, `ResizeBound`)
 - [Physical units](DOCUMENTATION/physical-units.md): Real-world mm / cm / inch helpers
-- [Custom strategies](DOCUMENTATION/custom.md): your own scaling — `ScalingStrategy.define('brand', curve: ScalingCurve.power(0.8), rules: [...])`, JSON shared with every AppDimens platform, free-form text formulas (`ScalingCurve.expression('…')`, `formula: '…'`), presets; `16.cdpWith(brand)`, `context.cdp(16)`, `ScalingStrategyScope`
+- [Custom strategies](DOCUMENTATION/custom.md): simplest form: write the formula, e.g. `16.cdpFormula('base * pow(sw / 360, 0.8)')`, `scalingFormula('…')`, or `scalingFormulaFn((base, screen) => …)`; programmable factor `customScaleStrategy((screen) => factor)`. Full form: your own scaling — `ScalingStrategy.define('brand', curve: ScalingCurve.power(0.8), rules: [...])`, JSON shared with every AppDimens platform, free-form text formulas (`ScalingCurve.expression('…')`, `formula: '…'`), presets; `16.cdpWith(brand)`, `context.cdp(16)`, `ScalingStrategyScope`
 
 ## Example code
 
 - [Sample app](apps/sample/lib/main.dart): Strategy-routing demo, facilitators, builder chains, auto-resize
 - [Strategy routing](apps/sample/lib/demo_routing.dart): DemoCalc-style dispatch across all 12 curves
-- [Custom strategy card](apps/sample/lib/custom_strategy_card.dart): `ScalingStrategy.define`, presets, `ScalingStrategyScope`, `explain()`
+- [Custom strategy card](apps/sample/lib/custom_strategy_card.dart): `ScalingStrategy.define`, `scalingFormula`, presets, `ScalingStrategyScope`, `explain()`
 - [Benchmark dashboard](apps/sample/lib/benchmark_screen.dart): In-app calculation/micro/macro/compare phases
 - [BenchLab](apps/benchlab/lib/main.dart): Competitor benchmark with parity tables and report export
 
