@@ -68,8 +68,8 @@ void main() {
         ScalingRule.on({DeviceClass.tablet},
             ScalingPatch(curve: ScalingCurve.power(0.5), multiplier: 0.9),
             name: 'tab'),
-        const ScalingRule(
-            ScreenCondition(landscape: true), ScalingPatch(multiplier: 0.8),
+        ScalingRule(ScreenCondition(landscape: true),
+            const ScalingPatch(multiplier: 0.8),
             name: 'land'),
       ]);
       final r = s.resolveScreen(_tablet);
@@ -151,6 +151,38 @@ void main() {
               .having((e) => e.message, 'message', contains('Invalid JSON'))));
       expect(
           () => ScalingStrategies.getOrThrow('missing'), throwsArgumentError);
+      expect(
+          () => ScalingStrategyJson.parse(
+              '{"strategies":[{"id":"x","rules":[{"when":{"width":600},'
+              '"set":{"multiplier":2}}]}]}',
+              (_) => null),
+          throwsA(isA<FormatException>().having((e) => e.message, 'message',
+              contains('must be an object'))));
+    });
+
+    test('ignoreMultiWindow skips formulas in multi-window', () {
+      final configs = ScalingStrategyJson.parse(
+          '{"id":"mw","ignoreMultiWindow":true,"formula":"base * 3"}',
+          (_) => null).configs;
+      final s = ScalingStrategy('mw', configs['mw']!);
+      final multi = ScreenSnapshot(
+          widthDp: 411,
+          heightDp: 891,
+          smallestWidthDp: 411,
+          density: 2.625,
+          isMultiWindow: true);
+      final r = s.resolveScreen(multi);
+      expect(r.multiWindowIgnored, isTrue);
+      expect(r.scale(16), 16);
+      expect(s.resolveScreen(_phone).scale(16), 48);
+    });
+
+    test('ScreenCondition freezes its device set', () {
+      final devices = {DeviceClass.phone};
+      final c = ScreenCondition(devices: devices);
+      devices.add(DeviceClass.tablet);
+      expect(c.devices, {DeviceClass.phone});
+      expect(() => c.devices!.add(DeviceClass.tv), throwsUnsupportedError);
     });
 
     test('cross-platform fixture (Kotlin reference engine)', () {

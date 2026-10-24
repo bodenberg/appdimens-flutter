@@ -89,7 +89,7 @@ final brand = ScalingStrategy.define(
   rules: [
     ScalingRule.on({DeviceClass.tablet, DeviceClass.desktop},
         ScalingPatch(curve: ScalingCurve.logarithmic(0.4)), name: 'large'),
-    ScalingRule(const ScreenCondition(landscape: true, minSmallestWidth: 600),
+    ScalingRule(ScreenCondition(landscape: true, minSmallestWidth: 600),
         const ScalingPatch(multiplier: 0.9)),
     ScalingRule.on({DeviceClass.watch},
         ScalingPatch(axis: ScalingAxis.min, reference: ReferenceScreen(width: 192, height: 192),

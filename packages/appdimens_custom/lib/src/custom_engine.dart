@@ -429,8 +429,11 @@ class ScreenCondition {
   final double? minAspectRatio, maxAspectRatio;
   final bool? multiWindow;
 
-  const ScreenCondition({
-    this.devices,
+  /// EN [devices] is copied into an unmodifiable set, so later changes to the
+  /// caller's set cannot change which screens match.
+  /// PT [devices] é copiado para um conjunto imutável.
+  ScreenCondition({
+    Set<DeviceClass>? devices,
     this.landscape,
     this.minSmallestWidth,
     this.maxSmallestWidth,
@@ -441,7 +444,7 @@ class ScreenCondition {
     this.minAspectRatio,
     this.maxAspectRatio,
     this.multiWindow,
-  });
+  }) : devices = devices == null ? null : Set.unmodifiable(devices);
 
   static bool _in(double v, double? min, double? max) =>
       (min == null || v >= min) && (max == null || v < max);
@@ -643,6 +646,11 @@ class ResolvedScaling {
   /// PT `E` de uma fórmula proporcional, calculado uma vez por janela.
   final double _formulaCoefficient;
 
+  /// EN True when `ignoreMultiWindow` applied: the value stays unscaled (only
+  /// value bounds apply); formulas and transforms are skipped.
+  /// PT Verdadeiro quando `ignoreMultiWindow` se aplicou.
+  final bool multiWindowIgnored;
+
   const ResolvedScaling._(
       this.screen,
       this.config,
@@ -652,7 +660,8 @@ class ResolvedScaling {
       this.referenceDp,
       this.curveFactor,
       this.aspectRatioMultiplier,
-      this._formulaCoefficient);
+      this._formulaCoefficient,
+      {this.multiWindowIgnored = false});
 
   /// EN `base` dp → scaled dp.
   double scale(double base) {
@@ -664,6 +673,7 @@ class ResolvedScaling {
       if (max != null && magnitude > max) magnitude = max;
       out = out < 0 ? -magnitude : magnitude;
     }
+    if (multiWindowIgnored) return out;
     final f = config.formula;
     if (f != null && f.isProportional) {
       out = base * _formulaCoefficient;
@@ -737,7 +747,8 @@ ResolvedScaling resolveScaling(ScalingConfig base, ScreenSnapshot screen) {
       double.nan;
   if (cfg.ignoreMultiWindow && screen.isMultiWindow) {
     return ResolvedScaling._(screen, cfg, 1, List.unmodifiable(applied),
-        axisDp, refDp, 1, 1, coefficient);
+        axisDp, refDp, 1, 1, coefficient,
+        multiWindowIgnored: true);
   }
   final curve = cfg.curve;
   final curveFactor = curve is ExpressionScalingCurve
@@ -883,7 +894,10 @@ abstract final class ScalingStrategyJson {
   static ScreenCondition readCondition(Map v, String path) {
     (double?, double?) range(String key) {
       final r = v[key];
-      if (r is! Map) return (null, null);
+      if (r == null) return (null, null);
+      if (r is! Map) {
+        throw FormatException('$path.$key must be an object with min/max');
+      }
       return (
         _num(r['min'], '$path.$key.min'),
         _num(r['max'], '$path.$key.max')
