@@ -73,6 +73,9 @@ class ScalingStrategy {
   UiModeType? _memoMode;
   ResolvedScaling? _memo;
 
+  /// EN [withAxis] variants of this instance (by axis index).
+  List<ScalingStrategy?>? _axisVariants;
+
   ScalingStrategy(this.id, ScalingConfig config)
       : config = config.validate(),
         isValueDependent = config.isValueDependent {
@@ -220,9 +223,12 @@ class ScalingStrategy {
   /// EN Same strategy on another axis. Id `"<id>@<axis>"`, cached.
   ScalingStrategy withAxis(ScalingAxis axis) {
     if (axis == config.axis) return this;
-    final derivedId = '$id@${axis.jsonName}';
-    return ScalingStrategies._derived.putIfAbsent(derivedId,
-        () => ScalingStrategy(derivedId, config.copyWith(axis: axis)));
+    // EN Cached per source instance, so a re-registered id never returns
+    // another config's variant.
+    final variants = _axisVariants ??=
+        List<ScalingStrategy?>.filled(ScalingAxis.values.length, null);
+    return variants[axis.index] ??=
+        ScalingStrategy('$id@${axis.jsonName}', config.copyWith(axis: axis));
   }
 
   /// EN JSON map (throws for function curves / transforms).
@@ -404,7 +410,6 @@ abstract final class CustomPresets {
 /// PT Registro de estratégias e o padrão usado por `16.cdp`.
 abstract final class ScalingStrategies {
   static final Map<String, ScalingStrategy> _byId = {};
-  static final Map<String, ScalingStrategy> _derived = {};
   static final Map<String, ScalingStrategy> _formulas = {};
   static int _lambdaIds = 0;
   static ScalingStrategy? _default;
@@ -451,12 +456,16 @@ abstract final class ScalingStrategies {
   /// and applies its `default`.
   static Map<String, ScalingStrategy> loadJson(Object json) {
     final parsed = ScalingStrategyJson.parse(json, (id) => get(id)?.config);
-    final out = <String, ScalingStrategy>{};
-    parsed.configs
-        .forEach((id, cfg) => out[id] = register(ScalingStrategy(id, cfg)));
-    if (parsed.defaultId != null) {
-      _default = out[parsed.defaultId] ?? getOrThrow(parsed.defaultId!);
-    }
+    final out = <String, ScalingStrategy>{
+      for (final e in parsed.configs.entries)
+        e.key: ScalingStrategy(e.key, e.value)
+    };
+    // EN Resolve the default before registering, so a bad document registers
+    // nothing. PT Resolve o default antes de registrar.
+    final defaultId = parsed.defaultId;
+    final newDefault = defaultId == null ? null : out[defaultId] ?? getOrThrow(defaultId);
+    out.values.forEach(register);
+    if (newDefault != null) _default = newDefault;
     return out;
   }
 
@@ -484,7 +493,6 @@ abstract final class ScalingStrategies {
   @visibleForTesting
   static void resetForTest() {
     _byId.clear();
-    _derived.clear();
     _formulas.clear();
     _default = null;
     deviceClassResolver = null;

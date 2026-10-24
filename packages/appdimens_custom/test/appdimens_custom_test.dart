@@ -177,6 +177,54 @@ void main() {
       expect(s.resolveScreen(_phone).scale(16), 48);
     });
 
+    test('malformed JSON fails loudly and load is atomic', () {
+      Matcher fails(String text) => throwsA(isA<FormatException>()
+          .having((e) => e.message, 'message', contains(text)));
+      expect(
+          () => ScalingStrategies.loadJson(
+              '{"strategies":[{"id":"x","rules":[{"when":"tablet",'
+              '"set":{"multiplier":2}}]}]}'),
+          fails('when must be an object'));
+      expect(
+          () => ScalingStrategies.loadJson(
+              '{"strategies":[{"id":"x","ignoreMultiWindow":"true"}]}'),
+          fails('must be a boolean'));
+      expect(
+          () => ScalingStrategies.loadJson(
+              '{"strategies":[{"id":"x","clamp":1.5}]}'),
+          fails('clamp must be an object'));
+      expect(
+          () => ScalingStrategy.define('neg', register: false, maxValue: -1),
+          throwsA(isA<ArgumentError>().having((e) => e.message, 'message',
+              contains('maxValue must be >= 0'))));
+      expect(
+          () => ScalingStrategies.loadJson(
+              '{"default":"missing","strategies":[{"id":"atomic","multiplier":2}]}'),
+          throwsA(isA<ArgumentError>().having(
+              (e) => e.message, 'message', contains('missing'))));
+      expect(ScalingStrategies.get('atomic'), isNull);
+      // withAxis is cached per source instance, not per id.
+      final a = ScalingStrategy.define('same', register: false, multiplier: 1);
+      final b = ScalingStrategy.define('same', register: false, multiplier: 2);
+      expect(a.withAxis(ScalingAxis.height).config.multiplier, 1);
+      expect(b.withAxis(ScalingAxis.height).config.multiplier, 2);
+      expect(b.withAxis(ScalingAxis.height),
+          same(b.withAxis(ScalingAxis.height)));
+      // A sensitivity-only rule patch survives export + import.
+      final s = ScalingStrategies.loadJson(
+          '{"strategies":[{"id":"sens","aspectRatio":true,"rules":[{"when":'
+          '{"device":"tablet"},"set":{"sensitivity":0.01}}]}]}')['sens']!;
+      final again = ScalingStrategies.loadJson(
+          jsonEncode({'strategies': [s.toJson()]}))['sens']!;
+      expect(again.resolveScreen(_tablet).factor,
+          s.resolveScreen(_tablet).factor);
+      expect(s.resolveScreen(_tablet).factor,
+          isNot(ScalingStrategy.define('noSens', register: false,
+                  aspectRatio: true)
+              .resolveScreen(_tablet)
+              .factor));
+    });
+
     test('ScreenCondition freezes its device set', () {
       final devices = {DeviceClass.phone};
       final c = ScreenCondition(devices: devices);

@@ -618,6 +618,13 @@ class ScalingConfig {
           c.minValue! > c.maxValue!) {
         throw ArgumentError('$where: minValue must be <= maxValue');
       }
+      // Value bounds clamp the magnitude, so they must not be negative.
+      if (c.minValue != null && c.minValue! < 0) {
+        throw ArgumentError('$where: minValue must be >= 0');
+      }
+      if (c.maxValue != null && c.maxValue! < 0) {
+        throw ArgumentError('$where: maxValue must be >= 0');
+      }
     }
 
     check(this, 'strategy');
@@ -842,8 +849,8 @@ abstract final class ScalingStrategyJson {
   }
 
   static ScalingPatch readPatch(Map v, String path) {
-    final clamp = v['clamp'] is Map ? v['clamp'] as Map : null;
-    final valueClamp = v['valueClamp'] is Map ? v['valueClamp'] as Map : null;
+    final clamp = _obj(v['clamp'], '$path.clamp');
+    final valueClamp = _obj(v['valueClamp'], '$path.valueClamp');
     final ar = v['aspectRatio'];
     final ref = v['reference'];
     bool? aspect;
@@ -851,7 +858,7 @@ abstract final class ScalingStrategyJson {
     if (ar is bool) {
       aspect = ar;
     } else if (ar is Map) {
-      aspect = ar['enabled'] as bool? ?? true;
+      aspect = _bool(ar['enabled'], '$path.aspectRatio.enabled') ?? true;
       sens = _num(ar['sensitivity'], '$path.aspectRatio.sensitivity');
     } else if (ar != null) {
       throw FormatException('$path.aspectRatio must be a boolean or object');
@@ -881,7 +888,8 @@ abstract final class ScalingStrategyJson {
       fontScale: v['fontScale'] != null
           ? readFontScale(v['fontScale'], '$path.fontScale')
           : null,
-      ignoreMultiWindow: v['ignoreMultiWindow'] as bool?,
+      ignoreMultiWindow:
+          _bool(v['ignoreMultiWindow'], '$path.ignoreMultiWindow'),
       formula: switch (v['formula']) {
         null => null,
         final String src =>
@@ -933,9 +941,23 @@ abstract final class ScalingStrategyJson {
       maxHeight: h.$2,
       minAspectRatio: ar.$1,
       maxAspectRatio: ar.$2,
-      multiWindow: v['multiWindow'] as bool?,
+      multiWindow: _bool(v['multiWindow'], '$path.multiWindow'),
     );
   }
+
+  /// EN Present values must be objects; `null` / absent → null.
+  static Map? _obj(Object? v, String path) => switch (v) {
+        null => null,
+        final Map m => m,
+        _ => throw FormatException('$path must be an object'),
+      };
+
+  /// EN Present values must be booleans; `null` / absent → null.
+  static bool? _bool(Object? v, String path) => switch (v) {
+        null => null,
+        final bool b => b,
+        _ => throw FormatException('$path must be a boolean'),
+      };
 
   /// EN Builds a validated config from [v] on top of [parent] (parent rules first).
   static ScalingConfig readConfig(Map v, ScalingConfig parent, String path) {
@@ -967,13 +989,15 @@ abstract final class ScalingStrategyJson {
     if (rawRules is List) {
       for (var i = 0; i < rawRules.length; i++) {
         final r = rawRules[i];
-        if (r is! Map || r['set'] is! Map) {
-          throw FormatException('$path.rules[$i].set is required');
+        if (r is! Map) {
+          throw FormatException('$path.rules[$i] must be an object');
         }
+        final set = _obj(r['set'], '$path.rules[$i].set') ??
+            (throw FormatException('$path.rules[$i].set is required'));
         rules.add(ScalingRule(
-          readCondition(r['when'] is Map ? r['when'] as Map : const {},
+          readCondition(_obj(r['when'], '$path.rules[$i].when') ?? const {},
               '$path.rules[$i].when'),
-          readPatch(r['set'] as Map, '$path.rules[$i].set'),
+          readPatch(set, '$path.rules[$i].set'),
           name: r['name'] as String?,
         ));
       }
@@ -1121,6 +1145,8 @@ abstract final class ScalingStrategyJson {
         'enabled': p.aspectRatio,
         if (p.sensitivity != null) 'sensitivity': p.sensitivity
       };
+    } else if (p.aspectRatio == null && p.sensitivity != null) {
+      o['sensitivity'] = p.sensitivity; // sensitivity-only patch
     }
     if (p.fontScale != null &&
         (!defaults || p.fontScale != FontScalePolicy.follow)) {
