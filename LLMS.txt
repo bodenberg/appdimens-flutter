@@ -44,6 +44,8 @@ Important notes:
 - [Resize](DOCUMENTATION/resize.md): Constraint-based auto-fit (`AutoResizeText`, `AutoResizeSquare`, `ResizeBound`)
 - [Physical units](DOCUMENTATION/physical-units.md): Real-world mm / cm / inch helpers
 - [Custom strategies](DOCUMENTATION/custom.md): simplest form: one line of typed Dart, e.g. `customScaleStrategy((s) => s.clamp(s.width / 360, 0.85, 1.8))` (factor) or `scalingFormulaOf((s) => s.base * s.pow(s.sw / 360, 0.8))` (final value); as text for JSON: `scalingFormula('base * pow(sw / 360, 0.8)')`, `16.cdpFormula('…')`. Full form: your own scaling — `ScalingStrategy.define('brand', curve: ScalingCurve.power(0.8), rules: [...])`, JSON shared with every AppDimens platform, free-form text formulas (`ScalingCurve.expression('…')`, `formula: '…'`), presets; `16.cdpWith(brand)`, `context.cdp(16)`, `ScalingStrategyScope`
+- [Custom strategy guides](DOCUMENTATION/custom/README.md): quick start, code formulas, text formulas, configuration, JSON, API reference, performance, cookbook, troubleshooting
+- [Custom strategies agent reference](skills/custom.md): which form to pick, cheat sheet, rules to follow, verification
 
 ## Example code
 

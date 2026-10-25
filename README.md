@@ -235,7 +235,7 @@ Padding(padding: EdgeInsets.all(16.cdpWith(brand)),
 ScalingStrategyScope(strategy: brand, child: …);   // context.cdp(16) below it
 ```
 
-The same JSON loads on Android, iOS, Web, RN, KMP, Games and .NET (`ScalingStrategies.loadJson(text)`). Presets include `CustomPresets.tvSafe`, `tabletFriendly`, `gameHud`, …. Guide: [DOCUMENTATION/custom.md](DOCUMENTATION/custom.md).
+The same JSON loads on Android, iOS, Web, RN, KMP, Games and .NET (`ScalingStrategies.loadJson(text)`). Presets include `CustomPresets.tvSafe`, `tabletFriendly`, `gameHud`, …. Guide: [DOCUMENTATION/custom.md](DOCUMENTATION/custom.md) · full documentation: [DOCUMENTATION/custom/](DOCUMENTATION/custom/README.md).
 
 ### Explicit context (no provider needed)
 
@@ -264,7 +264,7 @@ Full graph and dependency rules: [DOCUMENTATION/MODULES.md](DOCUMENTATION/MODULE
 
 | Resource | Use for |
 |----------|---------|
-| [DOCUMENTATION/README.md](DOCUMENTATION/README.md) | Per-strategy explanations (14 guides + [custom strategies](DOCUMENTATION/custom.md)) |
+| [DOCUMENTATION/README.md](DOCUMENTATION/README.md) | Per-strategy explanations (14 guides + [custom strategies](DOCUMENTATION/custom.md), full guide in [DOCUMENTATION/custom/](DOCUMENTATION/custom/README.md)) |
 | [DOCUMENTATION/API-CONVENTIONS.md](DOCUMENTATION/API-CONVENTIONS.md) | Every extension property & facilitator catalog |
 | [DOCUMENTATION/MATHEMATICS-AND-CALCULUS.md](DOCUMENTATION/MATHEMATICS-AND-CALCULUS.md) | Formal math, constants, precision policy |
 | [DOCUMENTATION/MODULES.md](DOCUMENTATION/MODULES.md) | Package graph |

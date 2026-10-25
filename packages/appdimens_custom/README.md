@@ -4,14 +4,7 @@
 > [AppDimens Dynamic](https://github.com/bodenberg/appdimens-dynamic) /
 > [AppDimens KMP](https://github.com/bodenberg/appdimens-kmp).
 
-**Your own scaling strategies.** A strategy combines:
-- a reference frame and an axis;
-- a curve: linear, power, logarithmic, interpolated, constant, breakpoints, a free-form text expression (`ScalingCurve.expression('pow(ratio, 0.8) * (tablet ? 0.9 : 1)')`), or a function;
-- an optional per-value text formula (`formula: 'max(scaled, base)'`);
-- factor and value bounds, plus a font-scale policy;
-- rules per device class, screen range, orientation and multi-window.
-
-You can define it in Dart or load it from the **JSON format shared with every AppDimens platform** (Android, KMP, iOS, React Native, Web, Games, .NET).
+**Your own scaling strategies.** Write the math in one line of Dart, or configure a full strategy (reference frame, axis, curve, bounds, font-scale policy, rules per device class, screen range, orientation and multi-window) that loads from the **JSON format shared with every AppDimens platform** (Android, KMP, iOS, React Native, Web, Games, .NET) with the same numbers.
 
 ## Installation
 
@@ -28,60 +21,28 @@ dependencies:
 
 ## Usage
 
-The simplest way is to write the math as ordinary Dart on one line; the scope (`s`) autocompletes `base`, `sw`, `width`, `tablet`, `pow`, `clamp`…
-
 ```dart
 import 'package:appdimens_custom/appdimens_custom.dart';
 
-final product = customScaleStrategy((s) => s.clamp(s.width / 360, 0.85, 1.80));   // factor, once per window
+final product = customScaleStrategy((s) => s.clamp(s.width / 360, 0.85, 1.80));   // factor
 final hud = scalingFormulaOf((s) => s.base * s.pow(s.sw / 360, 0.8));              // final value
-SizedBox(width: 48.cdpWith(hud));
-final remote = scalingFormula('base * pow(sw / 360, 0.8)');   // same as text, for JSON / remote config
-Padding(padding: EdgeInsets.all(16.cdpFormula('base * pow(sw / 360, 0.8)')));     // text, inline
+Padding(padding: EdgeInsets.all(16.cdpWith(product)));
+Text('Score', style: TextStyle(fontSize: 18.cspWith(hud)));
 ```
 
-Text formulas shaped `base * (…)` (no `base` inside the parentheses) cost one multiply per value. For rules, bounds and a font-scale policy, use the full configuration:
+The scope `s` autocompletes `base`, `sw`, `width`, `tablet`, `pow`, `clamp`… The same formula as text, for JSON or remote config: `scalingFormula('base * pow(sw / 360, 0.8)')` or inline `16.cdpFormula('…')`. For rules and bounds: `ScalingStrategy.define('brand', …)`; to load a shared file: `ScalingStrategies.loadJson(text)`.
 
-```dart
-final brand = ScalingStrategy.define('brand',
-    reference: ReferenceScreen(width: 360, height: 640),
-    curve: ScalingCurve.power(0.8),
-    minFactor: 0.85,
-    maxFactor: 1.6,
-    fontScale: FontScalePolicy.clamp(1.3),
-    rules: [
-      ScalingRule.on({DeviceClass.tablet, DeviceClass.desktop},
-          ScalingPatch(curve: ScalingCurve.logarithmic(0.4)), name: 'large'),
-    ]);
-
-Padding(padding: EdgeInsets.all(16.cdpWith(brand)),
-    child: Text('Hello', style: TextStyle(fontSize: 14.cspWith(brand))));
-
-// Scope: context.cdp / context.csp use the nearest strategy.
-ScalingStrategyScope(strategy: brand, child: Builder(builder: (context) =>
-    SizedBox(width: context.cdp(48))));
-
-// Global default: 16.cdp / 14.csp
-ScalingStrategies.defaultStrategy = brand;
-
-// JSON (same file as Android / iOS / Web…)
-ScalingStrategies.loadJson(await rootBundle.loadString('assets/appdimens-strategies.json'));
-
-// Presets and built-ins
-CustomPresets.tvSafe;  BuiltInStrategies.power.extend('soft', curve: ScalingCurve.power(0.6));
-
-debugPrint(brand.explain()); // factor breakdown + applied rules
-```
-
-| API | Returns |
+| File (`lib/src/`) | Contents |
 |---|---|
-| `16.cdp` / `16.cdpWith(s)` / `context.cdp(16)` / `s.dp(16)` | dp (logical pixels) |
-| `14.csp` / `14.cspWith(s)` / `context.csp(14)` / `s.sp(14)` | `fontSize`; Flutter applies its TextScaler, and the strategy policy is pre-compensated |
-| `s.spDp(14)` | final text size in dp |
-| `16.cdpPx` / `s.px(16)` / `s.spPx(14)` | physical pixels |
-| `16.cdpFormula('…')` / `14.cspFormula('…')` / `cdpPxFormula` / `cspPxFormula` / `context.cdpFormula(16, '…')` | same, with a text formula (shared per text) |
+| `custom_scope.dart` | `ScreenScope`, `FormulaScope`: the typed names of code formulas |
+| `custom_strategy.dart` | `ScalingStrategy` (`define`, `extend`, `withAxis`, `explain`, `toJson`), `customScaleStrategy`, `scalingFormulaOf`, `scalingFormula`, `ScalingStrategies` registry, `BuiltInStrategies`, `CustomPresets`, device-class detection |
+| `custom_extensions.dart` | `16.cdp` / `cdpWith` / `cdpFormula`, `14.csp` / `cspWith` / `cspFormula`, `…Px` variants, `context.cdp` / `context.csp` / `context.cdpFormula`, `ScalingStrategyScope`, `ScalingStrategyBuilder` |
+| `custom_engine.dart` | model (`ScalingConfig`, `ScalingAxis`, `ScalingCurve`, `ScreenCondition`, `ScalingRule`, `ScalingPatch`, `FontScalePolicy`, `ScreenSnapshot`, `DeviceClass`), `resolveScaling`, `ScalingStrategyJson` |
+| `custom_expression.dart` | text formula language (`ScalingExpression`, `ScalingFormula`) |
 
-Guide: [DOCUMENTATION/custom.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/custom.md) · Schema: [custom-strategy.schema.json](https://github.com/bodenberg/appdimens-skills/blob/main/schemas/custom-strategy.schema.json)
+Documentation: [DOCUMENTATION/custom/](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/custom/README.md) (quick start, code formulas, text formulas, configuration, JSON, API, performance, cookbook, troubleshooting) · Schema: [custom-strategy.schema.json](https://github.com/bodenberg/appdimens-skills/blob/main/schemas/custom-strategy.schema.json)
+
+Tests run without a device: `flutter test` in `packages/appdimens_custom`. They include the cross-platform fixture (`test/custom-strategy-fixture.json`, 540 cases) that every AppDimens platform must reproduce.
 
 ## License
 

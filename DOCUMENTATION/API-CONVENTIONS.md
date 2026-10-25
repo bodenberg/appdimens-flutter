@@ -117,7 +117,7 @@ Custom strategies carry their own axis, aspect-ratio, multi-window and font-scal
 | `context.cdp(16)` / `context.csp(14)` | nearest `ScalingStrategyScope`, rebuilds on `MediaQuery` changes |
 | `s.dp(16)` · `s.sp(14)` · `s.spDp(14)` · `s.px(16)` | strategy-first |
 
-`csp` / `s.sp` return a `fontSize` (Flutter applies the `TextScaler`); the strategy's font-scale policy is pre-compensated. See [custom.md](custom.md).
+`csp` / `s.sp` return a `fontSize` (Flutter applies the `TextScaler`); the strategy's font-scale policy is pre-compensated. See [custom.md](custom.md) and the [API reference](custom/api-reference.md).
 
 ## 8. Complete scaled property catalog
 

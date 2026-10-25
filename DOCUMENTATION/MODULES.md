@@ -41,7 +41,7 @@ same packaging philosophy as `appdimens-kmp` / `appdimens-dynamic`.
 | **`appdimens_density`** | Physical-density alignment (dpi/160) |
 | **`appdimens_resize`** | Constraint auto-fit widgets (`AutoResizeText`, `AutoResizeSquare`) + range search |
 | **`appdimens_units`** | mm/cm/inch ↔ dp/px/sp conversions |
-| **`appdimens_custom`** | User-defined strategies: engine, `ScalingStrategy.define`, JSON (shared format), presets, `cdp`/`csp`, `ScalingStrategyScope` |
+| **`appdimens_custom`** | User-defined strategies: engine, code and text formulas, `ScalingStrategy.define`, JSON (shared format), presets, `cdp`/`csp`, `ScalingStrategyScope` — see [custom.md](custom.md) and [custom/](custom/README.md) |
 | **`appdimens_bom`** | Re-exports all of the above at one version |
 
 ## Dependency rules

@@ -24,7 +24,7 @@ recommended usage** — mirroring the documentation of the Kotlin family.
 | 12 | Density | `appdimens_density` | [density.md](density.md) | `dsdp` / `dhdp` / `dwdp` |
 | 13 | Resize | `appdimens_resize` | [resize.md](resize.md) | `AutoResizeText`, `AutoResizeSquare`, `ResizeBound`… |
 | 14 | Physical units | `appdimens_units` | [physical-units.md](physical-units.md) | mm / cm / inch converters |
-| 15 | **Custom (your own)** | `appdimens_custom` | [custom.md](custom.md) | `cdp` / `cdpWith(s)` / `context.cdp(v)` — axis, curve and rules set by the strategy |
+| 15 | **Custom (your own)** | `appdimens_custom` | [custom.md](custom.md) · [full guide](custom/README.md) | `cdp` / `cdpWith(s)` / `context.cdp(v)` — axis, curve and rules set by the strategy |
 
 Every dp stem has sp twins (`ssp`, `hsp`, `wsp` with the strategy prefix, e.g.
 `pssp`) and no-font-scale variants (`sem`, `hem`, `wem`).
