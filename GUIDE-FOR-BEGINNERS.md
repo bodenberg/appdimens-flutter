@@ -79,6 +79,7 @@ Container(
 | strict min/max bounds | Fluid (`fsdp`) |
 | same size in any rotation | Diagonal (`dgsdp`) or Perimeter (`prsdp`) |
 | real centimeters | Units package |
+| **your own rule** (design frame, growth, limits, tablet/TV tweaks) | Custom package: `ScalingStrategy.define('brand', …)` then `16.cdpWith(brand)` — see [custom.md](DOCUMENTATION/custom.md) |
 
 Each strategy lives in its own package — add only what you use:
 
@@ -136,4 +137,5 @@ AppDimensScope.withMetrics(
 - All suffixes/inverters/facilitators: [DOCUMENTATION/API-CONVENTIONS.md](DOCUMENTATION/API-CONVENTIONS.md)
 - The math behind every curve: [DOCUMENTATION/MATHEMATICS-AND-CALCULUS.md](DOCUMENTATION/MATHEMATICS-AND-CALCULUS.md)
 - Strategy-by-strategy guide: [DOCUMENTATION/README.md](DOCUMENTATION/README.md)
+- Your own scaling strategy (Dart or JSON, rules per device): [DOCUMENTATION/custom.md](DOCUMENTATION/custom.md)
 - Coming from the old 2.x Flutter API? [MIGRATION.md](MIGRATION.md)

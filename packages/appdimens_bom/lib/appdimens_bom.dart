@@ -22,5 +22,6 @@ export 'package:appdimens_perimeter/appdimens_perimeter.dart';
 export 'package:appdimens_power/appdimens_power.dart';
 export 'package:appdimens_resize/appdimens_resize.dart';
 export 'package:appdimens_units/appdimens_units.dart';
+export 'package:appdimens_custom/appdimens_custom.dart';
 
 const String appDimensBomVersion = '3.2.0';

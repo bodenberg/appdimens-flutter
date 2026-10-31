@@ -22,6 +22,7 @@ dependencies:
   appdimens_power: ^3.2.0
   appdimens_resize: ^3.2.0
   appdimens_units: ^3.2.0
+  appdimens_custom: ^3.2.0
 
 dev_dependencies:
   flutter_test:

@@ -106,6 +106,19 @@ against the 300×533 reference configuration — deterministic in tests.
 | `…sspPx` | rendered physical pixels (density × fontScale included) |
 | `sem / hem / wem` | pre-divides by the font scale so rendering cancels it ("ignore system font scale") |
 
+### Custom strategies (`appdimens_custom`)
+
+Custom strategies carry their own axis, aspect-ratio, multi-window and font-scale settings, so they have no prefix × suffix grid:
+
+| Form | Meaning |
+|---|---|
+| `16.cdp` / `14.csp` / `16.cdpPx` / `14.cspPx` | default strategy (`ScalingStrategies.defaultStrategy`) |
+| `16.cdpWith(s)` / `14.cspWith(s)` (instance or id) | explicit strategy |
+| `context.cdp(16)` / `context.csp(14)` | nearest `ScalingStrategyScope`, rebuilds on `MediaQuery` changes |
+| `s.dp(16)` · `s.sp(14)` · `s.spDp(14)` · `s.px(16)` | strategy-first |
+
+`csp` / `s.sp` return a `fontSize` (Flutter applies the `TextScaler`); the strategy's font-scale policy is pre-compensated. See [custom.md](custom.md) and the [API reference](custom/api-reference.md).
+
 ## 8. Complete scaled property catalog
 
 For each of the three axes (`sdp/hdp/wdp`):

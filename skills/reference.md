@@ -37,6 +37,7 @@ Regenerate package metadata with [`scripts/generate_package_docs.py`](https://gi
 | density | [DOCUMENTATION/density.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/density.md) |
 | resize | [DOCUMENTATION/resize.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/resize.md) |
 | units (physical) | [DOCUMENTATION/physical-units.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/physical-units.md) |
+| custom (user-defined) | [DOCUMENTATION/custom.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/custom.md) + [custom/](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/custom/README.md) guides |
 
 **Formal math:** [MATHEMATICS-AND-CALCULUS.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/MATHEMATICS-AND-CALCULUS.md)
 **Migration from the deprecated 2.x API:** [MIGRATION.md](https://github.com/bodenberg/appdimens-flutter/blob/main/MIGRATION.md)
@@ -55,3 +56,10 @@ Maps to package families: auto, diagonal, fill, fit, fluid, interpolated, logari
 ## What this reference intentionally skips
 
 Per the skill: **do not** expand on **`ignoreMultiWindows`** or **`*i` / `*ia`** suffix workflows when guiding users — those are omitted from the interactive workflow.
+
+
+## Custom strategies (`appdimens_custom`)
+
+`ScalingStrategy.define(id, reference:, axis:, curve:, minFactor:, maxFactor:, minValue:, maxValue:, aspectRatio:, fontScale:, formula:, rules: [ScalingRule.on({DeviceClass.tablet}, ScalingPatch(...))])` · free-form `ScalingCurve.expression('pow(ratio, 0.8) * (tablet ? 0.9 : 1)')` / `formula: 'base * pow(sw / 360, 0.7) + 2'` (variables `sw width height shortSide longSide diagonal perimeter aspectRatio density fontScale`, flags `landscape portrait multiWindow phone tablet desktop tv watch car vr`, `ratio axis ref refWidth refHeight`, `base scaled factor`; functions `min max clamp pow sqrt ln log log10 log2 exp abs sign floor ceil round lerp step smoothstep`) · `ScalingStrategies.loadJson(json)` / `defaultStrategy` · `16.cdp`, `16.cdpWith(s)`, `14.csp`, `context.cdp(16)`, `ScalingStrategyScope`, `s.explain()` — [custom.md](../DOCUMENTATION/custom.md)
+
+Simplest form: `16.cdpFormula('base * pow(sw / 360, 0.8)')` · `cspFormula` · `context.cdpFormula(16, '…')` · `scalingFormula('…', id:)` · `ScalingStrategies.formula('…')` · typed code `scalingFormulaOf((s) => s.base * s.pow(s.sw / 360, 0.8))` (`FormulaScope`) · `customScaleStrategy((s) => s.clamp(s.width / 360, 0.85, 1.8), id:)` (`ScreenScope`, factor, once per window); `base * (…)` formulas are screen-only (one multiply per value). Full guides: [DOCUMENTATION/custom/](../DOCUMENTATION/custom/README.md); agent notes: [custom.md](custom.md).

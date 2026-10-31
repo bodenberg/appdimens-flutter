@@ -118,6 +118,7 @@ dependencies:
 | [appdimens_logarithmic](https://pub.dev/packages/appdimens_logarithmic) · [appdimens_interpolated](https://pub.dev/packages/appdimens_interpolated) · [appdimens_diagonal](https://pub.dev/packages/appdimens_diagonal) · [appdimens_perimeter](https://pub.dev/packages/appdimens_perimeter) | Logarithmic · Interpolated · Diagonal · Perimeter |
 | [appdimens_density](https://pub.dev/packages/appdimens_density) · [appdimens_fill](https://pub.dev/packages/appdimens_fill) · [appdimens_fit](https://pub.dev/packages/appdimens_fit) | Density · Fill · Fit |
 | [appdimens_resize](https://pub.dev/packages/appdimens_resize) · [appdimens_units](https://pub.dev/packages/appdimens_units) | Constraint auto-fit · mm/cm/inch units |
+| `appdimens_custom` *(new, not yet on pub.dev)* | **Your own strategies**: `ScalingStrategy.define`, JSON shared with every AppDimens platform, presets, `cdp` / `csp` |
 
 > The principal artifact is `appdimens_flutter` — the bare name `appdimens` was blocked by the pub.dev naming-similarity policy (`app_dimen`).
 
@@ -206,6 +207,36 @@ AutoResizeText('Headline that must fit', minSp: 10, maxSp: 28),
 AutoResizeSquare(min: 40, max: 120, child: Icon(Icons.aspect_ratio)),
 ```
 
+### Custom strategies (your own scaling)
+
+The simplest way is to write the math as ordinary Dart on one line. The IDE autocompletes `base`, `sw`, `width`, `tablet`, `pow`, `clamp`…, and typos fail at compile time:
+
+```dart
+import 'package:appdimens_custom/appdimens_custom.dart';
+
+final product = customScaleStrategy((s) => s.clamp(s.width / 360, 0.85, 1.80));   // factor × every value
+final hud = scalingFormulaOf((s) => s.base * s.pow(s.sw / 360, 0.8));              // final value (base = 16)
+Padding(padding: EdgeInsets.all(16.cdpWith(product)));
+Text('Score', style: TextStyle(fontSize: 18.cspWith(hud)));
+final remote = scalingFormula('base * pow(sw / 360, 0.8)');   // same thing as text, for JSON / remote config
+16.cdpFormula('base * pow(sw / 360, 0.8)');                   // text, inline
+```
+
+For rules per device, factor bounds or a font-scale policy, use the full configuration:
+
+```dart
+final brand = ScalingStrategy.define('brand',
+    reference: ReferenceScreen(width: 360, height: 640),
+    curve: ScalingCurve.power(0.8), minFactor: 0.85, maxFactor: 1.6,
+    rules: [ScalingRule.on({DeviceClass.tablet}, ScalingPatch(curve: ScalingCurve.logarithmic(0.4)))]);
+
+Padding(padding: EdgeInsets.all(16.cdpWith(brand)),
+    child: Text('Hi', style: TextStyle(fontSize: 14.cspWith(brand))));
+ScalingStrategyScope(strategy: brand, child: …);   // context.cdp(16) below it
+```
+
+The same JSON loads on Android, iOS, Web, RN, KMP, Games and .NET (`ScalingStrategies.loadJson(text)`). Presets include `CustomPresets.tvSafe`, `tabletFriendly`, `gameHud`, …. Guide: [DOCUMENTATION/custom.md](DOCUMENTATION/custom.md) · full documentation: [DOCUMENTATION/custom/](DOCUMENTATION/custom/README.md).
+
 ### Explicit context (no provider needed)
 
 ```dart
@@ -233,7 +264,7 @@ Full graph and dependency rules: [DOCUMENTATION/MODULES.md](DOCUMENTATION/MODULE
 
 | Resource | Use for |
 |----------|---------|
-| [DOCUMENTATION/README.md](DOCUMENTATION/README.md) | Per-strategy explanations (14 guides) |
+| [DOCUMENTATION/README.md](DOCUMENTATION/README.md) | Per-strategy explanations (14 guides + [custom strategies](DOCUMENTATION/custom.md), full guide in [DOCUMENTATION/custom/](DOCUMENTATION/custom/README.md)) |
 | [DOCUMENTATION/API-CONVENTIONS.md](DOCUMENTATION/API-CONVENTIONS.md) | Every extension property & facilitator catalog |
 | [DOCUMENTATION/MATHEMATICS-AND-CALCULUS.md](DOCUMENTATION/MATHEMATICS-AND-CALCULUS.md) | Formal math, constants, precision policy |
 | [DOCUMENTATION/MODULES.md](DOCUMENTATION/MODULES.md) | Package graph |

@@ -4,6 +4,17 @@ All notable changes to the AppDimens Flutter package are documented here.
 Format based on Keep a Changelog; versioning aligned with the AppDimens
 Dynamic family.
 
+## [Unreleased]
+
+### Added
+- **`appdimens_custom`: custom scaling strategies**, a port of Android `appdimens-dynamic-custom`.
+  - **Config format:** the same JSON as every AppDimens platform. It covers reference frame, axis, curves (linear, power, logarithmic, interpolated, constant, breakpoints, free-form text expression, function), a per-value text formula, factor/value bounds, aspect ratio, font-scale policy, and rules per device class / screen range / orientation / multi-window.
+  - **Composition:** `extend` from built-ins and presets.
+  - **Simplest form:** one line of typed Dart with autocomplete — the programmable factor `customScaleStrategy((s) => s.clamp(s.width / 360, 0.85, 1.8))` (runs once per window) and the value formula `scalingFormulaOf((s) => s.base * s.pow(s.sw / 360, 0.8))`; the functions get a `ScreenScope` / `FormulaScope` with the same names as the text language. The same formula as text, for JSON and remote config: `16.cdpFormula('base * pow(sw / 360, 0.8)')` (also `cdpPxFormula`, `cspFormula`, `cspPxFormula`, `context.cdpFormula(16, '…')`), `scalingFormula('…')` (shared per text, or named with `id:`), `ScalingStrategies.formula('…')`. Formulas shaped `base * (…)` are screen-only: the `(…)` part is computed once per window. `explain()` shows the formula.
+  - **APIs:** `ScalingStrategy.define`, `ScalingStrategies.loadJson`, `16.cdp` / `16.cdpWith(s)` / `14.csp`, `context.cdp(16)`, `ScalingStrategyScope`, `ScalingStrategyBuilder`, `explain()`.
+  - **Packaging:** re-exported by `appdimens_bom` and demoed in `apps/sample`.
+  - **Tests:** a cross-platform parity fixture shared with the Kotlin reference engine.
+
 ## [3.2.0] — 2026-08-21
 
 Complete rewrite replacing the deprecated 2.x Flutter library with a faithful,

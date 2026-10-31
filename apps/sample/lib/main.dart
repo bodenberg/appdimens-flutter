@@ -12,6 +12,7 @@ import 'package:appdimens_bom/appdimens_bom.dart';
 import 'package:flutter/material.dart';
 
 import 'benchmark_screen.dart';
+import 'custom_strategy_card.dart';
 import 'demo_routing.dart';
 
 void main() => runApp(const SampleApp());
@@ -88,6 +89,9 @@ class _DemoScreenState extends State<DemoScreen> {
               SizedBox(height: 16.sdp),
               _sectionTitle('5. Auto-resize (constraint fitting)'),
               const AutoResizeCard(),
+              SizedBox(height: 16.sdp),
+              _sectionTitle('6. Custom strategies (cdp · csp)'),
+              const CustomStrategyCard(),
               SizedBox(height: 16.sdp),
               FilledButton.icon(
                 icon: const Icon(Icons.speed),
