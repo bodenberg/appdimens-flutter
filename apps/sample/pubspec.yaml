@@ -6,6 +6,7 @@ environment:
   sdk: ^3.6.0
 resolution: workspace
 dependencies:
+  material_ui: ^1.11.0
   appdimens_flutter:
     path: ../../packages/appdimens_flutter
   appdimens_bom:
