@@ -25,6 +25,7 @@ Read this file when you need package locations, resolution-mode symmetry, or cor
 | power | `appdimens_power` | `packages/appdimens_power/lib/src/` |
 | resize | `appdimens_resize` | `packages/appdimens_resize/lib/src/` |
 | units (physical) | `appdimens_units` | `packages/appdimens_units/lib/src/` |
+| custom (user-defined) | `appdimens_custom` | `packages/appdimens_custom/lib/src/` (`custom_engine.dart`, `custom_strategy.dart`, `custom_extensions.dart`, `custom_scope.dart`, `custom_expression.dart`) |
 
 Full graph: [DOCUMENTATION/MODULES.md](../DOCUMENTATION/MODULES.md). Satellites depend only on `appdimens_flutter`. `appdimens_bom` re-exports everything at one version. Satellite extension files are generated from [`scripts/generate_satellites.py`](https://github.com/bodenberg/appdimens-flutter/blob/main/scripts/generate_satellites.py) — edit the generator, not the generated stems.
 
@@ -64,6 +65,7 @@ Satellite packages follow the same shape: `<strategy>_engine.dart` (formula + me
 | density | [DOCUMENTATION/density.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/density.md) |
 | resize | [DOCUMENTATION/resize.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/resize.md) |
 | units (physical) | [DOCUMENTATION/physical-units.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/physical-units.md) |
+| custom (user-defined) | [DOCUMENTATION/custom.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/custom.md) + [custom/](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/custom/README.md) guides; agent notes: [custom.md](custom.md) |
 
 **Formal docs:** [MATHEMATICS-AND-CALCULUS.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/MATHEMATICS-AND-CALCULUS.md) · [API-CONVENTIONS.md](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/API-CONVENTIONS.md)
 **Performance:** [PERFORMANCE.md](https://github.com/bodenberg/appdimens-flutter/blob/main/PERFORMANCE.md) · [PERFORMANCE-COMPARATIVE.md](https://github.com/bodenberg/appdimens-flutter/blob/main/PERFORMANCE-COMPARATIVE.md)

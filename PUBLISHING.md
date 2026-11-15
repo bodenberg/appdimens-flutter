@@ -9,6 +9,7 @@ published).
 
 - **Live on pub.dev:** appdimens_flutter, percent, power, fluid, interpolated,
   diagonal, perimeter, density, resize, units, auto, logarithmic.
+- **New, not yet published:** `appdimens_custom` (custom scaling strategies). The BOM depends on it, so publish it before `appdimens_bom`.
 - **Pending** (blocked by pub.dev's *daily* new-package rate limit — 12/day):
   `appdimens_fill`, `appdimens_fit`, `appdimens_bom`. Retry after the window
   resets:
@@ -37,7 +38,7 @@ for p in appdimens_fill appdimens_fit appdimens_bom; do \
 for p in appdimens appdimens_auto appdimens_bom appdimens_density \
          appdimens_diagonal appdimens_fill appdimens_fit appdimens_fluid \
          appdimens_interpolated appdimens_logarithmic appdimens_percent \
-         appdimens_perimeter appdimens_power appdimens_resize appdimens_units; do
+         appdimens_perimeter appdimens_power appdimens_resize appdimens_units appdimens_custom; do
   (cd "packages/$p" && flutter pub publish --dry-run) || echo "FAIL $p"
 done
 ```
@@ -64,7 +65,8 @@ cd ../appdimens_fill         && flutter pub publish
 cd ../appdimens_fit          && flutter pub publish
 cd ../appdimens_resize       && flutter pub publish
 cd ../appdimens_units        && flutter pub publish
-cd ../appdimens_bom          && flutter pub publish        # 15. last
+cd ../appdimens_custom       && flutter pub publish        # custom strategies (publish before the BOM)
+cd ../appdimens_bom          && flutter pub publish        # 16. last
 ```
 
 All inter-package dependencies are declared as **hosted constraints**

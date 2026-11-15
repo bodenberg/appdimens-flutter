@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Generates per-package publish assets (README.md, CHANGELOG.md, LICENSE)
-for every publishable package in the AppDimens Flutter workspace.
+for every publishable strategy package in the AppDimens Flutter workspace.
+(`appdimens_custom` keeps a hand-written README: it has no prefix × suffix grammar.)
 
 Run after changing package metadata:  python3 scripts/generate_package_docs.py
 """
@@ -232,7 +233,7 @@ final t   = 16.fsdp;     // fluid
 ```
 
 Included modules: appdimens_flutter · percent · power · fluid · auto · diagonal ·
-fill · fit · interpolated · logarithmic · perimeter · density · resize · units.
+fill · fit · interpolated · logarithmic · perimeter · density · resize · units · custom.
 
 Family docs: [DOCUMENTATION](https://github.com/bodenberg/appdimens-flutter/blob/main/DOCUMENTATION/README.md).
 """.replace("{ver}", VER)
