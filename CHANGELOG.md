@@ -4,7 +4,7 @@ All notable changes to the AppDimens Flutter package are documented here.
 Format based on Keep a Changelog; versioning aligned with the AppDimens
 Dynamic family.
 
-## [Unreleased]
+## Latest — in production (`main`)
 
 ### Changed
 - Sample, benchlab and the package tests import `package:material_ui/material_ui.dart` (Flutter 3.47+ deprecates `package:flutter/material.dart`, which made `flutter analyze` fail on stable 3.50). `material_ui` is a dev dependency of the published packages only, so apps keep the `flutter: >=3.27.0` floor; working on this repository needs Flutter 3.47+.
