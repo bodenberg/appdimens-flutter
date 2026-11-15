@@ -9,7 +9,7 @@
 library;
 
 import 'package:appdimens_bom/appdimens_bom.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'benchmark_screen.dart';
 import 'custom_strategy_card.dart';

@@ -6,6 +6,9 @@ Dynamic family.
 
 ## [Unreleased]
 
+### Changed
+- Sample, benchlab and the package tests import `package:material_ui/material_ui.dart` (Flutter 3.47+ deprecates `package:flutter/material.dart`, which made `flutter analyze` fail on stable 3.50). `material_ui` is a dev dependency of the published packages only, so apps keep the `flutter: >=3.27.0` floor; working on this repository needs Flutter 3.47+.
+
 ### Added
 - **`appdimens_custom`: custom scaling strategies**, a port of Android `appdimens-dynamic-custom`.
   - **Config format:** the same JSON as every AppDimens platform. It covers reference frame, axis, curves (linear, power, logarithmic, interpolated, constant, breakpoints, free-form text expression, function), a per-value text formula, factor/value bounds, aspect ratio, font-scale policy, and rules per device class / screen range / orientation / multi-window.

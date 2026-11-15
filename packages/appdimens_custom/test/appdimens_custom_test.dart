@@ -4,7 +4,7 @@ import 'dart:math' as math;
 
 import 'package:appdimens_custom/appdimens_custom.dart';
 import 'package:appdimens_flutter/appdimens.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 final _phone = ScreenSnapshot(

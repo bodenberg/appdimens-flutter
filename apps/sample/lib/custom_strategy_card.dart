@@ -6,7 +6,7 @@
 library;
 
 import 'package:appdimens_bom/appdimens_bom.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// EN App-specific strategy: designed on a 360 dp phone, sublinear growth,
 /// damped on tablets / desktop. Same JSON shape as every AppDimens platform.
