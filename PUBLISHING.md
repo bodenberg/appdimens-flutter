@@ -9,7 +9,7 @@ published).
 
 - **Live on pub.dev:** appdimens_flutter, percent, power, fluid, interpolated,
   diagonal, perimeter, density, resize, units, auto, logarithmic.
-- **New, not yet published:** `appdimens_custom` (custom scaling strategies). The BOM depends on it, so publish it before `appdimens_bom`.
+- **`appdimens_custom`** (custom scaling strategies). The BOM depends on it, so publish it before `appdimens_bom`.
 - **Pending** (blocked by pub.dev's *daily* new-package rate limit — 12/day):
   `appdimens_fill`, `appdimens_fit`, `appdimens_bom`. Retry after the window
   resets:
